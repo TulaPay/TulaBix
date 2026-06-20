@@ -154,7 +154,7 @@ class _SignUpState extends State<SignUp> {
                 Text(
                   "Start managing your payments in one place",
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(height: 18),
@@ -203,7 +203,7 @@ class _SignUpState extends State<SignUp> {
                             Container(
                               height: 24,
                               width: 1,
-                              color: colorScheme.outline.withOpacity(0.3),
+                              color: colorScheme.outline.withValues(alpha: 0.3),
                             ),
                           ],
                         ),
@@ -284,7 +284,7 @@ class _SignUpState extends State<SignUp> {
                         child: RichText(
                           text: TextSpan(
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurface.withOpacity(0.7),
+                              color: colorScheme.onSurface.withValues(alpha: 0.7),
                             ),
                             children: [
                               const TextSpan(text: "I agree to the "),
@@ -326,7 +326,7 @@ class _SignUpState extends State<SignUp> {
                     children: [
                       Text(
                         "Already have an account? ",
-                        style: TextStyle(color: colorScheme.onSurface.withOpacity(0.6)),
+                        style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6)),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -364,7 +364,7 @@ class _SignUpState extends State<SignUp> {
         style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
         ),
       ),
     );

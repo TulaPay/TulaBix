@@ -83,7 +83,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                 Text(
                   "Tell us a bit about yourself and your business to get started",
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(height: 32),
@@ -121,7 +121,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                 _buildSectionTitle("Company Information"),
                 Text(
                   "As it appears on your registration documents",
-                  style: TextStyle(color: colorScheme.onSurface.withOpacity(0.5), fontSize: 13),
+                  style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.5), fontSize: 13),
                 ),
                 const SizedBox(height: 20),
 
@@ -149,7 +149,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
 
                 _buildLabel("Business Category"),
                 DropdownButtonFormField<String>(
-                  value: _selectedCategory,
+                  initialValue: _selectedCategory,
                   decoration: const InputDecoration(
                     prefixIcon: Icon(Icons.category_outlined),
                   ),
@@ -170,9 +170,9 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                 Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: colorScheme.secondaryContainer.withOpacity(0.4),
+                    color: colorScheme.secondaryContainer.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: colorScheme.primary.withOpacity(0.1)),
+                    border: Border.all(color: colorScheme.primary.withValues(alpha: 0.1)),
                   ),
                   child: Row(
                     children: [
@@ -230,7 +230,7 @@ class _BusinessDetailsState extends State<BusinessDetails> {
         style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
         ),
       ),
     );

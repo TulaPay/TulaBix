@@ -51,7 +51,7 @@ class _SplashScreenState extends State<SplashScreen> {
                 style: GoogleFonts.inter(
                   fontSize: 16,
                   fontWeight: FontWeight.w500,
-                  color: colorScheme.onPrimary.withOpacity(0.8),
+                  color: colorScheme.onPrimary.withValues(alpha: 0.8),
                   letterSpacing: 1.2,
                 ),
               ),
@@ -65,14 +65,14 @@ class _SplashScreenState extends State<SplashScreen> {
                     Icon(
                       Icons.verified_user_outlined,
                       size: 18,
-                      color: colorScheme.onPrimary.withOpacity(0.7),
+                      color: colorScheme.onPrimary.withValues(alpha: 0.7),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       "Powered by TulaPay",
                       style: GoogleFonts.inter(
                         fontSize: 14,
-                        color: colorScheme.onPrimary.withOpacity(0.7),
+                        color: colorScheme.onPrimary.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w400,
                       ),
                     ),

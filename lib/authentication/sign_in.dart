@@ -149,7 +149,7 @@ class _SignInState extends State<SignIn> {
                 Text(
                   "Securely login to your TulaPay account",
                   style: theme.textTheme.bodyLarge?.copyWith(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                   ),
                 ),
                 const SizedBox(height: 48),
@@ -184,7 +184,7 @@ class _SignInState extends State<SignIn> {
                             Container(
                               height: 24,
                               width: 1,
-                              color: colorScheme.outline.withOpacity(0.3),
+                              color: colorScheme.outline.withValues(alpha: 0.3),
                             ),
                           ],
                         ),
@@ -192,8 +192,9 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Phone number is required';
+                    }
                     return null;
                   },
                 ),
@@ -220,8 +221,9 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty)
+                    if (value == null || value.isEmpty) {
                       return 'Password is required';
+                    }
                     return null;
                   },
                 ),
@@ -265,7 +267,7 @@ class _SignInState extends State<SignIn> {
                       Text(
                         "Don't have an account? ",
                         style: TextStyle(
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                       GestureDetector(
@@ -305,7 +307,7 @@ class _SignInState extends State<SignIn> {
         style: GoogleFonts.inter(
           fontSize: 14,
           fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.8),
+          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
         ),
       ),
     );

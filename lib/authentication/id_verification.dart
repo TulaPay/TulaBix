@@ -45,7 +45,7 @@ class _IdVerificationState extends State<IdVerification> {
               Text(
                 "To ensure the security of your account, please provide a valid government-issued document.",
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   height: 1.5,
                 ),
               ),
@@ -93,14 +93,14 @@ class _IdVerificationState extends State<IdVerification> {
                     Icon(
                       Icons.lock_outline_rounded,
                       size: 14,
-                      color: colorScheme.onSurface.withOpacity(0.4),
+                      color: colorScheme.onSurface.withValues(alpha: 0.4),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       "Secured by AES-256 encryption",
                       style: GoogleFonts.inter(
                         fontSize: 12,
-                        color: colorScheme.onSurface.withOpacity(0.4),
+                        color: colorScheme.onSurface.withValues(alpha: 0.4),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -130,10 +130,10 @@ class _IdVerificationState extends State<IdVerification> {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? colorScheme.primary.withOpacity(0.05) : colorScheme.surface,
+          color: isSelected ? colorScheme.primary.withValues(alpha: 0.05) : colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: isSelected ? colorScheme.primary : colorScheme.outline.withOpacity(0.2),
+            color: isSelected ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
         ),
@@ -142,7 +142,7 @@ class _IdVerificationState extends State<IdVerification> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: isSelected ? colorScheme.primary : colorScheme.primary.withOpacity(0.1),
+                color: isSelected ? colorScheme.primary : colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(

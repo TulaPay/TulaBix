@@ -37,7 +37,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       ),
       bodyTextStyle: GoogleFonts.inter(
         fontSize: 16.0,
-        color: colorScheme.onSurface.withOpacity(0.7),
+        color: colorScheme.onSurface.withValues(alpha: 0.7),
       ),
       bodyPadding: const EdgeInsets.fromLTRB(24.0, 0.0, 24.0, 16.0),
       pageColor: colorScheme.surface,
@@ -102,7 +102,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
       controlsMargin: const EdgeInsets.all(16),
       dotsDecorator: DotsDecorator(
         size: const Size(10.0, 10.0),
-        color: colorScheme.primary.withOpacity(0.2),
+        color: colorScheme.primary.withValues(alpha: 0.2),
         activeSize: const Size(22.0, 10.0),
         activeColor: colorScheme.primary,
         activeShape: const RoundedRectangleBorder(

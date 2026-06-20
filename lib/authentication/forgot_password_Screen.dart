@@ -148,7 +148,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const SizedBox(height: 20),
         Text("Forgot Password", style: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.bold, color: colorScheme.primary)),
         const SizedBox(height: 8),
-        Text("Enter your phone number to receive a verification code.", style: TextStyle(color: colorScheme.onSurface.withOpacity(0.6))),
+        Text("Enter your phone number to receive a verification code.", style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6))),
         const SizedBox(height: 48),
         _buildLabel("Phone Number"),
         TextFormField(
@@ -166,7 +166,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   const Icon(Icons.arrow_drop_down),
                   Text(_selectedCountry.code, style: const TextStyle(fontWeight: FontWeight.bold)),
                   const SizedBox(width: 8),
-                  Container(width: 1, height: 24, color: colorScheme.outline.withOpacity(0.3)),
+                  Container(width: 1, height: 24, color: colorScheme.outline.withValues(alpha: 0.3)),
                   const SizedBox(width: 8),
                 ],
               ),
@@ -194,7 +194,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const SizedBox(height: 32),
         Text("Verify Your Phone", style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.bold)),
         const SizedBox(height: 12),
-        Text("We've sent a 6-digit code to ${_selectedCountry.code} ${_phoneController.text}", textAlign: TextAlign.center, style: TextStyle(color: colorScheme.onSurface.withOpacity(0.6))),
+        Text("We've sent a 6-digit code to ${_selectedCountry.code} ${_phoneController.text}", textAlign: TextAlign.center, style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6))),
         const SizedBox(height: 48),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -219,7 +219,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const SizedBox(height: 20),
         Text("Reset PIN", style: GoogleFonts.inter(fontSize: 32, fontWeight: FontWeight.bold, color: colorScheme.primary)),
         const SizedBox(height: 8),
-        Text("Create a new 6-digit PIN for your TulaPay account.", style: TextStyle(color: colorScheme.onSurface.withOpacity(0.6))),
+        Text("Create a new 6-digit PIN for your TulaPay account.", style: TextStyle(color: colorScheme.onSurface.withValues(alpha: 0.6))),
         const SizedBox(height: 40),
         _buildLabel("New PIN"),
         TextFormField(
@@ -280,7 +280,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         border: Border.all(
           color: _otpControllers[index].text.isNotEmpty
               ? colorScheme.primary
-              : colorScheme.outline.withOpacity(0.2),
+              : colorScheme.outline.withValues(alpha: 0.2),
           width: 2,
         ),
       ),

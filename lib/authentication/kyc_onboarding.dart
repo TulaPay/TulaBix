@@ -38,7 +38,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: colorScheme.primary.withOpacity(0.2),
+                              color: colorScheme.primary.withValues(alpha: 0.2),
                               blurRadius: 20,
                               offset: const Offset(0, 10),
                             ),
@@ -92,7 +92,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                         Text(
                           "Join thousands of merchants growing their business with TulaPay's secure platform.",
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: colorScheme.onSurface.withOpacity(0.6),
+                            color: colorScheme.onSurface.withValues(alpha: 0.6),
                             height: 1.5,
                           ),
                         ),
@@ -152,7 +152,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                     Text(
                       "Data encrypted and strictly confidential",
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: colorScheme.onSurface.withOpacity(0.5),
+                        color: colorScheme.onSurface.withValues(alpha: 0.5),
                       ),
                     ),
                   ],
@@ -180,7 +180,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: colorScheme.primary.withOpacity(0.1),
+              color: colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(icon, color: colorScheme.primary, size: 24),
@@ -203,7 +203,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                   subtitle,
                   style: TextStyle(
                     fontSize: 14,
-                    color: colorScheme.onSurface.withOpacity(0.5),
+                    color: colorScheme.onSurface.withValues(alpha: 0.5),
                   ),
                 ),
               ],

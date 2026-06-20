@@ -50,7 +50,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                         gradient: LinearGradient(
                           colors: [
                             colorScheme.primary,
-                            colorScheme.primary.withOpacity(0.8)
+                            colorScheme.primary.withValues(alpha: 0.8)
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -58,7 +58,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                         borderRadius: BorderRadius.circular(24),
                         boxShadow: [
                           BoxShadow(
-                            color: colorScheme.primary.withOpacity(0.3),
+                            color: colorScheme.primary.withValues(alpha: 0.3),
                             blurRadius: 20,
                             offset: const Offset(0, 10),
                           ),
@@ -71,7 +71,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.2),
+                              color: Colors.white.withValues(alpha: 0.2),
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: Row(
@@ -103,7 +103,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                           Text(
                             "Unlock professional financial tools and expand your business limits with TulaPay.",
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               fontSize: 15,
                               height: 1.5,
                             ),
@@ -185,7 +185,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                     "Standard review takes 12-24 hours",
                     style: TextStyle(
                       fontSize: 13,
-                      color: colorScheme.onSurface.withOpacity(0.5),
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                 ],
@@ -212,7 +212,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: colorScheme.primary.withOpacity(0.08),
+              color: colorScheme.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(icon, color: colorScheme.primary, size: 26),
@@ -235,7 +235,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                     height: 1.4,
                   ),
                 ),

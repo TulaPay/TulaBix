@@ -61,7 +61,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 child: Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withOpacity(0.3),
+                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                     shape: BoxShape.circle,
                   ),
                   child: Icon(
@@ -85,7 +85,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                 _t('subtitle'),
                 style: GoogleFonts.inter(
                   fontSize: 16,
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
               const SizedBox(height: 32),
@@ -113,10 +113,10 @@ class _LanguageScreenState extends State<LanguageScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.05),
+                  color: colorScheme.primary.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(
-                    color: colorScheme.primary.withOpacity(0.1),
+                    color: colorScheme.primary.withValues(alpha: 0.1),
                   ),
                 ),
                 child: Row(
@@ -132,7 +132,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         _t('info'),
                         style: GoogleFonts.inter(
                           fontSize: 13,
-                          color: colorScheme.onSurface.withOpacity(0.8),
+                          color: colorScheme.onSurface.withValues(alpha: 0.8),
                           height: 1.4,
                         ),
                       ),
@@ -192,11 +192,11 @@ class LanguageTile extends StatelessWidget {
           border: Border.all(
             color: isSelected
                 ? colorScheme.primary
-                : colorScheme.outline.withOpacity(0.2),
+                : colorScheme.outline.withValues(alpha: 0.2),
             width: isSelected ? 2 : 1,
           ),
           color: isSelected
-              ? colorScheme.primary.withOpacity(0.05)
+              ? colorScheme.primary.withValues(alpha: 0.05)
               : Colors.transparent,
         ),
         child: Row(
@@ -219,7 +219,7 @@ class LanguageTile extends StatelessWidget {
                     subtitle,
                     style: GoogleFonts.inter(
                       fontSize: 14,
-                      color: colorScheme.onSurface.withOpacity(0.5),
+                      color: colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                   ),
                 ],
@@ -230,7 +230,7 @@ class LanguageTile extends StatelessWidget {
             else
               Icon(
                 Icons.circle_outlined,
-                color: colorScheme.outline.withOpacity(0.5),
+                color: colorScheme.outline.withValues(alpha: 0.5),
               ),
           ],
         ),

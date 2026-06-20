@@ -152,7 +152,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                     : "Enter 6 digits to keep your account and transactions secure.",
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
               ),
             ),
@@ -193,9 +193,9 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       height: 16,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isFilled ? colorScheme.primary : colorScheme.outline.withOpacity(0.2),
+        color: isFilled ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.2),
         border: Border.all(
-          color: isFilled ? colorScheme.primary : colorScheme.outline.withOpacity(0.1),
+          color: isFilled ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.1),
           width: 1,
         ),
       ),

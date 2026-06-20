@@ -35,7 +35,7 @@ class AppTheme {
         onSecondary: AppColors.textDark,
         onTertiary: Colors.white,
         onSurface: AppColors.textDark,
-        surfaceVariant: AppColors.bgLight,
+        surfaceContainerHighest: AppColors.bgLight,
         outline: AppColors.neutral,
       ),
       scaffoldBackgroundColor: AppColors.bgLight,
@@ -98,7 +98,7 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.neutral.withOpacity(0.5)),
+          borderSide: BorderSide(color: AppColors.neutral.withValues(alpha: 0.5)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
@@ -182,7 +182,7 @@ class AppTheme {
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: AppColors.neutral.withOpacity(0.3)),
+          borderSide: BorderSide(color: AppColors.neutral.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),

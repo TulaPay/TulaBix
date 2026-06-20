@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tulapay/authentication/kyc_onboarding.dart';
-import 'package:tulapay/authentication/upgrade_to_tier%202.dart';
-import 'package:tulapay/authentication/verification_in_progress_page.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
-import 'package:tulapay/screens/splash.dart';
 import 'package:tulapay/themes/app_theme.dart';
 
 void main(){

@@ -39,14 +39,14 @@ class _HomepageState extends State<Homepage> {
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [colorScheme.primary, colorScheme.primary.withOpacity(0.8)],
+                    colors: [colorScheme.primary, colorScheme.primary.withValues(alpha: 0.8)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.circular(24),
                   boxShadow: [
                     BoxShadow(
-                      color: colorScheme.primary.withOpacity(0.3),
+                      color: colorScheme.primary.withValues(alpha: 0.3),
                       blurRadius: 20,
                       offset: const Offset(0, 10),
                     ),
@@ -61,7 +61,7 @@ class _HomepageState extends State<Homepage> {
                         Text(
                           "Today's Revenue",
                           style: GoogleFonts.inter(
-                            color: Colors.white.withOpacity(0.8),
+                            color: Colors.white.withValues(alpha: 0.8),
                             fontSize: 14,
                             fontWeight: FontWeight.w500,
                           ),
@@ -77,7 +77,7 @@ class _HomepageState extends State<Homepage> {
                         Text(
                           "XAF",
                           style: GoogleFonts.inter(
-                            color: Colors.white.withOpacity(0.6),
+                            color: Colors.white.withValues(alpha: 0.6),
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -97,7 +97,7 @@ class _HomepageState extends State<Homepage> {
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
+                        color: Colors.white.withValues(alpha: 0.2),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
