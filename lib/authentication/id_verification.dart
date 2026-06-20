@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/authentication/verification_in_progress_page.dart';
 
 class IdVerification extends StatefulWidget {
   const IdVerification({super.key});
@@ -77,8 +78,11 @@ class _IdVerificationState extends State<IdVerification> {
                 onPressed: _selectedDocument == null 
                   ? null 
                   : () {
-                      // TODO: Navigate to Camera/Upload Screen
                       debugPrint("Proceeding with: $_selectedDocument");
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const VerificationInProgressPage()),
+                      );
                     },
                 child: const Text("Next"),
               ),

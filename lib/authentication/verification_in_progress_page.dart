@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/screens/Navigation_bar.dart';
 
 class VerificationInProgressPage extends StatefulWidget {
   const VerificationInProgressPage({super.key});
@@ -131,7 +132,11 @@ class _VerificationInProgressPageState
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {
-                      // TODO: Navigate to restricted dashboard
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(builder: (_) => const Navigation_Bar()),
+                        (route) => false,
+                      );
                     },
                     icon: const Icon(Icons.dashboard_outlined),
                     label: const Text("Go to Dashboard"),

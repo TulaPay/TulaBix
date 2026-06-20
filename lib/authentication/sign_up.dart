@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tulapay/authentication/business_details.dart';
+import 'package:tulapay/authentication/OTP_Verification_Screen.dart';
 import 'package:tulapay/authentication/sign_in.dart';
 
 class Country {
@@ -112,8 +112,16 @@ class _SignUpState extends State<SignUp> {
         );
         return;
       }
-      // TODO: Proceed with Registration logic
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=>const BusinessDetails()));
+      // Route to OTP verification immediately after basic registration
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => OtpVerificationScreen(
+            phoneNumber: "${_selectedCountry.code} ${_phoneController.text}",
+            isSignUp: true,
+          ),
+        ),
+      );
       debugPrint("Registering with: ${_selectedCountry.code}${_phoneController.text}");
     }
   }

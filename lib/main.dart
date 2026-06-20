@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
+import 'package:tulapay/screens/splash.dart';
 import 'package:tulapay/themes/app_theme.dart';
 
 void main(){
@@ -17,7 +18,7 @@ class TulaApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home:   Navigation_Bar()
+      home:   SplashScreen()
     );
   }
 }

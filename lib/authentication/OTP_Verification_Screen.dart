@@ -1,13 +1,17 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/authentication/create_pin_Screen.dart';
+import 'package:tulapay/screens/Navigation_bar.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String phoneNumber;
+  final bool isSignUp;
 
   const OtpVerificationScreen({
     super.key,
     this.phoneNumber = "+237 600 000 000",
+    this.isSignUp = false,
   });
 
   @override
@@ -72,12 +76,18 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       if (mounted) {
         setState(() => _isLoading = false);
         debugPrint("Verifying OTP: $otp");
-        // Navigation example:
-        // Navigator.pushAndRemoveUntil(
-        //   context,
-        //   MaterialPageRoute(builder: (_) => const Homepage()),
-        //   (route) => false,
-        // );
+        if (widget.isSignUp) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (_) => const CreatePinScreen()),
+          );
+        } else {
+          Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (_) => const Navigation_Bar()),
+            (route) => false,
+          );
+        }
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

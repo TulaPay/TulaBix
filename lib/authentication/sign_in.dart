@@ -108,7 +108,12 @@ class _SignInState extends State<SignIn> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => OtpVerificationScreen()),
+        MaterialPageRoute(
+          builder: (_) => OtpVerificationScreen(
+            phoneNumber: fullPhoneNumber,
+            isSignUp: false,
+          ),
+        ),
       );
     }
   }

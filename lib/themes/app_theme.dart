@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 
 abstract class AppColors {
-  // Core Palette Hex Mappings
-  static const Color primary = Color(0xFF006D77);     // Headline / Brand
-  static const Color secondary = Color(0xFF83C5BE);   // Body / Accent
-  static const Color tertiary = Color(0xFF8E5426);    // Highlights / Badges
-  static const Color neutral = Color(0xFF747878);     // Borders / Captions
+  // Core Palette Hex Mappings (Vibrant Blue theme)
+  static const Color primary = Color(0xFF0000FF);     // Headline / Brand (Pure Blue)
+  static const Color secondary = Color(0xFF4D73FF);   // Body / Accent (Vibrant Medium Blue)
+  static const Color tertiary = Color(0xFFFF5252);    // Highlights / Badges (Vibrant Red)
+  static const Color neutral = Color(0xFF758296);     // Borders / Captions (Gray-Blue)
 
   // Light Mode Specifics
-  static const Color bgLight = Color(0xFFF4F9F9);      // Soft white with a hint of teal tint
+  static const Color bgLight = Color(0xFFF0F4FF);      // Soft pale blue backdrop
   static const Color surfaceLight = Colors.white;
-  static const Color textDark = Color(0xFF1A2526);     // High contrast body for light mode
+  static const Color textDark = Color(0xFF0A102D);     // High contrast body for light mode (Dark blue-black)
 
   // Dark Mode Specifics
-  static const Color bgDark = Color(0xFF0F1415);       // Deep slate/teal black
-  static const Color surfaceDark = Color(0xFF171F20);
-  static const Color primaryDarkAccent = Color(0xFF66E3EE); // High-contrast primary for dark components
+  static const Color bgDark = Color(0xFF05081A);       // Deep indigo black
+  static const Color surfaceDark = Color(0xFF111633);    // Soft dark indigo surface
+  static const Color primaryDarkAccent = Color(0xFF80A0FF); // High-contrast primary for dark components (Vibrant light blue)
 }
 
 class AppTheme {
@@ -131,7 +131,7 @@ class AppTheme {
         headlineLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         headlineMedium: TextStyle(color: AppColors.secondary, fontWeight: FontWeight.bold),
         titleLarge: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        bodyLarge: TextStyle(color: AppColors.secondary, fontSize: 16), // Light seafoam pops perfectly here
+        bodyLarge: TextStyle(color: AppColors.secondary, fontSize: 16), // Vibrant blue accent pops perfectly here
         bodyMedium: TextStyle(color: Color(0xFFD1DEDE), fontSize: 14),
       ),
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/authentication/business_details.dart';
 
 class KycOnboarding extends StatefulWidget {
   const KycOnboarding({super.key});
@@ -133,7 +134,10 @@ class _KycOnboardingState extends State<KycOnboarding> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    // TODO: Navigate to Business Details or next KYC step
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const BusinessDetails()),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     minimumSize: const Size.fromHeight(56),

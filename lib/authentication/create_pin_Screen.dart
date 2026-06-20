@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/authentication/kyc_onboarding.dart';
 
 class CreatePinScreen extends StatefulWidget {
   const CreatePinScreen({super.key});
@@ -93,8 +94,10 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
             const SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                // TODO: Navigate to Homepage
-                Navigator.of(context).pop(); 
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const KycOnboarding()),
+                  (route) => false,
+                );
               },
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(56),
