@@ -3,7 +3,7 @@ import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/screens/splash.dart';
 import 'package:tulapay/themes/app_theme.dart';
 
-void main(){
+void main() {
   runApp(const TulaApp());
 }
 
@@ -12,13 +12,13 @@ class TulaApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return   MaterialApp(
+    return MaterialApp(
       title: "Tula-Merchant",
       debugShowCheckedModeBanner: false,
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home:   SplashScreen()
+      home: Navigation_Bar(),
     );
   }
 }
