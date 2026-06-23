@@ -18,7 +18,7 @@ class TulaApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       themeMode: ThemeMode.system,
-      home: Navigation_Bar(),
+      home: SplashScreen(),
     );
   }
 }
