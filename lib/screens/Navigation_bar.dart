@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/screens/Homepage.dart';
+import 'package:tulapay/screens/payments_screen.dart';
+import 'package:tulapay/screens/customers_screen.dart';
+import 'package:tulapay/screens/settings_screen.dart';
 
 class Navigation_Bar extends StatefulWidget {
   const Navigation_Bar({super.key});
@@ -9,37 +12,58 @@ class Navigation_Bar extends StatefulWidget {
 }
 
 class _Navigation_BarState extends State<Navigation_Bar> {
-  int _currentIndex = 0;
-  List<Widget> routes = const [
-    Homepage(),
-    Center(child: Text("Analytics")),
-    Center(child: Text("Business")),
-    Center(child: Text("Profile")),
+  int _selectedIndex = 0;
+
+  final List<Widget> _screens = [
+    const Homepage(),
+    const Center(child: Text('Analytics Screen'),),
+    const Center(child: Text('Payments Screen'),),
+    const Center(child: Text("Customer Screen"),),
+    const Center(child: Text("Profile Screen"),),
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: routes[_currentIndex],
+    final colorScheme = Theme.of(context).colorScheme;
 
+    return Scaffold(
+      body: _screens[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) => setState(() => _currentIndex = index),
-        currentIndex: _currentIndex,
-        type: BottomNavigationBarType.fixed,
-        unselectedItemColor: Colors.grey,
-        selectedItemColor: Colors.black,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: "Analytics",
+            icon: Icon(Icons.home_rounded),
+            label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.business),
-            label: "Business",
+            icon: Icon(Icons.bar_chart_rounded),
+            label: 'Analytics',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "Profile"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_balance_wallet_rounded),
+            label: 'Payments',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people_rounded),
+            label: 'Customers',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_rounded),
+            label: 'Settings',
+          ),
         ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: colorScheme.surface,
+        elevation: 8,
       ),
     );
   }

@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/screens/checklist_screen.dart';
+import 'package:tulapay/screens/products_screen.dart';
+import 'package:tulapay/screens/payment_page_screen.dart';
+import 'package:tulapay/screens/promo_codes_screen.dart';
+import 'package:tulapay/screens/customers_screen.dart';
+import 'package:tulapay/screens/payments_screen.dart';
+import 'package:tulapay/screens/notification_screen.dart';
+import 'package:tulapay/screens/settings_screen.dart';
+import 'package:tulapay/screens/docs_screen.dart';
+import 'package:tulapay/screens/help_screen.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -56,18 +66,45 @@ class CustomDrawer extends StatelessWidget {
                     badge: "5 Steps",
                     badgeColor: colorScheme.primary.withValues(alpha: 0.1),
                     badgeTextColor: colorScheme.primary,
+                    onTap: () => _navigateTo(context, const ChecklistScreen()),
                   ),
                   _buildDrawerItem(
                     context,
                     icon: Icons.home_rounded,
                     label: "Home",
                     isActive: true,
+                    onTap: () => Navigator.pop(context),
                   ),
-                  _buildDrawerItem(context, icon: Icons.grid_view_rounded, label: "Products"),
-                  _buildDrawerItem(context, icon: Icons.payment_rounded, label: "Payment page"),
-                  _buildDrawerItem(context, icon: Icons.local_offer_rounded, label: "Promo codes"),
-                  _buildDrawerItem(context, icon: Icons.people_rounded, label: "Customers"),
-                  _buildDrawerItem(context, icon: Icons.sync_alt_rounded, label: "Payments"),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.grid_view_rounded,
+                    label: "Products",
+                    onTap: () => _navigateTo(context, const ProductsScreen()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.payment_rounded,
+                    label: "Payment page",
+                    onTap: () => _navigateTo(context, const PaymentPageScreen()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.local_offer_rounded,
+                    label: "Promo codes",
+                    onTap: () => _navigateTo(context, const PromoCodesScreen()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.people_rounded,
+                    label: "Customers",
+                    onTap: () => _navigateTo(context, const CustomersScreen()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.sync_alt_rounded,
+                    label: "Payments",
+                    onTap: () => _navigateTo(context, const PaymentsScreen()),
+                  ),
                   
                   const SizedBox(height: 32),
                   
@@ -78,10 +115,26 @@ class CustomDrawer extends StatelessWidget {
                     badge: "+9",
                     badgeColor: colorScheme.primary,
                     badgeTextColor: Colors.white,
+                    onTap: () => _navigateTo(context, const NotificationScreen()),
                   ),
-                  _buildDrawerItem(context, icon: Icons.settings_rounded, label: "Settings"),
-                  _buildDrawerItem(context, icon: Icons.menu_book_rounded, label: "Docs"),
-                  _buildDrawerItem(context, icon: Icons.help_rounded, label: "Help"),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.settings_rounded,
+                    label: "Settings",
+                    onTap: () => _navigateTo(context, const SettingsScreen()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.menu_book_rounded,
+                    label: "Docs",
+                    onTap: () => _navigateTo(context, const DocsScreen()),
+                  ),
+                  _buildDrawerItem(
+                    context,
+                    icon: Icons.help_rounded,
+                    label: "Help",
+                    onTap: () => _navigateTo(context, const HelpScreen()),
+                  ),
                 ],
               ),
             ),
@@ -141,10 +194,16 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
+  void _navigateTo(BuildContext context, Widget screen) {
+    Navigator.pop(context); // Close drawer
+    Navigator.push(context, MaterialPageRoute(builder: (_) => screen));
+  }
+
   Widget _buildDrawerItem(
     BuildContext context, {
     required IconData icon,
     required String label,
+    required VoidCallback onTap,
     bool isActive = false,
     String? badge,
     Color? badgeColor,
@@ -159,7 +218,7 @@ class CustomDrawer extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
-        onTap: () {},
+        onTap: onTap,
         dense: true,
         visualDensity: const VisualDensity(vertical: -2),
         leading: Icon(
