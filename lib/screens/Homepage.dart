@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/screens/payment_links_screen.dart';
+import 'package:tulapay/screens/scan_qr_screen.dart';
+import 'package:tulapay/screens/cash_receipts_screen.dart';
+import 'package:tulapay/screens/more_actions_screen.dart';
+import 'package:tulapay/widgets/custom_drawer.dart';
 
 class Homepage extends StatefulWidget {
   const Homepage({super.key});
@@ -65,7 +70,7 @@ class _HomepageState extends State<Homepage> {
           ),
         ],
       ),
-      drawer: const Drawer(),
+      drawer: const CustomDrawer(),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Column(
@@ -112,6 +117,7 @@ class _HomepageState extends State<Homepage> {
                     icon: Icons.link,
                     label: "Payment Links",
                     color: const Color(0xFF6366F1),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const PaymentLinksScreen())),
                   ),
 
                   _buildQuickAction(
@@ -119,18 +125,21 @@ class _HomepageState extends State<Homepage> {
                     icon: Icons.qr_code_scanner_rounded,
                     label: "Scan Qr",
                     color: const Color(0xFFF59E0B),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ScanQrScreen())),
                   ),
                   _buildQuickAction(
                     context,
                     icon: Icons.receipt_long_outlined,
                     label: "Cash Receipts",
                     color: const Color(0xFFEC4899),
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const CashReceiptsScreen())),
                   ),
                   _buildQuickAction(
                     context,
                     icon: Icons.grid_view_rounded,
                     label: "More",
                     color: colorScheme.secondary,
+                    onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MoreActionsScreen())),
                   ),
                 ],
               ),
@@ -174,20 +183,24 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  Widget _buildQuickAction(BuildContext context, {required IconData icon, required String label, required Color color}) {
+  Widget _buildQuickAction(BuildContext context, {required IconData icon, required String label, required Color color, required VoidCallback onTap}) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: Column(
         children: [
-          Container(
-            height: 64,
-            width: 64,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.1),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: color.withValues(alpha: 0.1), width: 1),
+
+          GestureDetector(
+            onTap: onTap,
+            child: Container(
+              height: 64,
+              width: 64,
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: color.withValues(alpha: 0.1), width: 1),
+              ),
+              child: Icon(icon, size: 28, color: color),
             ),
-            child: Icon(icon, size: 28, color: color),
           ),
           const SizedBox(height: 10),
           Text(
