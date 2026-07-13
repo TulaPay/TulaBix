@@ -56,7 +56,7 @@ class ScanQrScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(isDark ? 0.2 : 0.05),
+                    color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.05),
                     blurRadius: 20,
                     offset: const Offset(0, 10),
                   ),
@@ -205,7 +205,7 @@ class ScanQrScreen extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 14, color: Colors.white.withOpacity(0.9)),
+          Icon(icon, size: 14, color: Colors.white.withValues(alpha: 0.9)),
           const SizedBox(width: 4),
           Text(
             label,

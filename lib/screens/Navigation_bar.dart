@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/screens/Business_Screen.dart' show BusinessScreen;
 import 'package:tulapay/screens/Homepage.dart';
-import 'package:tulapay/screens/payments_screen.dart';
-import 'package:tulapay/screens/customers_screen.dart';
+import 'package:tulapay/screens/Analytics.dart';
+import 'package:tulapay/screens/Customer_Screen.dart' show CustomerScreen;
 import 'package:tulapay/screens/settings_screen.dart';
 
 class Navigation_Bar extends StatefulWidget {
@@ -16,10 +17,10 @@ class _Navigation_BarState extends State<Navigation_Bar> {
 
   final List<Widget> _screens = [
     const Homepage(),
-    const Center(child: Text('Analytics Screen'),),
-    const Center(child: Text('Payments Screen'),),
-    const Center(child: Text("Customer Screen"),),
-    const Center(child: Text("Profile Screen"),),
+    const AnalyticsScreen(),
+    const BusinessScreen(),
+    const CustomerScreen(),
+    const SettingsScreen()
   ];
 
   void _onItemTapped(int index) {
@@ -45,8 +46,8 @@ class _Navigation_BarState extends State<Navigation_Bar> {
             label: 'Analytics',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_wallet_rounded),
-            label: 'Payments',
+            icon: Icon(Icons.business_rounded),
+            label: 'Business',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.people_rounded),
@@ -59,7 +60,9 @@ class _Navigation_BarState extends State<Navigation_Bar> {
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: colorScheme.primary,
-        unselectedItemColor: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+        unselectedItemColor: colorScheme.onSurfaceVariant.withValues(
+          alpha: 0.6,
+        ),
         onTap: _onItemTapped,
         type: BottomNavigationBarType.fixed,
         backgroundColor: colorScheme.surface,
