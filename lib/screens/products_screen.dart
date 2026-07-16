@@ -1,9 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:tulapay/models/product_model.dart'; // Ensure your model is imported
 import 'package:tulapay/widgets/product_detail_sheet.dart';
@@ -43,7 +41,8 @@ class _ProductsScreenState extends State<ProductsScreen>
   void _updateFilters() {
     _filteredProducts = _all.where((p) {
       final catOk = _activeCategory == 'All' || p.category == _activeCategory;
-      final searchOk = _searchQuery.isEmpty ||
+      final searchOk =
+          _searchQuery.isEmpty ||
           p.name.toLowerCase().contains(_searchQuery.toLowerCase());
       return catOk && searchOk;
     }).toList();
@@ -234,17 +233,12 @@ class _ProductsScreenState extends State<ProductsScreen>
             hintStyle: TextStyle(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            prefixIcon: Icon(
-              Icons.search,
-              color: theme.colorScheme.primary,
-            ),
+            prefixIcon: Icon(Icons.search, color: theme.colorScheme.primary),
             suffixIcon: _searchQuery.isNotEmpty
                 ? IconButton(
                     icon: Icon(
                       Icons.clear,
-                      color: theme.colorScheme.onSurface.withValues(
-                        alpha: 0.5,
-                      ),
+                      color: theme.colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                     onPressed: () {
                       _searchCtrl.clear();
@@ -306,7 +300,8 @@ class _ProductsScreenState extends State<ProductsScreen>
   // ─────────────────────────────────────────────────────────────────────────────
   Widget _buildAlertsHeader(BuildContext context, ThemeData theme) {
     final alerts = _all.where((p) => p.currentStock < 5).toList();
-    if (alerts.isEmpty) return const SliverToBoxAdapter(child: SizedBox.shrink());
+    if (alerts.isEmpty)
+      return const SliverToBoxAdapter(child: SizedBox.shrink());
 
     return SliverToBoxAdapter(
       child: Padding(
@@ -481,61 +476,61 @@ class _ProductsScreenState extends State<ProductsScreen>
                 ),
               ),
               child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-            ),
-            itemCount: _categories.length,
-            itemBuilder: (context, i) {
-              final isSelected = _activeCategory == _categories[i];
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: Center(
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    child: ChoiceChip(
-                      label: Text(_categories[i]),
-                      selected: isSelected,
-                      onSelected: (v) => setState(() {
-                        _activeCategory = _categories[i];
-                        _updateFilters();
-                      }),
-                      selectedColor: theme.colorScheme.primary,
-                      backgroundColor:
-                          isDark ? theme.colorScheme.surface : Colors.white,
-                      labelStyle: GoogleFonts.plusJakartaSans(
-                        color: isSelected
-                            ? theme.colorScheme.onPrimary
-                            : theme.colorScheme.onSurface.withValues(
-                                alpha: 0.6,
-                              ),
-                        fontWeight:
-                            isSelected ? FontWeight.w700 : FontWeight.w600,
-                        fontSize: 12,
-                      ),
-                      elevation: 0,
-                      pressElevation: 0,
-                      side: BorderSide(
-                        color: isSelected
-                            ? theme.colorScheme.primary
-                            : theme.colorScheme.onSurface.withValues(
-                                alpha: 0.1,
-                              ),
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                itemCount: _categories.length,
+                itemBuilder: (context, i) {
+                  final isSelected = _activeCategory == _categories[i];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: Center(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        child: ChoiceChip(
+                          label: Text(_categories[i]),
+                          selected: isSelected,
+                          onSelected: (v) => setState(() {
+                            _activeCategory = _categories[i];
+                            _updateFilters();
+                          }),
+                          selectedColor: theme.colorScheme.primary,
+                          backgroundColor: isDark
+                              ? theme.colorScheme.surface
+                              : Colors.white,
+                          labelStyle: GoogleFonts.plusJakartaSans(
+                            color: isSelected
+                                ? theme.colorScheme.onPrimary
+                                : theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.6,
+                                  ),
+                            fontWeight: isSelected
+                                ? FontWeight.w700
+                                : FontWeight.w600,
+                            fontSize: 12,
+                          ),
+                          elevation: 0,
+                          pressElevation: 0,
+                          side: BorderSide(
+                            color: isSelected
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.onSurface.withValues(
+                                    alpha: 0.1,
+                                  ),
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              );
-            },
+                  );
+                },
+              ),
+            ),
           ),
         ),
       ),
-    )
-      )
     );
   }
 
@@ -648,10 +643,7 @@ class _ProductImage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (imagePath == null) {
       return Center(
-        child: Text(
-          imageEmoji,
-          style: TextStyle(fontSize: emojiSize),
-        ),
+        child: Text(imageEmoji, style: TextStyle(fontSize: emojiSize)),
       );
     }
 
@@ -663,17 +655,14 @@ class _ProductImage extends StatelessWidget {
           : FileImage(File(imagePath!)),
       fit: fit,
       errorBuilder: (context, error, stackTrace) => Center(
-        child: Text(
-          imageEmoji,
-          style: TextStyle(fontSize: emojiSize),
-        ),
+        child: Text(imageEmoji, style: TextStyle(fontSize: emojiSize)),
       ),
     );
   }
 }
 
 class _ProductProCard extends StatelessWidget {
-// ...
+  // ...
   final Product product;
   final VoidCallback onTap;
   final String priceLabel;
@@ -834,10 +823,7 @@ class _StatCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: theme.colorScheme.surface,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: color.withValues(alpha: 0.15),
-            width: 1,
-          ),
+          border: Border.all(color: color.withValues(alpha: 0.15), width: 1),
           boxShadow: isDark
               ? []
               : [

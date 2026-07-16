@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:tulapay/widgets/glass_effects.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({Key? key}) : super(key: key);
@@ -95,8 +96,6 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('Analytics'),
-        backgroundColor: colorScheme.surface,
-        foregroundColor: colorScheme.onSurface,
         elevation: 0,
         actions: [
           IconButton(
@@ -183,17 +182,26 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 const SizedBox(height: 24),
 
                 // Tabs
-                TabBar(
-                  controller: _tabController,
-                  labelColor: colorScheme.onSurface,
-                  unselectedLabelColor: colorScheme.onSurfaceVariant,
-                  indicatorColor: colorScheme.onSurface,
-                  dividerColor: colorScheme.outline.withValues(alpha: 0.2),
-                  tabs: const [
-                    Tab(text: 'Income'),
-                    Tab(text: 'Expenses'),
-                    Tab(text: 'Budget'),
-                  ],
+                GlassSurface(
+                  borderRadius: BorderRadius.circular(22),
+                  opacity: 0.12,
+                  blur: 12,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 6,
+                  ),
+                  child: TabBar(
+                    controller: _tabController,
+                    labelColor: colorScheme.onSurface,
+                    unselectedLabelColor: colorScheme.onSurfaceVariant,
+                    indicatorColor: colorScheme.primary,
+                    dividerColor: Colors.transparent,
+                    tabs: const [
+                      Tab(text: 'Income'),
+                      Tab(text: 'Expenses'),
+                      Tab(text: 'Budget'),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 24),
 
@@ -778,24 +786,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     required Widget child,
   }) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return Container(
-      width: double.infinity,
+    return GlassSurface(
+      borderRadius: BorderRadius.circular(24),
+      opacity: 0.14,
+      blur: 14,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -803,7 +798,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             title,
             style: TextStyle(
               fontSize: 16,
-              fontWeight: FontWeight.w600,
+              fontWeight: FontWeight.w700,
               color: theme.colorScheme.onSurface,
             ),
           ),

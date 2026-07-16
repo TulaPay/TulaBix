@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:tulapay/widgets/glass_effects.dart';
 
 // ─── Data Models ─────────────────────────────────────────────────────────────
 
@@ -75,9 +76,24 @@ final _customers = <_Customer>[
     totalTransactions: 42,
     lastPaymentDate: _now.subtract(const Duration(minutes: 12)),
     transactions: const [
-      _Tx(type: 'credit', description: 'Product Purchase', amount: 150000, date: 'Today, 10:24 AM'),
-      _Tx(type: 'credit', description: 'Service Payment', amount: 85000, date: 'Yesterday, 3:12 PM'),
-      _Tx(type: 'debit', description: 'Refund Issued', amount: 20000, date: 'Jul 9, 11:00 AM'),
+      _Tx(
+        type: 'credit',
+        description: 'Product Purchase',
+        amount: 150000,
+        date: 'Today, 10:24 AM',
+      ),
+      _Tx(
+        type: 'credit',
+        description: 'Service Payment',
+        amount: 85000,
+        date: 'Yesterday, 3:12 PM',
+      ),
+      _Tx(
+        type: 'debit',
+        description: 'Refund Issued',
+        amount: 20000,
+        date: 'Jul 9, 11:00 AM',
+      ),
     ],
   ),
   _Customer(
@@ -90,8 +106,18 @@ final _customers = <_Customer>[
     totalTransactions: 18,
     lastPaymentDate: _now.subtract(const Duration(hours: 1)),
     transactions: const [
-      _Tx(type: 'credit', description: 'Product Purchase', amount: 220000, date: 'Today, 8:00 AM'),
-      _Tx(type: 'credit', description: 'Bulk Order', amount: 780000, date: 'Jul 7, 9:30 AM'),
+      _Tx(
+        type: 'credit',
+        description: 'Product Purchase',
+        amount: 220000,
+        date: 'Today, 8:00 AM',
+      ),
+      _Tx(
+        type: 'credit',
+        description: 'Bulk Order',
+        amount: 780000,
+        date: 'Jul 7, 9:30 AM',
+      ),
     ],
   ),
   _Customer(
@@ -104,8 +130,18 @@ final _customers = <_Customer>[
     totalTransactions: 67,
     lastPaymentDate: _now.subtract(const Duration(hours: 3)),
     transactions: const [
-      _Tx(type: 'credit', description: 'Subscription Renewal', amount: 500000, date: 'Today, 12:00 PM'),
-      _Tx(type: 'credit', description: 'Product Purchase', amount: 95000, date: 'Jul 9, 6:45 PM'),
+      _Tx(
+        type: 'credit',
+        description: 'Subscription Renewal',
+        amount: 500000,
+        date: 'Today, 12:00 PM',
+      ),
+      _Tx(
+        type: 'credit',
+        description: 'Product Purchase',
+        amount: 95000,
+        date: 'Jul 9, 6:45 PM',
+      ),
     ],
   ),
   _Customer(
@@ -118,8 +154,18 @@ final _customers = <_Customer>[
     totalTransactions: 5,
     lastPaymentDate: _now.subtract(const Duration(days: 1, hours: 6)),
     transactions: const [
-      _Tx(type: 'credit', description: 'First Purchase', amount: 120000, date: 'Yesterday, 4:00 PM'),
-      _Tx(type: 'credit', description: 'Second Purchase', amount: 200000, date: 'Jul 5, 2:00 PM'),
+      _Tx(
+        type: 'credit',
+        description: 'First Purchase',
+        amount: 120000,
+        date: 'Yesterday, 4:00 PM',
+      ),
+      _Tx(
+        type: 'credit',
+        description: 'Second Purchase',
+        amount: 200000,
+        date: 'Jul 5, 2:00 PM',
+      ),
     ],
   ),
   _Customer(
@@ -132,7 +178,12 @@ final _customers = <_Customer>[
     totalTransactions: 1,
     lastPaymentDate: _now.subtract(const Duration(days: 2)),
     transactions: const [
-      _Tx(type: 'credit', description: 'First Purchase', amount: 45000, date: 'Jul 9, 11:00 AM'),
+      _Tx(
+        type: 'credit',
+        description: 'First Purchase',
+        amount: 45000,
+        date: 'Jul 9, 11:00 AM',
+      ),
     ],
   ),
   _Customer(
@@ -145,8 +196,18 @@ final _customers = <_Customer>[
     totalTransactions: 12,
     lastPaymentDate: _now.subtract(const Duration(days: 4)),
     transactions: const [
-      _Tx(type: 'credit', description: 'Product Purchase', amount: 250000, date: 'Jul 7, 9:00 AM'),
-      _Tx(type: 'debit', description: 'Refund Issued', amount: 30000, date: 'Jul 6, 3:00 PM'),
+      _Tx(
+        type: 'credit',
+        description: 'Product Purchase',
+        amount: 250000,
+        date: 'Jul 7, 9:00 AM',
+      ),
+      _Tx(
+        type: 'debit',
+        description: 'Refund Issued',
+        amount: 30000,
+        date: 'Jul 6, 3:00 PM',
+      ),
     ],
   ),
   _Customer(
@@ -159,7 +220,12 @@ final _customers = <_Customer>[
     totalTransactions: 3,
     lastPaymentDate: _now.subtract(const Duration(days: 18)),
     transactions: const [
-      _Tx(type: 'credit', description: 'Product Purchase', amount: 80000, date: 'Jun 23, 2:00 PM'),
+      _Tx(
+        type: 'credit',
+        description: 'Product Purchase',
+        amount: 80000,
+        date: 'Jun 23, 2:00 PM',
+      ),
     ],
   ),
   _Customer(
@@ -172,8 +238,18 @@ final _customers = <_Customer>[
     totalTransactions: 29,
     lastPaymentDate: _now.subtract(const Duration(days: 92)),
     transactions: const [
-      _Tx(type: 'credit', description: 'Bulk Order', amount: 900000, date: 'Apr 10, 9:00 AM'),
-      _Tx(type: 'debit', description: 'Refund Issued', amount: 100000, date: 'Mar 30, 4:00 PM'),
+      _Tx(
+        type: 'credit',
+        description: 'Bulk Order',
+        amount: 900000,
+        date: 'Apr 10, 9:00 AM',
+      ),
+      _Tx(
+        type: 'debit',
+        description: 'Refund Issued',
+        amount: 100000,
+        date: 'Mar 30, 4:00 PM',
+      ),
     ],
   ),
 ];
@@ -244,12 +320,14 @@ class _CustomerScreenState extends State<CustomerScreen> {
     final filtered = _filtered;
 
     return Scaffold(
-      backgroundColor: cs.surface,
+      backgroundColor: Colors.transparent,
       body: Stack(
         children: [
           // The Subtle Geometric Wallpaper
-          Positioned.fill(child: CustomPaint(painter: _GeometricPatternPainter(cs.primary))),
-          
+          Positioned.fill(
+            child: CustomPaint(painter: _GeometricPatternPainter(cs.primary)),
+          ),
+
           SafeArea(
             child: Column(
               children: [
@@ -265,13 +343,17 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         : ListView.separated(
                             padding: const EdgeInsets.fromLTRB(24, 16, 24, 100),
                             itemCount: filtered.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 12),
+                            separatorBuilder: (_, __) =>
+                                const SizedBox(height: 12),
                             itemBuilder: (context, i) {
                               final c = filtered[i];
                               return _CustomerRow(
-                                customer: c,
-                                onTap: () => _showDetail(context, c),
-                              ).animate().fadeIn(delay: (i * 40).ms).slideX(begin: 0.02);
+                                    customer: c,
+                                    onTap: () => _showDetail(context, c),
+                                  )
+                                  .animate()
+                                  .fadeIn(delay: (i * 40).ms)
+                                  .slideX(begin: 0.02);
                             },
                           ),
                   ),
@@ -306,42 +388,56 @@ class _CustomerScreenState extends State<CustomerScreen> {
   Widget _buildHeader(ColorScheme cs) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('DIRECTORY',
+      child: GlassSurface(
+        borderRadius: BorderRadius.circular(24),
+        opacity: 0.14,
+        blur: 12,
+        padding: const EdgeInsets.all(16),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'DIRECTORY',
                   style: GoogleFonts.plusJakartaSans(
-                      fontSize: 10, fontWeight: FontWeight.w800, color: cs.primary, letterSpacing: 1.5)),
-              Text('Customers',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    color: cs.primary,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+                Text(
+                  'Customers',
                   style: GoogleFonts.plusJakartaSans(
-                      fontSize: 28, fontWeight: FontWeight.w800, color: cs.onSurface, letterSpacing: -1)),
-            ],
-          ),
-          Row(
-            children: [
-              _circleIconButton(Icons.ios_share_rounded, cs, () {}),
-              const SizedBox(width: 12),
-              _circleIconButton(Icons.tune_rounded, cs, () {}),
-            ],
-          )
-        ],
+                    fontSize: 28,
+                    fontWeight: FontWeight.w800,
+                    color: cs.onSurface,
+                    letterSpacing: -1,
+                  ),
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                _circleIconButton(Icons.ios_share_rounded, cs, () {}),
+                const SizedBox(width: 12),
+                _circleIconButton(Icons.tune_rounded, cs, () {}),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
   Widget _circleIconButton(IconData icon, ColorScheme cs, VoidCallback onTap) {
-    return Container(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        shape: BoxShape.circle,
-        border: Border.all(color: cs.outlineVariant),
-        boxShadow: [
-          BoxShadow(color: cs.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
-      ),
+    return GlassSurface(
+      borderRadius: BorderRadius.circular(999),
+      opacity: 0.14,
+      blur: 12,
+      padding: EdgeInsets.zero,
       child: IconButton(
         icon: Icon(icon, size: 20, color: cs.onSurface),
         onPressed: onTap,
@@ -360,9 +456,24 @@ class _CustomerScreenState extends State<CustomerScreen> {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 24),
         children: [
-          _StatCard(label: 'Customers', value: '${_customers.length}', icon: Icons.people_outline_rounded, color: Colors.blueAccent),
-          _StatCard(label: 'Revenue', value: '₦${(totalRev / 1000000).toStringAsFixed(1)}M', icon: Icons.account_balance_wallet_outlined, color: Colors.teal),
-          _StatCard(label: 'Growth', value: '+12.5%', icon: Icons.auto_graph_rounded, color: Colors.orange),
+          _StatCard(
+            label: 'Customers',
+            value: '${_customers.length}',
+            icon: Icons.people_outline_rounded,
+            color: Colors.blueAccent,
+          ),
+          _StatCard(
+            label: 'Revenue',
+            value: '₦${(totalRev / 1000000).toStringAsFixed(1)}M',
+            icon: Icons.account_balance_wallet_outlined,
+            color: Colors.teal,
+          ),
+          _StatCard(
+            label: 'Growth',
+            value: '+12.5%',
+            icon: Icons.auto_graph_rounded,
+            color: Colors.orange,
+          ),
         ],
       ),
     );
@@ -373,21 +484,27 @@ class _CustomerScreenState extends State<CustomerScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(
-              boxShadow: [
-                BoxShadow(color: cs.shadow.withValues(alpha: 0.03), blurRadius: 15, offset: const Offset(0, 8)),
-              ],
-              ),
+          GlassSurface(
+            borderRadius: BorderRadius.circular(18),
+            opacity: 0.14,
+            blur: 12,
+            padding: const EdgeInsets.symmetric(horizontal: 4),
             child: TextField(
               onChanged: (v) => setState(() => _searchQuery = v),
               style: GoogleFonts.plusJakartaSans(fontSize: 14),
               decoration: InputDecoration(
                 hintText: 'Search customers...',
-                prefixIcon: Icon(Icons.search_rounded, color: cs.onSurfaceVariant, size: 20),
+                prefixIcon: Icon(
+                  Icons.search_rounded,
+                  color: cs.onSurfaceVariant,
+                  size: 20,
+                ),
                 filled: true,
-                fillColor: cs.surfaceContainerHigh,
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                fillColor: Colors.transparent,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                  borderSide: BorderSide.none,
+                ),
                 contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 isDense: true,
               ),
@@ -401,20 +518,27 @@ class _CustomerScreenState extends State<CustomerScreen> {
                 final sel = _selectedFilter == f;
                 return GestureDetector(
                   onTap: () => setState(() => _selectedFilter = f),
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(
-                      color: sel ? cs.onSurface : cs.surface,
-                      borderRadius: BorderRadius.circular(20),
-                      border: sel ? null : Border.all(color: cs.outlineVariant),
-                      boxShadow: sel ? [BoxShadow(color: cs.shadow.withValues(alpha: 0.1), blurRadius: 8, offset: const Offset(0, 4))] : null,
+                  child: GlassSurface(
+                    borderRadius: BorderRadius.circular(20),
+                    opacity: sel ? 0.22 : 0.12,
+                    blur: 10,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
                     ),
-                    child: Text(f,
-                        style: GoogleFonts.plusJakartaSans(
-                            fontSize: 12,
-                            color: sel ? cs.surface : cs.onSurfaceVariant,
-                            fontWeight: sel ? FontWeight.w700 : FontWeight.w600)),
+                    border: Border.all(
+                      color: sel
+                          ? cs.primary.withValues(alpha: 0.35)
+                          : cs.outlineVariant.withValues(alpha: 0.2),
+                    ),
+                    child: Text(
+                      f,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        color: sel ? cs.onSurface : cs.onSurfaceVariant,
+                        fontWeight: sel ? FontWeight.w700 : FontWeight.w600,
+                      ),
+                    ),
                   ),
                 );
               }).toList(),
@@ -453,7 +577,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: cs.surface,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(28))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
       builder: (_) => Padding(
         padding: EdgeInsets.only(
           left: 24,
@@ -466,12 +592,24 @@ class _CustomerScreenState extends State<CustomerScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Center(
-                child: Container(
-                    width: 32,
-                    height: 4,
-                    decoration: BoxDecoration(color: cs.outlineVariant, borderRadius: BorderRadius.circular(2)))),
+              child: Container(
+                width: 32,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: cs.outlineVariant,
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
-            Text('New Customer', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, fontSize: 24, color: cs.onSurface)),
+            Text(
+              'New Customer',
+              style: GoogleFonts.plusJakartaSans(
+                fontWeight: FontWeight.w800,
+                fontSize: 24,
+                color: cs.onSurface,
+              ),
+            ),
             const SizedBox(height: 24),
             _sheetField('Full Name', Icons.person_outline_rounded, cs),
             const SizedBox(height: 16),
@@ -482,10 +620,13 @@ class _CustomerScreenState extends State<CustomerScreen> {
             FilledButton(
               onPressed: () => Navigator.pop(context),
               style: FilledButton.styleFrom(
-                  backgroundColor: cs.primary,
-                  foregroundColor: cs.onPrimary,
-                  minimumSize: const Size(double.infinity, 56),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16))),
+                backgroundColor: cs.primary,
+                foregroundColor: cs.onPrimary,
+                minimumSize: const Size(double.infinity, 56),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+              ),
               child: const Text('Save Customer'),
             ),
           ],
@@ -501,8 +642,14 @@ class _CustomerScreenState extends State<CustomerScreen> {
         labelText: label,
         labelStyle: TextStyle(color: cs.onSurfaceVariant),
         prefixIcon: Icon(icon, size: 20, color: cs.onSurfaceVariant),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: cs.outlineVariant)),
-        enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide(color: cs.outlineVariant)),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: cs.outlineVariant),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: cs.outlineVariant),
+        ),
       ),
     );
   }
@@ -526,7 +673,12 @@ class _StatCard extends StatelessWidget {
   final IconData icon;
   final Color color;
 
-  const _StatCard({required this.label, required this.value, required this.icon, required this.color});
+  const _StatCard({
+    required this.label,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -534,37 +686,54 @@ class _StatCard extends StatelessWidget {
     return Container(
       width: 156,
       margin: const EdgeInsets.only(right: 16),
-      decoration: BoxDecoration(
-        color: cs.surface,
+      child: GlassSurface(
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.4)),
-        boxShadow: [
-          BoxShadow(color: cs.shadow.withValues(alpha: 0.04), blurRadius: 24, offset: const Offset(0, 12)),
-        ],
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -10, bottom: -10,
-            child: Icon(icon, size: 80, color: color.withValues(alpha: 0.03)),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
-                  child: Icon(icon, color: color, size: 18),
-                ),
-                const Spacer(),
-                Text(value, style: GoogleFonts.plusJakartaSans(fontSize: 20, fontWeight: FontWeight.w800, letterSpacing: -0.5, color: cs.onSurface)),
-                Text(label, style: GoogleFonts.plusJakartaSans(fontSize: 11, color: cs.onSurfaceVariant, fontWeight: FontWeight.w600)),
-              ],
+        opacity: 0.14,
+        blur: 12,
+        padding: EdgeInsets.zero,
+        child: Stack(
+          children: [
+            Positioned(
+              right: -10,
+              bottom: -10,
+              child: Icon(icon, size: 80, color: color.withValues(alpha: 0.03)),
             ),
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: color.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Icon(icon, color: color, size: 18),
+                  ),
+                  const Spacer(),
+                  Text(
+                    value,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -0.5,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                  Text(
+                    label,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 11,
+                      color: cs.onSurfaceVariant,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -579,16 +748,26 @@ class _TierDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 14, height: 14,
+      width: 14,
+      height: 14,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: 2),
         gradient: LinearGradient(
-          begin: Alignment.topLeft, end: Alignment.bottomRight,
-          colors: [color, color.withValues(alpha: 0.8), color.withValues(alpha: 0.6)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color,
+            color.withValues(alpha: 0.8),
+            color.withValues(alpha: 0.6),
+          ],
         ),
         boxShadow: [
-          BoxShadow(color: color.withValues(alpha: 0.4), blurRadius: 4, offset: const Offset(0, 2)),
+          BoxShadow(
+            color: color.withValues(alpha: 0.4),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
         ],
       ),
     );
@@ -606,15 +785,11 @@ class _CustomerRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final tc = _getTierColor(customer.tier);
-    
-    return Container(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: cs.shadow.withValues(alpha: 0.02), blurRadius: 10, offset: const Offset(0, 4)),
-        ],
-      ),
+
+    return GlassSurface(
+      borderRadius: BorderRadius.circular(20),
+      opacity: 0.14,
+      blur: 12,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -629,7 +804,14 @@ class _CustomerRow extends StatelessWidget {
                     CircleAvatar(
                       radius: 24,
                       backgroundColor: tc.withValues(alpha: 0.1),
-                      child: Text(customer.avatar, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, color: tc, fontSize: 13)),
+                      child: Text(
+                        customer.avatar,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w800,
+                          color: tc,
+                          fontSize: 13,
+                        ),
+                      ),
                     ),
                     Positioned(right: 0, bottom: 0, child: _TierDot(color: tc)),
                   ],
@@ -639,18 +821,43 @@ class _CustomerRow extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(customer.name, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, fontSize: 15, color: cs.onSurface)),
-                      Text(customer.email, style: GoogleFonts.plusJakartaSans(color: cs.onSurfaceVariant, fontSize: 13)),
+                      Text(
+                        customer.name,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w800,
+                          fontSize: 15,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                      Text(
+                        customer.email,
+                        style: GoogleFonts.plusJakartaSans(
+                          color: cs.onSurfaceVariant,
+                          fontSize: 13,
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text('₦${(customer.totalSpent / 1000).toStringAsFixed(0)}k', 
-                      style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w900, fontSize: 15, color: cs.onSurface)),
-                    Text(customer.lastSeenLabel, 
-                      style: GoogleFonts.plusJakartaSans(color: cs.onSurfaceVariant, fontSize: 11, fontWeight: FontWeight.w600)),
+                    Text(
+                      '₦${(customer.totalSpent / 1000).toStringAsFixed(0)}k',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 15,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                    Text(
+                      customer.lastSeenLabel,
+                      style: GoogleFonts.plusJakartaSans(
+                        color: cs.onSurfaceVariant,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -677,7 +884,8 @@ class _CustomerDetailSheet extends StatefulWidget {
   State<_CustomerDetailSheet> createState() => _CustomerDetailSheetState();
 }
 
-class _CustomerDetailSheetState extends State<_CustomerDetailSheet> with SingleTickerProviderStateMixin {
+class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
+    with SingleTickerProviderStateMixin {
   late TabController _tab;
 
   @override
@@ -697,33 +905,59 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet> with SingleT
     final cs = Theme.of(context).colorScheme;
     final c = widget.customer;
 
-    return Container(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-      ),
+    return GlassSurface(
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+      opacity: 0.14,
+      blur: 16,
       child: Column(
         children: [
           const SizedBox(height: 12),
-          Container(width: 40, height: 4, decoration: BoxDecoration(color: cs.outlineVariant, borderRadius: BorderRadius.circular(2))),
+          Container(
+            width: 40,
+            height: 4,
+            decoration: BoxDecoration(
+              color: cs.outlineVariant,
+              borderRadius: BorderRadius.circular(2),
+            ),
+          ),
           const SizedBox(height: 24),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
               children: [
                 CircleAvatar(
-                    radius: 32,
-                    backgroundColor: cs.surfaceContainerHigh,
-                    child: Text(c.avatar,
-                        style: GoogleFonts.plusJakartaSans(fontSize: 20, fontWeight: FontWeight.w800, color: cs.onSurface))),
+                  radius: 32,
+                  backgroundColor: cs.surfaceContainerHigh,
+                  child: Text(
+                    c.avatar,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: cs.onSurface,
+                    ),
+                  ),
+                ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(c.name,
-                          style: GoogleFonts.plusJakartaSans(fontSize: 22, fontWeight: FontWeight.w800, letterSpacing: -0.5, color: cs.onSurface)),
-                      Text(c.email, style: GoogleFonts.plusJakartaSans(color: cs.onSurfaceVariant, fontSize: 14)),
+                      Text(
+                        c.name,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.5,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                      Text(
+                        c.email,
+                        style: GoogleFonts.plusJakartaSans(
+                          color: cs.onSurfaceVariant,
+                          fontSize: 14,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -750,16 +984,19 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet> with SingleT
             indicatorColor: cs.primary,
             labelColor: cs.onSurface,
             unselectedLabelColor: cs.onSurfaceVariant,
-            labelStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, fontSize: 13),
-            tabs: const [Tab(text: 'Transactions'), Tab(text: 'Customer Info')],
+            labelStyle: GoogleFonts.plusJakartaSans(
+              fontWeight: FontWeight.w800,
+              fontSize: 13,
+            ),
+            tabs: const [
+              Tab(text: 'Transactions'),
+              Tab(text: 'Customer Info'),
+            ],
           ),
           Expanded(
             child: TabBarView(
               controller: _tab,
-              children: [
-                _history(c, cs),
-                _info(c, cs),
-              ],
+              children: [_history(c, cs), _info(c, cs)],
             ),
           ),
         ],
@@ -777,20 +1014,23 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet> with SingleT
           foregroundColor: cs.onSurface,
           side: BorderSide(color: cs.outlineVariant),
           padding: const EdgeInsets.symmetric(vertical: 14),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          textStyle: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, fontSize: 13),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          textStyle: GoogleFonts.plusJakartaSans(
+            fontWeight: FontWeight.w700,
+            fontSize: 13,
+          ),
         ),
       ),
     );
   }
 
   Widget _circleAction(IconData icon, ColorScheme cs) {
-    return Container(
-      decoration: BoxDecoration(
-        color: cs.surface,
-        shape: BoxShape.circle,
-        border: Border.all(color: cs.outlineVariant),
-      ),
+    return GlassSurface(
+      borderRadius: BorderRadius.circular(999),
+      opacity: 0.14,
+      blur: 12,
       child: IconButton(
         icon: Icon(icon, color: cs.onSurface),
         onPressed: () {},
@@ -806,31 +1046,49 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet> with SingleT
       itemBuilder: (_, i) {
         final tx = c.transactions[i];
         final isCredit = tx.type == 'credit';
-        return Container(
+        return GlassSurface(
+          borderRadius: BorderRadius.circular(16),
+          opacity: 0.12,
+          blur: 10,
           padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: cs.surfaceContainerLow,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.1)),
-          ),
           child: Row(
             children: [
-              Icon(isCredit ? Icons.arrow_downward_rounded : Icons.arrow_upward_rounded,
-                  color: isCredit ? Colors.green : Colors.redAccent, size: 20),
+              Icon(
+                isCredit
+                    ? Icons.arrow_downward_rounded
+                    : Icons.arrow_upward_rounded,
+                color: isCredit ? Colors.green : Colors.redAccent,
+                size: 20,
+              ),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(tx.description,
-                        style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, fontSize: 14, color: cs.onSurface)),
-                    Text(tx.date, style: GoogleFonts.plusJakartaSans(fontSize: 12, color: cs.onSurfaceVariant)),
+                    Text(
+                      tx.description,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 14,
+                        color: cs.onSurface,
+                      ),
+                    ),
+                    Text(
+                      tx.date,
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Text(
                 '₦${tx.amount.toStringAsFixed(0)}',
-                style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w900, color: cs.onSurface),
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w900,
+                  color: cs.onSurface,
+                ),
               ),
             ],
           ),
@@ -846,19 +1104,35 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet> with SingleT
         _infoRow('Phone Number', c.phone, cs),
         _infoRow('Customer Tier', c.tier, cs),
         _infoRow('Total Transactions', '${c.totalTransactions} items', cs),
-        _infoRow('Account Balance', '₦${(c.totalSpent / 10).toStringAsFixed(0)}', cs),
+        _infoRow(
+          'Account Balance',
+          '₦${(c.totalSpent / 10).toStringAsFixed(0)}',
+          cs,
+        ),
         const SizedBox(height: 24),
-        Text('Internal Notes', style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, fontSize: 14, color: cs.onSurface)),
+        Text(
+          'Internal Notes',
+          style: GoogleFonts.plusJakartaSans(
+            fontWeight: FontWeight.w800,
+            fontSize: 14,
+            color: cs.onSurface,
+          ),
+        ),
         const SizedBox(height: 12),
         TextField(
           maxLines: 3,
           style: TextStyle(color: cs.onSurface),
           decoration: InputDecoration(
             hintText: 'Add a private note about this customer...',
-            hintStyle: TextStyle(color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
+            hintStyle: TextStyle(
+              color: cs.onSurfaceVariant.withValues(alpha: 0.5),
+            ),
             filled: true,
             fillColor: cs.surfaceContainerLow,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: BorderSide.none,
+            ),
           ),
         ),
       ],
@@ -871,8 +1145,22 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet> with SingleT
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: GoogleFonts.plusJakartaSans(color: cs.onSurfaceVariant, fontSize: 13, fontWeight: FontWeight.w600)),
-          Text(value, style: GoogleFonts.plusJakartaSans(color: cs.onSurface, fontSize: 13, fontWeight: FontWeight.w800)),
+          Text(
+            label,
+            style: GoogleFonts.plusJakartaSans(
+              color: cs.onSurfaceVariant,
+              fontSize: 13,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.plusJakartaSans(
+              color: cs.onSurface,
+              fontSize: 13,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
         ],
       ),
     );
