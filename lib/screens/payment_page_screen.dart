@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/widgets/glass_page_shell.dart';
 
 class PaymentPageScreen extends StatelessWidget {
   const PaymentPageScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
+    return GlassPageShell(
+      title: 'Payment Page',
+      subtitle: 'Control how customers land on your payment experience.',
+      icon: Icons.payment_rounded,
+      actionLabel: 'Preview page',
+      onAction: () {},
+      children: const [
+        GlassInfoCard(
+          icon: Icons.link_rounded,
+          title: 'Shareable link',
+          subtitle: 'Create a branded checkout link for customers and campaigns.',
         ),
-        title: Text(
-          "Payment Page",
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.qr_code_rounded,
+          title: 'QR layout',
+          subtitle: 'Tweak how QR and payment hints are presented on the page.',
         ),
-      ),
-      body: Center(
-        child: Text(
-          "Payment Page Settings Coming Soon",
-          style: GoogleFonts.plusJakartaSans(color: Colors.white54),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.palette_outlined,
+          title: 'Brand styling',
+          subtitle: 'Keep the payment page aligned with your glass theme and colors.',
         ),
-      ),
+      ],
     );
   }
 }

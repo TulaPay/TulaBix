@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/widgets/glass_effects.dart';
 
 class CashReceiptsScreen extends StatefulWidget {
   const CashReceiptsScreen({super.key});
@@ -10,6 +11,9 @@ class CashReceiptsScreen extends StatefulWidget {
 
 class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
   final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _itemController = TextEditingController();
+  final TextEditingController _customerController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   String _selectedCategory = 'General';
 
   final List<Map<String, dynamic>> _categories = [
@@ -21,303 +25,425 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
   ];
 
   @override
+  void dispose() {
+    _amountController.dispose();
+    _itemController.dispose();
+    _customerController.dispose();
+    _noteController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDark = theme.brightness == Brightness.dark;
+    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.transparent,
         elevation: 0,
-        scrolledUnderElevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new_rounded, size: 20, color: colorScheme.onSurface),
-          onPressed: () => Navigator.pop(context),
-        ),
+        centerTitle: false,
         title: Text(
-          "Record Cash Sale",
-          style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.w800,
-            fontSize: 18,
-            color: colorScheme.onSurface,
-          ),
+          "Cash Receipt",
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800),
         ),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: Icon(Icons.history_rounded, color: colorScheme.onSurface),
+            icon: const Icon(Icons.history_rounded),
             tooltip: "History",
           ),
           const SizedBox(width: 8),
         ],
       ),
-      body: SingleChildScrollView(
+      body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16),
-            
-            // Amount Input - Premium Fintech Style with Blue Gradient for Consistency
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 24),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: isDark 
-                    ? [colorScheme.surfaceContainerHighest, colorScheme.surfaceContainer]
-                    : [const Color(0xFF2563EB), const Color(0xFF1E40AF)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(32),
-                boxShadow: [
-                  BoxShadow(
-                    color: (isDark ? Colors.black : const Color(0xFF1E40AF)).withValues(alpha: 0.25),
-                    blurRadius: 25,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    "TOTAL SALE AMOUNT",
-                    style: GoogleFonts.plusJakartaSans(
-                      color: Colors.white.withValues(alpha: 0.6),
-                      fontSize: 11,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 1.5,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "XAF",
-                        style: GoogleFonts.plusJakartaSans(
-                          color: Colors.white.withValues(alpha: 0.5),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: TextField(
-                          controller: _amountController,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.left,
-                          autofocus: true,
-                          maxLines: 1,
-                          style: GoogleFonts.plusJakartaSans(
-                            color:  Colors.grey,
-                            fontSize: 44,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -1.5,
-                          ),
-                          decoration: const InputDecoration(
-                            hintText: "0",
-                            hintStyle: TextStyle(color: Colors.white24),
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.zero,
-                            isDense: true,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 32),
-
-            // Category Selection
-            Text(
-              "Select Category",
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w800,
-                fontSize: 16,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 16),
-            SizedBox(
-              height: 100,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: _categories.length,
-                separatorBuilder: (context, index) => const SizedBox(width: 16),
-                itemBuilder: (context, index) {
-                  final cat = _categories[index];
-                  final isSelected = _selectedCategory == cat['name'];
-                  return GestureDetector(
-                    onTap: () => setState(() => _selectedCategory = cat['name']),
-                    child: Column(
-                      children: [
-                        AnimatedContainer(
-                          duration: const Duration(milliseconds: 200),
-                          height: 64,
-                          width: 64,
-                          decoration: BoxDecoration(
-                            color: isSelected ? colorScheme.primary : colorScheme.surfaceContainerLow,
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isSelected ? colorScheme.primary : colorScheme.outlineVariant.withValues(alpha: 0.2),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Icon(
-                            cat['icon'],
-                            color: isSelected ? Colors.white : colorScheme.onSurfaceVariant,
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          cat['name'],
-                          style: GoogleFonts.plusJakartaSans(
-                            color: isSelected ? colorScheme.primary : colorScheme.onSurfaceVariant,
-                            fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Details Form
-            Text(
-              "Sale Details",
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w800,
-                fontSize: 16,
-                color: colorScheme.onSurface,
-              ),
-            ),
-            const SizedBox(height: 16),
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: colorScheme.outlineVariant.withValues(alpha: 0.3)),
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10,),
-                  _buildModernInputField(
-                    label: "Item or Service Name",
-                    hint: "e.g. Graphic Design",
-                    icon: Icons.shopping_bag_outlined,
-                    colorScheme: colorScheme,
-                  ),
-                  const SizedBox(height: 10,),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 20),
-                    child: Divider(height: 1),
-                  ),
-                  _buildModernInputField(
-                    label: "Customer Name (Optional)",
-                    hint: "Search or enter name",
-                    icon: Icons.person_outline_rounded,
-                    colorScheme: colorScheme,
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 32),
-            
-            // Generate Button
-            SizedBox(
-              width: double.infinity,
-              height: 64,
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: colorScheme.primary,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  elevation: 0,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        slivers: [
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+              child: GlassSurface(
+                borderRadius: BorderRadius.circular(30),
+                opacity: 0.14,
+                blur: 16,
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Icon(Icons.receipt_long_rounded, size: 22),
-                    const SizedBox(width: 12),
                     Text(
-                      "Generate Receipt",
+                      'Record a cash sale',
                       style: GoogleFonts.plusJakartaSans(
+                        fontSize: 20,
                         fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                        letterSpacing: 0.5,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'Create a clean receipt with a clear amount and item description.',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        color: cs.onSurfaceVariant,
+                        height: 1.4,
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 40),
-          ],
-        ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                GlassSurface(
+                  borderRadius: BorderRadius.circular(28),
+                  opacity: 0.14,
+                  blur: 16,
+                  padding: const EdgeInsets.all(18),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Total sale amount',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 10,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.4,
+                          color: cs.onSurfaceVariant.withValues(alpha: 0.55),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            'XAF',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: cs.onSurfaceVariant,
+                              fontSize: 15,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _amountController,
+                              keyboardType: TextInputType.number,
+                              style: GoogleFonts.plusJakartaSans(
+                                fontSize: 36,
+                                fontWeight: FontWeight.w800,
+                                letterSpacing: -1.2,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: '0',
+                                hintStyle: GoogleFonts.plusJakartaSans(
+                                  color: cs.onSurfaceVariant.withValues(
+                                    alpha: 0.3,
+                                  ),
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Category',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: 88,
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _categories.length,
+                    separatorBuilder: (_, __) => const SizedBox(width: 10),
+                    itemBuilder: (context, index) {
+                      final cat = _categories[index];
+                      final isSelected = _selectedCategory == cat['name'];
+                      final accent = isSelected ? cs.primary : cs.secondary;
+
+                      return Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            setState(() => _selectedCategory = cat['name']);
+                          },
+                          borderRadius: BorderRadius.circular(20),
+                          child: GlassSurface(
+                            borderRadius: BorderRadius.circular(20),
+                            opacity: isSelected ? 0.18 : 0.10,
+                            blur: 12,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 12,
+                            ),
+                            border: Border.all(
+                              color: accent.withValues(alpha: 0.16),
+                            ),
+                            child: SizedBox(
+                              width: 72,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    height: 38,
+                                    width: 38,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(14),
+                                      gradient: LinearGradient(
+                                        colors: [
+                                          accent.withValues(alpha: 0.22),
+                                          accent.withValues(alpha: 0.10),
+                                        ],
+                                      ),
+                                    ),
+                                    child: Icon(
+                                      cat['icon'],
+                                      color: accent,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    cat['name'],
+                                    textAlign: TextAlign.center,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: GoogleFonts.plusJakartaSans(
+                                      color: isSelected
+                                          ? cs.onSurface
+                                          : cs.onSurfaceVariant,
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(height: 18),
+                Text(
+                  'Receipt details',
+                  style: GoogleFonts.plusJakartaSans(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.3,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                GlassSurface(
+                  borderRadius: BorderRadius.circular(28),
+                  opacity: 0.12,
+                  blur: 14,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      _FieldRow(
+                        label: 'Item or service',
+                        hint: 'e.g. Graphic design',
+                        controller: _itemController,
+                        icon: Icons.shopping_bag_outlined,
+                      ),
+                      const SizedBox(height: 14),
+                      _FieldRow(
+                        label: 'Customer name',
+                        hint: 'Optional',
+                        controller: _customerController,
+                        icon: Icons.person_outline_rounded,
+                      ),
+                      const SizedBox(height: 14),
+                      _FieldRow(
+                        label: 'Note',
+                        hint: 'Add a short receipt note',
+                        controller: _noteController,
+                        icon: Icons.sticky_note_2_outlined,
+                        maxLines: 2,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+                GlassSurface(
+                  borderRadius: BorderRadius.circular(24),
+                  opacity: 0.12,
+                  blur: 12,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Receipt summary',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      _SummaryRow(label: 'Category', value: _selectedCategory),
+                      _SummaryRow(label: 'Payment mode', value: 'Cash'),
+                      _SummaryRow(
+                        label: 'Status',
+                        value: 'Ready to generate',
+                        valueColor: cs.primary,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                SizedBox(
+                  width: double.infinity,
+                  height: 58,
+                  child: FilledButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.receipt_long_rounded),
+                    label: Text(
+                      'Generate receipt',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontWeight: FontWeight.w800,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+              ]),
+            ),
+          ),
+        ],
       ),
     );
   }
+}
 
-  Widget _buildModernInputField({
-    required String label,
-    required String hint,
-    required IconData icon,
-    required ColorScheme colorScheme,
-  }) {
+class _FieldRow extends StatelessWidget {
+  final String label;
+  final String hint;
+  final TextEditingController controller;
+  final IconData icon;
+  final int maxLines;
+
+  const _FieldRow({
+    required this.label,
+    required this.hint,
+    required this.controller,
+    required this.icon,
+    this.maxLines = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 18, color: colorScheme.primary.withValues(alpha: 0.7)),
-            const SizedBox(width: 10,),
+            Icon(icon, size: 16, color: cs.primary.withValues(alpha: 0.75)),
+            const SizedBox(width: 8),
             Text(
               label.toUpperCase(),
               style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w800,
                 fontSize: 10,
-                letterSpacing: 1,
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.6),
+                fontWeight: FontWeight.w900,
+                letterSpacing: 1.2,
+                color: cs.onSurfaceVariant.withValues(alpha: 0.55),
               ),
             ),
-            const SizedBox(height: 32,),
           ],
         ),
+        const SizedBox(height: 8),
         TextField(
+          controller: controller,
+          maxLines: maxLines,
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: colorScheme.onSurface,
+            fontSize: 15,
+            fontWeight: FontWeight.w600,
           ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(
-              color: colorScheme.onSurfaceVariant.withValues(alpha: 0.3),
-              fontWeight: FontWeight.w500,
+            hintStyle: GoogleFonts.plusJakartaSans(
+              fontSize: 14,
+              color: cs.onSurfaceVariant.withValues(alpha: 0.35),
             ),
-            border: InputBorder.none,
-            contentPadding: const EdgeInsets.symmetric(vertical: 12),
+            filled: true,
+            fillColor: cs.surface.withValues(alpha: 0.06),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: cs.outlineVariant.withValues(alpha: 0.14),
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(
+                color: cs.outlineVariant.withValues(alpha: 0.14),
+              ),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(16),
+              borderSide: BorderSide(color: cs.primary, width: 1.4),
+            ),
           ),
         ),
       ],
+    );
+  }
+}
+
+class _SummaryRow extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color? valueColor;
+
+  const _SummaryRow({
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              color: cs.onSurfaceVariant,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          Text(
+            value,
+            style: GoogleFonts.plusJakartaSans(
+              fontSize: 12,
+              color: valueColor ?? cs.onSurface,
+              fontWeight: FontWeight.w800,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

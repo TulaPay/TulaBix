@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/widgets/glass_page_shell.dart';
 
 class PromoCodesScreen extends StatelessWidget {
   const PromoCodesScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
+    return GlassPageShell(
+      title: 'Promo Codes',
+      subtitle: 'Create and monitor promotional codes and campaign offers.',
+      icon: Icons.local_offer_rounded,
+      actionLabel: 'Create promo',
+      onAction: () {},
+      children: const [
+        GlassInfoCard(
+          icon: Icons.discount_outlined,
+          title: 'Limited-time offers',
+          subtitle: 'Launch seasonal discounts without changing your core pricing.',
         ),
-        title: Text(
-          "Promo Codes",
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.track_changes_rounded,
+          title: 'Redemption tracking',
+          subtitle: 'Review which codes convert and which ones need adjustment.',
         ),
-      ),
-      body: Center(
-        child: Text(
-          "Promo Codes Coming Soon",
-          style: GoogleFonts.plusJakartaSans(color: Colors.white54),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.campaign_outlined,
+          title: 'Campaign bundles',
+          subtitle: 'Group discounts by customer segment or marketing channel.',
         ),
-      ),
+      ],
     );
   }
 }
