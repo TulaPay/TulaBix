@@ -1,34 +1,42 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/widgets/glass_page_shell.dart';
 
 class ChecklistScreen extends StatelessWidget {
   const ChecklistScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
+    return GlassPageShell(
+      title: 'Setup Checklist',
+      subtitle: 'Complete the core merchant setup before going live.',
+      icon: Icons.check_circle_outline_rounded,
+      actionLabel: 'Continue setup',
+      onAction: () {},
+      children: const [
+        GlassInfoCard(
+          icon: Icons.person_outline_rounded,
+          title: 'Verify profile',
+          subtitle: 'Add business identity, contact details, and admin access.',
         ),
-        title: Text(
-          "Setup Checklist",
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.payments_outlined,
+          title: 'Connect payments',
+          subtitle: 'Configure your supported payment channels and settlement flow.',
         ),
-      ),
-      body: Center(
-        child: Text(
-          "Checklist Content Coming Soon",
-          style: GoogleFonts.plusJakartaSans(color: Colors.white54),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.qr_code_2_rounded,
+          title: 'Enable QR',
+          subtitle: 'Prepare QR payment entry for quick in-store checkout.',
         ),
-      ),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.inventory_2_outlined,
+          title: 'Load products',
+          subtitle: 'Create products so sales and inventory stay in sync.',
+        ),
+      ],
     );
   }
 }

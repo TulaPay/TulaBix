@@ -1,67 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/widgets/glass_page_shell.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Scaffold(
-      backgroundColor: cs.surfaceContainerLow,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: cs.onSurface),
-          onPressed: () => Navigator.pop(context),
+    return GlassPageShell(
+      title: 'Account Information',
+      subtitle: 'Business identity and merchant verification details.',
+      icon: Icons.person_rounded,
+      actionLabel: 'Update details',
+      onAction: () {},
+      children: const [
+        GlassInfoCard(
+          icon: Icons.badge_outlined,
+          title: 'Business profile',
+          subtitle: 'Merchant name, registration details, and public identity.',
         ),
-        title: Text(
-          "Account",
-          style: GoogleFonts.plusJakartaSans(
-            color: cs.onSurface,
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-          ),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.email_outlined,
+          title: 'Contact channels',
+          subtitle:
+              'Primary email and support contact for business operations.',
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: cs.surface,
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(color: cs.shadow.withValues(alpha: 0.04), blurRadius: 20, offset: const Offset(0, 10)),
-                ],
-              ),
-              child: Column(
-                children: [
-                  _buildItem(context, Icons.person_outline, "Personal Information"),
-                  const Divider(),
-                  _buildItem(context, Icons.email_outlined, "Email Address"),
-                  const Divider(),
-                  _buildItem(context, Icons.phone_outlined, "Phone Number"),
-                ],
-              ),
-            ),
-          ],
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.verified_outlined,
+          title: 'Verification status',
+          subtitle: 'Know what is verified and what still needs review.',
         ),
-      ),
-    );
-  }
-
-  Widget _buildItem(BuildContext context, IconData icon, String title) {
-    final cs = Theme.of(context).colorScheme;
-    return ListTile(
-      leading: Icon(icon, color: cs.primary),
-      title: Text(title, style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w600)),
-      trailing: const Icon(Icons.chevron_right),
-      onTap: () {},
+      ],
     );
   }
 }

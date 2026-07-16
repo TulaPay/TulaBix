@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/widgets/glass_page_shell.dart';
 
 class NotificationScreen extends StatelessWidget {
   const NotificationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
+    return GlassPageShell(
+      title: 'Notifications',
+      subtitle: 'Stay on top of alerts, reminders, and activity updates.',
+      icon: Icons.notifications_active_rounded,
+      actionLabel: 'Mark all read',
+      onAction: () {},
+      children: const [
+        GlassInfoCard(
+          icon: Icons.campaign_rounded,
+          title: 'Promotional alert',
+          subtitle: 'A new seasonal promotion is ready to review.',
         ),
-        title: Text(
-          "Notifications",
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.payment_rounded,
+          title: 'Payment confirmation',
+          subtitle: 'A customer payment landed successfully a few moments ago.',
         ),
-      ),
-      body: Center(
-        child: Text(
-          "No new notifications",
-          style: GoogleFonts.plusJakartaSans(color: Colors.white54),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.warning_amber_rounded,
+          title: 'Action needed',
+          subtitle: 'One transfer is pending verification and may need attention.',
         ),
-      ),
+      ],
     );
   }
 }

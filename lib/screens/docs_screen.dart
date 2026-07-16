@@ -1,34 +1,36 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/widgets/glass_page_shell.dart';
 
 class DocsScreen extends StatelessWidget {
   const DocsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
+    return GlassPageShell(
+      title: 'Documentation',
+      subtitle: 'Browse guides, product notes, and implementation references.',
+      icon: Icons.menu_book_rounded,
+      actionLabel: 'Open docs',
+      onAction: () {},
+      children: const [
+        GlassInfoCard(
+          icon: Icons.play_circle_outline_rounded,
+          title: 'Getting started',
+          subtitle: 'Step through the product setup and first-sale flow.',
         ),
-        title: Text(
-          "Documentation",
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.api_rounded,
+          title: 'Feature guides',
+          subtitle: 'Understand the behavior of payment, drawer, and settings flows.',
         ),
-      ),
-      body: Center(
-        child: Text(
-          "Docs Coming Soon",
-          style: GoogleFonts.plusJakartaSans(color: Colors.white54),
+        SizedBox(height: 12),
+        GlassInfoCard(
+          icon: Icons.bug_report_outlined,
+          title: 'Troubleshooting',
+          subtitle: 'Common issues, fixes, and what to check first when things break.',
         ),
-      ),
+      ],
     );
   }
 }
