@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/kyc_onboarding.dart';
+import 'package:tulapay/widgets/glass_effects.dart';
 
 class CreatePinScreen extends StatefulWidget {
   const CreatePinScreen({super.key});
@@ -25,9 +26,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         if (_pin.length == 6) {
           Future.delayed(const Duration(milliseconds: 250), () {
             if (mounted) {
-              setState(() {
-                _isConfirming = true;
-              });
+              setState(() => _isConfirming = true);
             }
           });
         }
@@ -51,10 +50,8 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         } else {
           _isConfirming = false;
         }
-      } else {
-        if (_pin.isNotEmpty) {
-          _pin = _pin.substring(0, _pin.length - 1);
-        }
+      } else if (_pin.isNotEmpty) {
+        _pin = _pin.substring(0, _pin.length - 1);
       }
     });
   }
@@ -74,54 +71,66 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 10),
-            const Icon(Icons.check_circle_outline, color: Colors.green, size: 80),
-            const SizedBox(height: 20),
-            Text(
-              "PIN Set Successfully",
-              style: GoogleFonts.inter(fontWeight: FontWeight.bold, fontSize: 18),
+      builder: (context) {
+        final cs = Theme.of(context).colorScheme;
+        return AlertDialog(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          contentPadding: EdgeInsets.zero,
+          content: GlassSurface(
+            borderRadius: BorderRadius.circular(24),
+            opacity: 0.18,
+            blur: 18,
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.check_circle_outline, color: cs.primary, size: 80),
+                const SizedBox(height: 20),
+                Text(
+                  "PIN Set Successfully",
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w800,
+                    fontSize: 18,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Your 6-digit security PIN has been created. Use it to authorize transactions.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(color: cs.onSurface.withValues(alpha: 0.7)),
+                ),
+                const SizedBox(height: 24),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => const KycOnboarding()),
+                      (route) => false,
+                    );
+                  },
+                  child: const Text("Get Started"),
+                ),
+              ],
             ),
-            const SizedBox(height: 10),
-            const Text(
-              "Your 6-digit security PIN has been created. Use it to authorize transactions.",
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (_) => const KycOnboarding()),
-                  (route) => false,
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size.fromHeight(56),
-              ),
-              child: const Text("Get Started"),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onSurface),
+          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
           onPressed: () {
             if (_isConfirming) {
               setState(() {
@@ -134,52 +143,87 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
           },
         ),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              _isConfirming ? "Confirm your PIN" : "Create a PIN",
-              style: GoogleFonts.inter(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.primary,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              child: Text(
-                _isConfirming
-                    ? "Re-enter your PIN to confirm it's correct."
-                    : "Enter 6 digits to keep your account and transactions secure.",
-                textAlign: TextAlign.center,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface.withValues(alpha: 0.6),
+      body: AppBackdrop(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: GlassSurface(
+                  borderRadius: BorderRadius.circular(28),
+                  opacity: 0.16,
+                  blur: 18,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              cs.primary.withValues(alpha: 0.28),
+                              cs.secondary.withValues(alpha: 0.12),
+                            ],
+                          ),
+                        ),
+                        child: Icon(Icons.pin_rounded, color: cs.primary, size: 34),
+                      ),
+                      const SizedBox(height: 24),
+                      Text(
+                        _isConfirming ? "Confirm your PIN" : "Create a PIN",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.6,
+                          color: cs.onSurface,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: Text(
+                          _isConfirming
+                              ? "Re-enter your PIN to confirm it's correct."
+                              : "Enter 6 digits to keep your account and transactions secure.",
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: cs.onSurface.withValues(alpha: 0.66),
+                            height: 1.4,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 40),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(6, (index) => _buildIndicator(index)),
+                      ),
+                      const SizedBox(height: 24),
+                      if (_errorMessage.isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Text(
+                            _errorMessage,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      const SizedBox(height: 16),
+                      _buildKeypad(cs),
+                    ],
+                  ),
                 ),
               ),
             ),
-            const SizedBox(height: 60),
-            
-            // PIN Indicators
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(6, (index) => _buildIndicator(index)),
-            ),
-            
-            const SizedBox(height: 24),
-            if (_errorMessage.isNotEmpty)
-              Text(
-                _errorMessage,
-                style: const TextStyle(color: Colors.red, fontWeight: FontWeight.w500),
-              ),
-            
-            const Spacer(),
-            
-            // Custom Keypad
-            _buildKeypad(colorScheme),
-            const SizedBox(height: 32),
-          ],
+          ),
         ),
       ),
     );
@@ -187,7 +231,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
 
   Widget _buildIndicator(int index) {
     final bool isFilled = _isConfirming ? index < _confirmPin.length : index < _pin.length;
-    final colorScheme = Theme.of(context).colorScheme;
+    final cs = Theme.of(context).colorScheme;
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 200),
@@ -196,44 +240,44 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       height: 16,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isFilled ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.2),
+        color: isFilled ? cs.primary : cs.outline.withValues(alpha: 0.2),
         border: Border.all(
-          color: isFilled ? colorScheme.primary : colorScheme.outline.withValues(alpha: 0.1),
+          color: isFilled ? cs.primary : cs.outline.withValues(alpha: 0.1),
           width: 1,
         ),
       ),
     );
   }
 
-  Widget _buildKeypad(ColorScheme colorScheme) {
+  Widget _buildKeypad(ColorScheme cs) {
     return Column(
       children: [
-        _buildKeyRow(["1", "2", "3"]),
-        const SizedBox(height: 20),
-        _buildKeyRow(["4", "5", "6"]),
-        const SizedBox(height: 20),
-        _buildKeyRow(["7", "8", "9"]),
-        const SizedBox(height: 20),
+        _buildKeyRow(["1", "2", "3"], cs),
+        const SizedBox(height: 16),
+        _buildKeyRow(["4", "5", "6"], cs),
+        const SizedBox(height: 16),
+        _buildKeyRow(["7", "8", "9"], cs),
+        const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const SizedBox(width: 80), 
-            _buildKeyButton("0"),
-            _buildBackspaceButton(colorScheme),
+            const SizedBox(width: 80),
+            _buildKeyButton("0", cs),
+            _buildBackspaceButton(cs),
           ],
         ),
       ],
     );
   }
 
-  Widget _buildKeyRow(List<String> keys) {
+  Widget _buildKeyRow(List<String> keys, ColorScheme cs) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: keys.map((key) => _buildKeyButton(key)).toList(),
+      children: keys.map((key) => _buildKeyButton(key, cs)).toList(),
     );
   }
 
-  Widget _buildKeyButton(String val) {
+  Widget _buildKeyButton(String val, ColorScheme cs) {
     return InkWell(
       onTap: () => _onKeyTap(val),
       borderRadius: BorderRadius.circular(40),
@@ -241,19 +285,24 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         width: 80,
         height: 80,
         alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: cs.surface.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: cs.outline.withValues(alpha: 0.12)),
+        ),
         child: Text(
           val,
-          style: GoogleFonts.inter(
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 30,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurface,
+            fontWeight: FontWeight.w700,
+            color: cs.onSurface,
           ),
         ),
       ),
     );
   }
 
-  Widget _buildBackspaceButton(ColorScheme colorScheme) {
+  Widget _buildBackspaceButton(ColorScheme cs) {
     return InkWell(
       onTap: _onBackspace,
       borderRadius: BorderRadius.circular(40),
@@ -261,10 +310,15 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         width: 80,
         height: 80,
         alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: cs.surface.withValues(alpha: 0.35),
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: cs.outline.withValues(alpha: 0.12)),
+        ),
         child: Icon(
           Icons.backspace_outlined,
           size: 28,
-          color: colorScheme.onSurface,
+          color: cs.onSurface,
         ),
       ),
     );

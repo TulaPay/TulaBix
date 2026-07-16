@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tulapay/screens/Navigation_bar.dart';
+import 'package:tulapay/authentication/business_details.dart';
+import 'package:tulapay/widgets/glass_effects.dart';
 
 class VerificationInProgressPage extends StatefulWidget {
   const VerificationInProgressPage({super.key});
@@ -10,155 +11,177 @@ class VerificationInProgressPage extends StatefulWidget {
       _VerificationInProgressPageState();
 }
 
-class _VerificationInProgressPageState
-    extends State<VerificationInProgressPage> {
+class _VerificationInProgressPageState extends State<VerificationInProgressPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 20),
-                    // Header Section
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary.withValues(alpha: 0.1),
-                        borderRadius: BorderRadius.circular(24),
-                      ),
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
+      body: AppBackdrop(
+        child: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 560),
                       child: Column(
                         children: [
-                          CircleAvatar(
-                            radius: 40,
-                            backgroundColor: colorScheme.primary,
-                            child: const Icon(
-                              Icons.file_copy_rounded,
-                              color: Colors.white,
-                              size: 32,
-                            ),
-                          ),
-                          const SizedBox(height: 24),
-                          Text(
-                            "Verification in progress",
-                            style: GoogleFonts.inter(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: colorScheme.onSurface,
-                            ),
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            "We're reviewing your documents",
-                            style: GoogleFonts.inter(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.primary,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            "Your business is currently in our queue. Our security team verifies all new merchants to ensure network safety and compliance.",
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: colorScheme.onSurface.withValues(alpha: 0.6),
-                              height: 1.5,
-                            ),
-                          ),
-                          const SizedBox(height: 20),
-                          const Divider(),
-                          const SizedBox(height: 16),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.timer_outlined,
-                                  size: 20, color: colorScheme.primary),
-                              const SizedBox(width: 8),
-                              Text(
-                                "Estimated time: ",
-                                style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.w500,
-                                  color: colorScheme.onSurface,
+                          GlassSurface(
+                            borderRadius: BorderRadius.circular(28),
+                            opacity: 0.16,
+                            blur: 18,
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24),
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        cs.primary.withValues(alpha: 0.22),
+                                        cs.secondary.withValues(alpha: 0.12),
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 40,
+                                        backgroundColor: cs.primary,
+                                        child: const Icon(
+                                          Icons.file_copy_rounded,
+                                          color: Colors.white,
+                                          size: 32,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 24),
+                                      Text(
+                                        "Verification in progress",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w800,
+                                          color: cs.onSurface,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        "We're reviewing your documents",
+                                        style: GoogleFonts.plusJakartaSans(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w700,
+                                          color: cs.primary,
+                                        ),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const SizedBox(height: 12),
+                                      Text(
+                                        "Your business is currently in our queue. Our security team verifies all new merchants to ensure network safety and compliance.",
+                                        textAlign: TextAlign.center,
+                                        style: theme.textTheme.bodyMedium?.copyWith(
+                                          color: cs.onSurface.withValues(alpha: 0.66),
+                                          height: 1.5,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      const Divider(),
+                                      const SizedBox(height: 16),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Icon(
+                                            Icons.timer_outlined,
+                                            size: 20,
+                                            color: cs.primary,
+                                          ),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            "Estimated time: ",
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontWeight: FontWeight.w600,
+                                              color: cs.onSurface,
+                                            ),
+                                          ),
+                                          Text(
+                                            "24 hours",
+                                            style: GoogleFonts.plusJakartaSans(
+                                              fontWeight: FontWeight.w800,
+                                              color: cs.primary,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                "24 hours",
-                                style: GoogleFonts.inter(
-                                  fontWeight: FontWeight.bold,
-                                  color: colorScheme.primary,
+                                const SizedBox(height: 18),
+                                _buildInfoCard(
+                                  context,
+                                  icon: Icons.notifications_active_outlined,
+                                  title: "Get Notified",
+                                  description:
+                                      "We'll send an SMS and push notifications once your account is active.",
                                 ),
-                              ),
-                            ],
+                                const SizedBox(height: 14),
+                                _buildInfoCard(
+                                  context,
+                                  icon: Icons.verified_user_outlined,
+                                  title: "Bank-Grade Security",
+                                  description:
+                                      "Your data is encrypted and handled according to CEMAC regulations.",
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
-
-                    // Info Cards
-                    _buildInfoCard(
-                      context,
-                      icon: Icons.notifications_active_outlined,
-                      title: "Get Notified",
-                      description:
-                          "We'll send an SMS and push notifications once your account is active.",
-                    ),
-                    const SizedBox(height: 16),
-                    _buildInfoCard(
-                      context,
-                      icon: Icons.verified_user_outlined,
-                      title: "Bank-Grade Security",
-                      description:
-                          "Your data is encrypted and handled according to CEMAC regulations.",
-                    ),
-                  ],
+                  ),
                 ),
               ),
-            ),
-
-            // Bottom Buttons
-            Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (_) => const Navigation_Bar()),
-                        (route) => false,
-                      );
-                    },
-                    icon: const Icon(Icons.dashboard_outlined),
-                    label: const Text("Go to Dashboard"),
-                    style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(56),
-                    ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: GlassSurface(
+                  borderRadius: BorderRadius.circular(24),
+                  opacity: 0.12,
+                  blur: 12,
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BusinessDetails(),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.domain_rounded),
+                        label: const Text("Continue to KYB"),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton.icon(
+                        onPressed: () {},
+                        icon: const Icon(Icons.support_agent_rounded),
+                        label: const Text("Contact Support"),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  OutlinedButton.icon(
-                    onPressed: () {
-                      // TODO: Implement support contact
-                    },
-                    icon: const Icon(Icons.support_agent_rounded),
-                    label: const Text("Contact Support"),
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(56),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -170,24 +193,27 @@ class _VerificationInProgressPageState
     required String title,
     required String description,
   }) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
+    final cs = Theme.of(context).colorScheme;
+    return GlassSurface(
+      borderRadius: BorderRadius.circular(20),
+      opacity: 0.12,
+      blur: 12,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.1)),
-      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: colorScheme.primary.withValues(alpha: 0.1),
+              gradient: LinearGradient(
+                colors: [
+                  cs.primary.withValues(alpha: 0.22),
+                  cs.primary.withValues(alpha: 0.08),
+                ],
+              ),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: colorScheme.primary, size: 24),
+            child: Icon(icon, color: cs.primary, size: 24),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -196,10 +222,10 @@ class _VerificationInProgressPageState
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.inter(
-                    fontWeight: FontWeight.bold,
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w800,
                     fontSize: 16,
-                    color: colorScheme.onSurface,
+                    color: cs.onSurface,
                   ),
                 ),
                 const SizedBox(height: 4),
@@ -207,7 +233,7 @@ class _VerificationInProgressPageState
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
+                    color: cs.onSurface.withValues(alpha: 0.66),
                     height: 1.4,
                   ),
                 ),

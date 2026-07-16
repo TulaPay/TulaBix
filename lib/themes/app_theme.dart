@@ -160,9 +160,26 @@ class AppTheme {
       ),
 
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.surfaceLight.withValues(alpha: 0.88),
+        backgroundColor: AppColors.surfaceLight.withValues(alpha: 0.98),
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      ),
+
+      dropdownMenuTheme: DropdownMenuThemeData(
+        textStyle: const TextStyle(
+          color: AppColors.textDark,
+          fontSize: 15,
+        ),
+        menuStyle: MenuStyle(
+          backgroundColor: const WidgetStatePropertyAll(
+            AppColors.surfaceLight,
+          ),
+          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+          elevation: const WidgetStatePropertyAll(8),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          ),
+        ),
       ),
     );
   }
@@ -286,9 +303,26 @@ class AppTheme {
       ),
 
       dialogTheme: DialogThemeData(
-        backgroundColor: AppColors.surfaceDark.withValues(alpha: 0.88),
+        backgroundColor: AppColors.surfaceDark.withValues(alpha: 0.98),
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      ),
+
+      dropdownMenuTheme: DropdownMenuThemeData(
+        textStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 15,
+        ),
+        menuStyle: MenuStyle(
+          backgroundColor: const WidgetStatePropertyAll(
+            AppColors.surfaceDark,
+          ),
+          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+          elevation: const WidgetStatePropertyAll(8),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          ),
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/create_pin_Screen.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
+import 'package:tulapay/widgets/glass_effects.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
   final String phoneNumber;
@@ -19,7 +20,8 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final List<TextEditingController> _controllers = List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers =
+      List.generate(6, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   int _timerSeconds = 60;
@@ -46,9 +48,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           timer.cancel();
         });
       } else {
-        setState(() {
-          _timerSeconds--;
-        });
+        setState(() => _timerSeconds--);
       }
     });
   }
@@ -56,26 +56,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   void dispose() {
     _timer?.cancel();
-    for (var controller in _controllers) {
+    for (final controller in _controllers) {
       controller.dispose();
     }
-    for (var node in _focusNodes) {
+    for (final node in _focusNodes) {
       node.dispose();
     }
     super.dispose();
   }
 
   void _verifyOtp() async {
-    String otp = _controllers.map((e) => e.text).join();
+    final otp = _controllers.map((e) => e.text).join();
     if (otp.length == 6) {
       setState(() => _isLoading = true);
-      
-      // Simulate API verification delay
       await Future.delayed(const Duration(seconds: 2));
-      
       if (mounted) {
         setState(() => _isLoading = false);
-        debugPrint("Verifying OTP: $otp");
         if (widget.isSignUp) {
           Navigator.pushReplacement(
             context,
@@ -102,127 +98,131 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final cs = theme.colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onSurface),
+          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20),
-                // Security Icon Illustration
-                Container(
+      body: AppBackdrop(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: GlassSurface(
+                  borderRadius: BorderRadius.circular(28),
+                  opacity: 0.16,
+                  blur: 18,
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: 0.2),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.lock_person_rounded,
-                    size: 64,
-                    color: colorScheme.primary,
-                  ),
-                ),
-                const SizedBox(height: 32),
-                Text(
-                  "Verification Code",
-                  style: GoogleFonts.inter(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  "We have sent a 6-digit verification code to",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    color: colorScheme.onSurface.withValues(alpha: 0.6),
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  widget.phoneNumber,
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 48),
-
-                // OTP Input Fields
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(6, (index) => _buildOtpBox(index, colorScheme)),
-                ),
-
-                const SizedBox(height: 40),
-
-                // Resend Timer Logic
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      _canResend ? "Didn't receive the code? " : "Resend code in ",
-                      style: GoogleFonts.inter(
-                        color: colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
-                    ),
-                    _canResend
-                        ? GestureDetector(
-                            onTap: _startTimer,
-                            child: Text(
-                              "Resend",
-                              style: TextStyle(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            "00:${_timerSeconds.toString().padLeft(2, '0')}",
-                            style: TextStyle(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                  ],
-                ),
-
-                const SizedBox(height: 48),
-
-                // Verify Button with Loading state
-                _isLoading
-                    ? const CircularProgressIndicator()
-                    : ElevatedButton(
-                        onPressed: _verifyOtp,
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(56),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              cs.primary.withValues(alpha: 0.28),
+                              cs.secondary.withValues(alpha: 0.12),
+                            ],
                           ),
                         ),
-                        child: const Text(
-                          "Verify Account",
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        child: Icon(
+                          Icons.lock_person_rounded,
+                          size: 34,
+                          color: cs.primary,
                         ),
                       ),
-                const SizedBox(height: 24),
-              ],
+                      const SizedBox(height: 24),
+                      Text(
+                        "Verification Code",
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.6,
+                          color: cs.onSurface,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 12),
+                      Text(
+                        "We have sent a 6-digit verification code to",
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: cs.onSurface.withValues(alpha: 0.66),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        widget.phoneNumber,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(
+                          6,
+                          (index) => _buildOtpBox(index, cs),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            _canResend ? "Didn't receive the code? " : "Resend code in ",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: cs.onSurface.withValues(alpha: 0.66),
+                            ),
+                          ),
+                          _canResend
+                              ? GestureDetector(
+                                  onTap: _startTimer,
+                                  child: Text(
+                                    "Resend",
+                                    style: TextStyle(
+                                      color: cs.primary,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                )
+                              : Text(
+                                  "00:${_timerSeconds.toString().padLeft(2, '0')}",
+                                  style: TextStyle(
+                                    color: cs.primary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      _isLoading
+                          ? const CircularProgressIndicator()
+                          : ElevatedButton(
+                              onPressed: _verifyOtp,
+                              child: const Text("Verify Account"),
+                            ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),
@@ -230,23 +230,22 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     );
   }
 
-  Widget _buildOtpBox(int index, ColorScheme colorScheme) {
+  Widget _buildOtpBox(int index, ColorScheme cs) {
+    final filled = _controllers[index].text.isNotEmpty;
     return Container(
       width: 45,
       height: 55,
       decoration: BoxDecoration(
-        color: colorScheme.surface,
+        color: cs.surface.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: _controllers[index].text.isNotEmpty
-              ? colorScheme.primary
-              : colorScheme.outline.withValues(alpha: 0.2),
+          color: filled ? cs.primary : cs.outline.withValues(alpha: 0.2),
           width: 2,
         ),
         boxShadow: [
-          if (_controllers[index].text.isNotEmpty)
+          if (filled)
             BoxShadow(
-              color: colorScheme.primary.withValues(alpha: 0.1),
+              color: cs.primary.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -263,7 +262,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                 _focusNodes[index + 1].requestFocus();
               } else {
                 _focusNodes[index].unfocus();
-                _verifyOtp(); // Auto-verify when last box is filled
+                _verifyOtp();
               }
             } else {
               setState(() {});
@@ -275,10 +274,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           textAlign: TextAlign.center,
           keyboardType: TextInputType.number,
           maxLength: 1,
-          style: GoogleFonts.inter(
+          style: GoogleFonts.plusJakartaSans(
             fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+            fontWeight: FontWeight.w800,
+            color: cs.onSurface,
           ),
           decoration: const InputDecoration(
             counterText: "",

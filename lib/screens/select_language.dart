@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/sign_up.dart';
+import 'package:tulapay/widgets/glass_effects.dart';
 
 class LanguageScreen extends StatefulWidget {
   const LanguageScreen({super.key});
@@ -10,9 +11,8 @@ class LanguageScreen extends StatefulWidget {
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
-  String _selectedLanguageCode = 'en'; // Default to English
+  String _selectedLanguageCode = 'en';
 
-  // Localized strings map for English and French
   final Map<String, Map<String, String>> _localizedValues = {
     'en': {
       'title': 'Select Language',
@@ -30,8 +30,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
       'continue': 'Continuer',
       'english': 'Anglais',
       'french': 'Français',
-      'info':
-          'Vous pourrez modifier votre langue plus tard dans les paramètres.',
+      'info': 'Vous pourrez modifier votre langue plus tard dans les paramètres.',
     },
   };
 
@@ -40,120 +39,128 @@ class _LanguageScreenState extends State<LanguageScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final cs = theme.colorScheme;
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(_t('title')),
         elevation: 0,
         backgroundColor: Colors.transparent,
-        foregroundColor: colorScheme.onSurface,
+        foregroundColor: cs.onSurface,
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              Center(
-                child: Container(
+      body: AppBackdrop(
+        child: SafeArea(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 560),
+                child: GlassSurface(
+                  borderRadius: BorderRadius.circular(28),
+                  opacity: 0.16,
+                  blur: 18,
                   padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: colorScheme.primaryContainer.withValues(alpha: 0.3),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.language_rounded,
-                    size: 64,
-                    color: colorScheme.primary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 40),
-              Text(
-                _t('header'),
-                style: GoogleFonts.inter(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                _t('subtitle'),
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  color: colorScheme.onSurface.withValues(alpha: 0.6),
-                ),
-              ),
-              const SizedBox(height: 32),
-
-              // Language Selection Tiles
-              LanguageTile(
-                title: _t('english'),
-                subtitle: "English",
-                isSelected: _selectedLanguageCode == 'en',
-                onTap: () => setState(() => _selectedLanguageCode = 'en'),
-                flag: "🇺🇸",
-              ),
-              const SizedBox(height: 16),
-              LanguageTile(
-                title: _t('french'),
-                subtitle: "Français",
-                isSelected: _selectedLanguageCode == 'fr',
-                onTap: () => setState(() => _selectedLanguageCode = 'fr'),
-                flag: "🇫🇷",
-              ),
-
-              const Spacer(),
-
-              // Information Box
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: colorScheme.primary.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: colorScheme.primary.withValues(alpha: 0.1),
-                  ),
-                ),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.info_outline_rounded,
-                      size: 20,
-                      color: colorScheme.primary,
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        _t('info'),
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          color: colorScheme.onSurface.withValues(alpha: 0.8),
-                          height: 1.4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              colors: [
+                                cs.primary.withValues(alpha: 0.28),
+                                cs.secondary.withValues(alpha: 0.12),
+                              ],
+                            ),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            Icons.language_rounded,
+                            size: 64,
+                            color: cs.primary,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 24),
+                      Text(
+                        _t('header'),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.6,
+                          color: cs.onSurface,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _t('subtitle'),
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 16,
+                          color: cs.onSurface.withValues(alpha: 0.72),
+                          height: 1.45,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      LanguageTile(
+                        title: _t('english'),
+                        subtitle: 'English',
+                        isSelected: _selectedLanguageCode == 'en',
+                        onTap: () => setState(() => _selectedLanguageCode = 'en'),
+                        flag: '🇺🇸',
+                      ),
+                      const SizedBox(height: 14),
+                      LanguageTile(
+                        title: _t('french'),
+                        subtitle: 'Français',
+                        isSelected: _selectedLanguageCode == 'fr',
+                        onTap: () => setState(() => _selectedLanguageCode = 'fr'),
+                        flag: '🇫🇷',
+                      ),
+                      const SizedBox(height: 20),
+                      GlassSurface(
+                        borderRadius: BorderRadius.circular(20),
+                        opacity: 0.12,
+                        blur: 12,
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.info_outline_rounded,
+                              size: 20,
+                              color: cs.primary,
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                _t('info'),
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 13,
+                                  color: cs.onSurface.withValues(alpha: 0.82),
+                                  height: 1.4,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const SignUp()),
+                          );
+                        },
+                        child: Text(_t('continue')),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
-
-              // Action Button
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Save preference and navigate to onboarding or home
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const SignUp()),
-                  );
-                },
-                child: Text(_t('continue')),
-              ),
-              const SizedBox(height: 24),
-            ],
+            ),
           ),
         ),
       ),
@@ -179,29 +186,43 @@ class LanguageTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final cs = Theme.of(context).colorScheme;
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: isSelected
-                ? colorScheme.primary
-                : colorScheme.outline.withValues(alpha: 0.2),
+            color: isSelected ? cs.primary : cs.outline.withValues(alpha: 0.18),
             width: isSelected ? 2 : 1,
           ),
-          color: isSelected
-              ? colorScheme.primary.withValues(alpha: 0.05)
-              : Colors.transparent,
+          gradient: isSelected
+              ? LinearGradient(
+                  colors: [
+                    cs.primary.withValues(alpha: 0.18),
+                    cs.secondary.withValues(alpha: 0.08),
+                  ],
+                )
+              : null,
+          color: isSelected ? null : cs.surface.withValues(alpha: 0.55),
         ),
         child: Row(
           children: [
-            Text(flag, style: const TextStyle(fontSize: 24)),
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: cs.primary.withValues(alpha: 0.10),
+              ),
+              child: Center(
+                child: Text(flag, style: const TextStyle(fontSize: 24)),
+              ),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -209,28 +230,28 @@ class LanguageTile extends StatelessWidget {
                 children: [
                   Text(
                     title,
-                    style: GoogleFonts.inter(
-                      fontWeight: FontWeight.bold,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontWeight: FontWeight.w800,
                       fontSize: 16,
-                      color: colorScheme.onSurface,
+                      color: cs.onSurface,
                     ),
                   ),
                   Text(
                     subtitle,
-                    style: GoogleFonts.inter(
+                    style: GoogleFonts.plusJakartaSans(
                       fontSize: 14,
-                      color: colorScheme.onSurface.withValues(alpha: 0.5),
+                      color: cs.onSurface.withValues(alpha: 0.66),
                     ),
                   ),
                 ],
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: colorScheme.primary)
+              Icon(Icons.check_circle, color: cs.primary)
             else
               Icon(
                 Icons.circle_outlined,
-                color: colorScheme.outline.withValues(alpha: 0.5),
+                color: cs.outline.withValues(alpha: 0.45),
               ),
           ],
         ),
