@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tulapay/screens/Navigation_bar.dart';
+import 'package:tulapay/screens/splash.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
@@ -21,7 +21,7 @@ class TulaApp extends StatelessWidget {
       builder: (context, child) {
         return AppBackdrop(child: child ?? const SizedBox.shrink());
       },
-      home: Navigation_Bar(),
+      home: SplashScreen(),
     );
   }
 }

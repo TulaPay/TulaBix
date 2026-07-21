@@ -1,7 +1,9 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/screens/LoanScreen.dart';
 import 'package:tulapay/screens/checklist_screen.dart';
 import 'package:tulapay/screens/payment_page_screen.dart';
 import 'package:tulapay/screens/promo_codes_screen.dart';
@@ -125,6 +127,9 @@ class CustomDrawer extends StatelessWidget {
                           onTap: () =>
                               _navigateTo(context, const PaymentPageScreen()),
                         ),
+                        _buildDrawerItem(context, icon: Icons.monetization_on, label: "Loan", onTap: () =>{
+                           _navigateTo(context, const Loanscreen())
+                        }),
                         _buildDrawerItem(
                           context,
                           icon: Icons.local_offer_rounded,
