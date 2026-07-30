@@ -1,0 +1,116 @@
+{
+  "merchantId": "MER-10234",
+  "generatedAt": "2026-07-25T00:00:00Z",
+  "period": {
+    "from": "2026-04-27",
+    "to": "2026-07-25",
+    "days": 90
+  },
+  "summary": {
+    "averageOrderValue": 34.82,
+    "monthlyOrderVolume": 612,
+    "revenueConsistencyScore": 86.5,
+    "totalRevenue": 214380,
+    "totalOrders": 6155
+  },
+  "dailySeries": [
+    {
+      "date": "2026-07-11",
+      "revenue": 2143,
+      "orders": 52
+    },
+    {
+      "date": "2026-07-12",
+      "revenue": 2307,
+      "orders": 64
+    },
+    {
+      "date": "2026-07-13",
+      "revenue": 2379,
+      "orders": 57
+    },
+    {
+      "date": "2026-07-14",
+      "revenue": 2219,
+      "orders": 70
+    },
+    {
+      "date": "2026-07-15",
+      "revenue": 1848,
+      "orders": 48
+    },
+    {
+      "date": "2026-07-16",
+      "revenue": 2108,
+      "orders": 57
+    },
+    {
+      "date": "2026-07-17",
+      "revenue": 2734,
+      "orders": 90
+    },
+    {
+      "date": "2026-07-18",
+      "revenue": 2513,
+      "orders": 68
+    },
+    {
+      "date": "2026-07-19",
+      "revenue": 2133,
+      "orders": 73
+    },
+    {
+      "date": "2026-07-20",
+      "revenue": 2051,
+      "orders": 63
+    },
+    {
+      "date": "2026-07-21",
+      "revenue": 2249,
+      "orders": 56
+    },
+    {
+      "date": "2026-07-22",
+      "revenue": 2048,
+      "orders": 54
+    },
+    {
+      "date": "2026-07-23",
+      "revenue": 2027,
+      "orders": 49
+    },
+    {
+      "date": "2026-07-24",
+      "revenue": 2702,
+      "orders": 76
+    }
+  ],
+  "riskModel": {
+    "version": "risk-engine-v2.3",
+    "creditHealthScore": 712,
+    "scoreBand": "low_risk",
+    "maxRecommendedLoan": 9800,
+    "factors": [
+      {
+        "label": "90-day revenue growth",
+        "weight": 42,
+        "impact": "positive"
+      },
+      {
+        "label": "Order volume stability",
+        "weight": 28,
+        "impact": "positive"
+      },
+      {
+        "label": "Existing repayment history",
+        "weight": 20,
+        "impact": "positive"
+      },
+      {
+        "label": "Sector volatility (retail/FMCG)",
+        "weight": 8,
+        "impact": "negative"
+      }
+    ]
+  }
+}

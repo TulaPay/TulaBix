@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  "Ledger" design tokens
+  -----------------------
+  Signature: monetary values always render in --font-mono with tabular-nums,
+  so a stack of loan amounts in a table lines up like an actual ledger.
+  Signal green = capital moving in the merchant's favor (disbursed, repaid).
+  Amber = attention/risk. Never used interchangeably with red (reserved for
+  destructive/declined states only).
+*/
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222 47% 11%;
+
+  --surface: 0 0% 100%;
+  --surface-muted: 214 32% 96%;
+  --border: 214 32% 91%;
+
+  --ink: 222 47% 11%;
+  --signal: 221 83% 53%;        /* Classic modern blue */
+  --signal-foreground: 0 0% 100%;
+  --amber: 38 92% 50%;          /* Keep amber for warnings */
+  --amber-foreground: 0 0% 100%;
+  --danger: 0 84% 60%;
+  --danger-foreground: 0 0% 100%;
+
+  --primary: 221 83% 53%;       /* Primary is also blue */
+  --primary-foreground: 0 0% 100%;
+  --muted-foreground: 215 16% 47%;
+
+  --radius: 0.625rem;
+
+  --font-display: "General Sans", "Space Grotesk", ui-sans-serif, system-ui;
+  --font-body: "Inter", ui-sans-serif, system-ui;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+.dark {
+  --background: 222 47% 11%;
+  --foreground: 210 40% 98%;
+
+  --surface: 222 47% 15%;
+  --surface-muted: 222 47% 20%;
+  --border: 222 47% 25%;
+
+  --ink: 210 40% 98%;
+  --signal: 217 91% 60%;        /* Brighter blue for dark mode */
+  --signal-foreground: 222 47% 11%;
+  --amber: 48 96% 53%;
+  --amber-foreground: 222 47% 11%;
+  --danger: 0 72% 51%;
+  --danger-foreground: 222 47% 11%;
+
+  --primary: 217 91% 60%;
+  --primary-foreground: 222 47% 11%;
+  --muted-foreground: 215 20.2% 65.1%;
+}
+
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  font-feature-settings: "cv11", "ss01";
+}
+
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+.font-mono-tabular {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Visible keyboard focus everywhere — non-negotiable for a financial-decision UI */
+:focus-visible {
+  outline: 2px solid hsl(var(--signal));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-surface/80 backdrop-blur-md border border-border/50 shadow-sm;
+  }
+  .glass-dark {
+    @apply bg-surface/50 backdrop-blur-xl border border-white/10 shadow-lg;
+  }
+}
