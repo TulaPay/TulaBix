@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/sign_up.dart';
+import 'package:tulapay/services/app_preferences.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class LanguageScreen extends StatefulWidget {
-  const LanguageScreen({super.key});
+  /// When true the screen is opened from Settings: the choice is persisted via
+  /// [AppPreferences] and the screen pops. When false (onboarding) it pushes
+  /// on to Sign Up as before.
+  final bool settingsMode;
+
+  const LanguageScreen({super.key, this.settingsMode = false});
 
   @override
   State<LanguageScreen> createState() => _LanguageScreenState();
 }
 
 class _LanguageScreenState extends State<LanguageScreen> {
-  String _selectedLanguageCode = 'en';
+  late String _selectedLanguageCode = widget.settingsMode
+      ? AppPreferences.instance.locale.value.languageCode
+      : 'en';
 
   final Map<String, Map<String, String>> _localizedValues = {
     'en': {
@@ -19,6 +27,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
       'header': 'Choose your Language',
       'subtitle': 'Select your preferred language for TulaPay',
       'continue': 'Continue',
+      'save': 'Save',
       'english': 'English',
       'french': 'French',
       'info': 'You can change your language preference later in settings.',
@@ -28,6 +37,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
       'header': 'Choisissez votre langue',
       'subtitle': 'Sélectionnez votre langue préférée pour TulaPay',
       'continue': 'Continuer',
+      'save': 'Enregistrer',
       'english': 'Anglais',
       'french': 'Français',
       'info': 'Vous pourrez modifier votre langue plus tard dans les paramètres.',
@@ -70,12 +80,7 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(18),
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                cs.primary.withValues(alpha: 0.28),
-                                cs.secondary.withValues(alpha: 0.12),
-                              ],
-                            ),
+                            color: cs.primary.withValues(alpha: 0.16),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -149,12 +154,20 @@ class _LanguageScreenState extends State<LanguageScreen> {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(builder: (_) => const SignUp()),
-                          );
+                        onPressed: () async {
+                          if (widget.settingsMode) {
+                            await AppPreferences.instance
+                                .setLocale(Locale(_selectedLanguageCode));
+                            if (context.mounted) Navigator.of(context).pop();
+                          } else {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const SignUp()),
+                            );
+                          }
                         },
-                        child: Text(_t('continue')),
+                        child: Text(widget.settingsMode
+                            ? _t('save')
+                            : _t('continue')),
                       ),
                     ],
                   ),
@@ -200,15 +213,7 @@ class LanguageTile extends StatelessWidget {
             color: isSelected ? cs.primary : cs.outline.withValues(alpha: 0.18),
             width: isSelected ? 2 : 1,
           ),
-          gradient: isSelected
-              ? LinearGradient(
-                  colors: [
-                    cs.primary.withValues(alpha: 0.18),
-                    cs.secondary.withValues(alpha: 0.08),
-                  ],
-                )
-              : null,
-          color: isSelected ? null : cs.surface.withValues(alpha: 0.55),
+          color: isSelected ? cs.primary.withValues(alpha: 0.12) : cs.surface,
         ),
         child: Row(
           children: [

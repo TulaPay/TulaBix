@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class UpgradeToTier extends StatefulWidget {
@@ -10,6 +12,23 @@ class UpgradeToTier extends StatefulWidget {
 }
 
 class _UpgradeToTierState extends State<UpgradeToTier> {
+  bool _submitting = false;
+
+  Future<void> _submit() async {
+    setState(() => _submitting = true);
+    try {
+      await MerchantRepository.instance.requestTier2Upgrade();
+      if (!mounted) return;
+      AppFeedback.toast(context, 'Upgrade requested — we\'ll be in touch');
+      Navigator.pop(context);
+    } catch (e) {
+      if (mounted) {
+        setState(() => _submitting = false);
+        AppFeedback.toast(context, 'Could not submit — try again');
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -58,12 +77,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                               vertical: 6,
                             ),
                             decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  cs.primary.withValues(alpha: 0.26),
-                                  cs.secondary.withValues(alpha: 0.14),
-                                ],
-                              ),
+                              color: cs.primary,
                               borderRadius: BorderRadius.circular(20),
                             ),
                             child: const Row(
@@ -150,8 +164,15 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
                       child: Column(
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
-                            child: const Text("Request Upgrade"),
+                            onPressed: _submitting ? null : _submit,
+                            child: _submitting
+                                ? const SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                        strokeWidth: 2),
+                                  )
+                                : const Text("Request Upgrade"),
                           ),
                           const SizedBox(height: 12),
                           Text(
@@ -194,12 +215,7 @@ class _UpgradeToTierState extends State<UpgradeToTier> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    cs.primary.withValues(alpha: 0.22),
-                    cs.primary.withValues(alpha: 0.08),
-                  ],
-                ),
+                color: cs.primary.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Icon(icon, color: cs.primary, size: 26),

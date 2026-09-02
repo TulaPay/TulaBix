@@ -1,34 +1,16 @@
-import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+/// Deprecated shim. The drawer's "Customers" entry now routes to the real
+/// [CustomerScreen] (the bottom-nav customers screen, backed by
+/// `merchant_customers`). Kept as a re-export so any lingering import of
+/// `CustomersScreen` still resolves.
+export 'Customer_Screen.dart' show CustomerScreen;
 
+import 'package:flutter/widgets.dart';
+import 'Customer_Screen.dart';
+
+@Deprecated('Use CustomerScreen from Customer_Screen.dart')
 class CustomersScreen extends StatelessWidget {
   const CustomersScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white, size: 20),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text(
-          "Customers",
-          style: GoogleFonts.plusJakartaSans(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-      ),
-      body: Center(
-        child: Text(
-          "Customer Directory Coming Soon",
-          style: GoogleFonts.plusJakartaSans(color: Colors.white54),
-        ),
-      ),
-    );
-  }
+  Widget build(BuildContext context) => const CustomerScreen();
 }

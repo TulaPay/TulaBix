@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/models/merchant.dart';
+import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class NotificationsSettingsScreen extends StatefulWidget {
@@ -12,9 +14,36 @@ class NotificationsSettingsScreen extends StatefulWidget {
 
 class _NotificationsSettingsScreenState
     extends State<NotificationsSettingsScreen> {
-  bool _emailNotifications = true;
-  bool _pushNotifications = true;
-  bool _smsNotifications = false;
+  bool _loading = true;
+  bool _email = true;
+  bool _push = true;
+  bool _sms = false;
+
+  @override
+  void initState() {
+    super.initState();
+    MerchantRepository.instance.preferences().then((MerchantPreferences p) {
+      if (!mounted) return;
+      setState(() {
+        _email = p.notifEmail;
+        _push = p.notifPush;
+        _sms = p.notifSms;
+        _loading = false;
+      });
+    }).catchError((_) {
+      if (mounted) setState(() => _loading = false);
+    });
+  }
+
+  Future<void> _save() async {
+    try {
+      await MerchantRepository.instance.savePreferences({
+        'notif_email': _email,
+        'notif_push': _push,
+        'notif_sms': _sms,
+      });
+    } catch (_) {}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,72 +58,80 @@ class _NotificationsSettingsScreenState
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800),
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-        children: [
-          GlassSurface(
-            borderRadius: BorderRadius.circular(28),
-            opacity: 0.14,
-            blur: 16,
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
               children: [
-                Text(
-                  'Notification preferences',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.4,
+                GlassSurface(
+                  borderRadius: BorderRadius.circular(28),
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Notification preferences',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: -0.4,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Choose how the app alerts you about payment activity '
+                        'and security events.',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 13,
+                          color: cs.onSurfaceVariant,
+                          height: 1.4,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 6),
-                Text(
-                  'Choose how the app alerts you about payment activity and security events.',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 13,
-                    color: cs.onSurfaceVariant,
-                    height: 1.4,
+                const SizedBox(height: 16),
+                GlassSurface(
+                  borderRadius: BorderRadius.circular(28),
+                  child: Column(
+                    children: [
+                      _buildSwitch(
+                        context,
+                        "Email Notifications",
+                        "Settlement updates and reports",
+                        _email,
+                        (v) {
+                          setState(() => _email = v);
+                          _save();
+                        },
+                      ),
+                      const Divider(height: 1),
+                      _buildSwitch(
+                        context,
+                        "Push Notifications",
+                        "Real-time payment and account alerts",
+                        _push,
+                        (v) {
+                          setState(() => _push = v);
+                          _save();
+                        },
+                      ),
+                      const Divider(height: 1),
+                      _buildSwitch(
+                        context,
+                        "SMS Notifications",
+                        "Critical fallback alerts",
+                        _sms,
+                        (v) {
+                          setState(() => _sms = v);
+                          _save();
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 16),
-          GlassSurface(
-            borderRadius: BorderRadius.circular(28),
-            opacity: 0.12,
-            blur: 14,
-            child: Column(
-              children: [
-                _buildSwitch(
-                  context,
-                  "Email Notifications",
-                  "Settlement updates and reports",
-                  _emailNotifications,
-                  (v) => setState(() => _emailNotifications = v),
-                ),
-                const Divider(height: 1),
-                _buildSwitch(
-                  context,
-                  "Push Notifications",
-                  "Real-time payment and account alerts",
-                  _pushNotifications,
-                  (v) => setState(() => _pushNotifications = v),
-                ),
-                const Divider(height: 1),
-                _buildSwitch(
-                  context,
-                  "SMS Notifications",
-                  "Critical fallback alerts",
-                  _smsNotifications,
-                  (v) => setState(() => _smsNotifications = v),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -103,7 +140,7 @@ class _NotificationsSettingsScreenState
     String title,
     String subtitle,
     bool value,
-    Function(bool) onChanged,
+    ValueChanged<bool> onChanged,
   ) {
     final cs = Theme.of(context).colorScheme;
     return SwitchListTile.adaptive(
@@ -120,11 +157,11 @@ class _NotificationsSettingsScreenState
           fontSize: 12,
           color: cs.onSurfaceVariant,
         ),
-        ),
-        value: value,
-        onChanged: onChanged,
-        activeThumbColor: cs.primary,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      );
+      ),
+      value: value,
+      onChanged: onChanged,
+      activeThumbColor: cs.primary,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+    );
   }
 }
