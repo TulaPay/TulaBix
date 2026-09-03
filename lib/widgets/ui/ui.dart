@@ -1,0 +1,19 @@
+/// Barrel export for the reference-derived UI component library.
+export 'package:tulapay/themes/app_theme.dart';
+export 'alert_tile.dart';
+export 'app_scaffold.dart';
+export 'breakdown_bar.dart';
+export 'cash_flow_chart.dart';
+export 'chart_card.dart';
+export 'chart_style.dart';
+export 'delta_chip.dart';
+export 'gradient_hero_card.dart';
+export 'icon_chip.dart';
+export 'list_row_card.dart';
+export 'metric_headline.dart';
+export 'pill_button.dart';
+export 'section_header.dart';
+export 'segmented_control.dart';
+export 'stat_card.dart';
+export 'toggle_tile.dart';
+export 'underline_tabs.dart';
