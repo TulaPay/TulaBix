@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:tulapay/models/commerce.dart';
+import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/themes/app_theme.dart';
+import 'package:tulapay/utils/app_feedback.dart';
+import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class PaymentLinksScreen extends StatefulWidget {
@@ -13,6 +19,89 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
   final TextEditingController _amountController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _referenceController = TextEditingController();
+
+  late Future<List<PaymentLink>> _linksFuture;
+  PaymentLink? _lastGenerated;
+  bool _generating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _linksFuture = MerchantRepository.instance.paymentLinks();
+  }
+
+  void _refreshLinks() {
+    setState(() => _linksFuture = MerchantRepository.instance.paymentLinks());
+  }
+
+  Future<void> _handleGenerate() async {
+    final amount = num.tryParse(_amountController.text.trim());
+    if (amount == null || amount <= 0) {
+      AppFeedback.toast(context, 'Enter a valid amount');
+      return;
+    }
+    final description = _descriptionController.text.trim();
+    if (description.isEmpty) {
+      AppFeedback.toast(context, 'Add a payment description');
+      return;
+    }
+
+    setState(() => _generating = true);
+    try {
+      final reference = _referenceController.text.trim();
+      final link = await MerchantRepository.instance.createPaymentLink(
+        amount: amount,
+        description: description,
+        reference: reference.isEmpty ? null : reference,
+      );
+      if (!mounted) return;
+      setState(() => _lastGenerated = link);
+      _amountController.clear();
+      _descriptionController.clear();
+      _referenceController.clear();
+      _refreshLinks();
+      AppFeedback.toast(context, 'Payment link generated');
+    } catch (e) {
+      if (!mounted) return;
+      AppFeedback.toast(context, 'Could not generate link: $e');
+    } finally {
+      if (mounted) setState(() => _generating = false);
+    }
+  }
+
+  Future<void> _handleCopy() async {
+    final link = _lastGenerated;
+    if (link == null) {
+      AppFeedback.toast(context, 'Generate a link first');
+      return;
+    }
+    await AppFeedback.copy(context, link.url, label: 'Payment link copied');
+  }
+
+  Future<void> _handleShare() async {
+    final link = _lastGenerated;
+    if (link == null) {
+      AppFeedback.toast(context, 'Generate a link first');
+      return;
+    }
+    await AppFeedback.share('Pay ${money(link.amount, currency: link.currency)}: ${link.url}');
+  }
+
+  String _statusLabel(String status) => switch (status) {
+        'active' => 'Active',
+        'paid' => 'Paid',
+        'expired' => 'Expired',
+        'disabled' => 'Disabled',
+        _ => status,
+      };
+
+  Color _statusColor(String status, ColorScheme cs) => switch (status) {
+        'active' => cs.primary,
+        'paid' => Colors.green,
+        'expired' => cs.onSurfaceVariant,
+        'disabled' => cs.error,
+        _ => cs.onSurfaceVariant,
+      };
 
   @override
   void dispose() {
@@ -66,12 +155,7 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                           width: 54,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(18),
-                            gradient: LinearGradient(
-                              colors: [
-                                cs.primary.withValues(alpha: 0.22),
-                                cs.secondary.withValues(alpha: 0.12),
-                              ],
-                            ),
+                            color: cs.primary.withValues(alpha: 0.16),
                           ),
                           child: Icon(
                             Icons.link_rounded,
@@ -185,8 +269,8 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                     Expanded(
                       child: _ActionButton(
                         icon: Icons.link_rounded,
-                        label: 'Generate',
-                        onTap: () {},
+                        label: _generating ? 'Generating…' : 'Generate',
+                        onTap: _generating ? () {} : _handleGenerate,
                         filled: true,
                       ),
                     ),
@@ -195,7 +279,7 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                       child: _ActionButton(
                         icon: Icons.copy_rounded,
                         label: 'Copy',
-                        onTap: () {},
+                        onTap: _handleCopy,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -203,7 +287,7 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                       child: _ActionButton(
                         icon: Icons.share_rounded,
                         label: 'Share',
-                        onTap: () {},
+                        onTap: _handleShare,
                       ),
                     ),
                   ],
@@ -218,20 +302,43 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                   ),
                 ),
                 const SizedBox(height: 12),
-                _RecentLinkCard(
-                  title: 'Consultation Fee',
-                  amount: 'XAF 15,000',
-                  date: 'Oct 24, 2024',
-                  status: 'Active',
-                  accent: cs.primary,
-                ),
-                const SizedBox(height: 12),
-                _RecentLinkCard(
-                  title: 'Product Sale #88',
-                  amount: 'XAF 5,200',
-                  date: 'Oct 22, 2024',
-                  status: 'Paid',
-                  accent: Colors.green,
+                FutureBuilder<List<PaymentLink>>(
+                  future: _linksFuture,
+                  builder: (context, snap) {
+                    if (snap.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    final links = snap.data ?? const [];
+                    if (links.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          'No payment links yet — generate one above.',
+                          style: GoogleFonts.plusJakartaSans(
+                            fontSize: 13,
+                            color: cs.onSurfaceVariant,
+                          ),
+                        ),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        for (final link in links) ...[
+                          _RecentLinkCard(
+                            title: link.description,
+                            amount: money(link.amount, currency: link.currency),
+                            date: DateFormat('MMM d, yyyy').format(link.createdAt),
+                            status: _statusLabel(link.status),
+                            accent: _statusColor(link.status, cs),
+                          ),
+                          const SizedBox(height: 12),
+                        ],
+                      ],
+                    );
+                  },
                 ),
                 const SizedBox(height: 24),
               ]),
@@ -293,22 +400,18 @@ class _FieldBlock extends StatelessWidget {
               color: cs.onSurfaceVariant.withValues(alpha: 0.4),
             ),
             filled: true,
-            fillColor: cs.surface.withValues(alpha: 0.06),
+            fillColor: context.cardMutedColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.14),
-              ),
+              borderSide: BorderSide(color: context.hairlineColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.14),
-              ),
+              borderSide: BorderSide(color: context.hairlineColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: cs.primary, width: 1.4),
+              borderSide: BorderSide(color: cs.primary, width: 1.6),
             ),
           ),
         ),
@@ -398,12 +501,7 @@ class _RecentLinkCard extends StatelessWidget {
             width: 46,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16),
-              gradient: LinearGradient(
-                colors: [
-                  accent.withValues(alpha: 0.24),
-                  accent.withValues(alpha: 0.10),
-                ],
-              ),
+              color: accent.withValues(alpha: 0.16),
             ),
             child: Icon(Icons.link_rounded, color: accent, size: 20),
           ),
@@ -476,9 +574,8 @@ class _TrustChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: cs.surface.withValues(alpha: 0.07),
+        color: context.trackColor,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.12)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
