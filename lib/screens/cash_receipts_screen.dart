@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class CashReceiptsScreen extends StatefulWidget {
@@ -202,12 +203,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                                     width: 38,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(14),
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          accent.withValues(alpha: 0.22),
-                                          accent.withValues(alpha: 0.10),
-                                        ],
-                                      ),
+                                      color: accent.withValues(alpha: 0.16),
                                     ),
                                     child: Icon(
                                       cat['icon'],
@@ -383,22 +379,18 @@ class _FieldRow extends StatelessWidget {
               color: cs.onSurfaceVariant.withValues(alpha: 0.35),
             ),
             filled: true,
-            fillColor: cs.surface.withValues(alpha: 0.06),
+            fillColor: context.cardMutedColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.14),
-              ),
+              borderSide: BorderSide(color: context.hairlineColor),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(
-                color: cs.outlineVariant.withValues(alpha: 0.14),
-              ),
+              borderSide: BorderSide(color: context.hairlineColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: cs.primary, width: 1.4),
+              borderSide: BorderSide(color: cs.primary, width: 1.6),
             ),
           ),
         ),

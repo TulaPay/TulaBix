@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/widgets/ui/ui.dart';
 
 class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({Key? key}) : super(key: key);
@@ -95,18 +96,25 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Analytics'),
+        title: Text('Analytics', style: AppText.screenTitle(size: 28)),
+        toolbarHeight: 72,
         elevation: 0,
         actions: [
-          IconButton(
-            icon: const Icon(Icons.ios_share),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Exporting report as PDF...')),
-              );
-            },
+          Padding(
+            padding: const EdgeInsets.only(right: AppSpacing.lg),
+            child: Center(
+              child: PillButton.dark(
+                'Export',
+                icon: Icons.ios_share_rounded,
+                dense: true,
+                onTap: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Exporting report as PDF...')),
+                  );
+                },
+              ),
+            ),
           ),
-          const SizedBox(width: 8),
         ],
       ),
       body: RefreshIndicator(
@@ -182,20 +190,33 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 const SizedBox(height: 24),
 
                 // Tabs
-                GlassSurface(
-                  borderRadius: BorderRadius.circular(22),
-                  opacity: 0.12,
-                  blur: 12,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 6,
+                Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    color: context.trackColor,
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   child: TabBar(
                     controller: _tabController,
                     labelColor: colorScheme.onSurface,
                     unselectedLabelColor: colorScheme.onSurfaceVariant,
-                    indicatorColor: colorScheme.primary,
+                    labelStyle: AppText.pillLabel().copyWith(fontSize: 13),
+                    unselectedLabelStyle:
+                        AppText.pillLabel().copyWith(fontSize: 13),
                     dividerColor: Colors.transparent,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    splashBorderRadius: BorderRadius.circular(AppRadius.sm),
+                    indicator: BoxDecoration(
+                      color: context.cardColor,
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                      boxShadow: [
+                        BoxShadow(
+                          color: colorScheme.shadow.withValues(alpha: 0.08),
+                          blurRadius: 10,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
                     tabs: const [
                       Tab(text: 'Income'),
                       Tab(text: 'Expenses'),
@@ -442,20 +463,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     return BarChartData(
       alignment: BarChartAlignment.spaceAround,
       maxY: 50,
-      barTouchData: BarTouchData(
-        enabled: true,
-        touchTooltipData: BarTouchTooltipData(
-          getTooltipColor: (group) => colorScheme.surfaceContainerHighest,
-          getTooltipItem: (group, groupIndex, rod, rodIndex) {
-            return BarTooltipItem(
-              '${rod.toY.toInt()}M',
-              TextStyle(
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.bold,
-              ),
-            );
-          },
-        ),
+      barTouchData: AppChart.barTooltip(
+        context,
+        format: (v) => '${v.toInt()}M',
       ),
       titlesData: FlTitlesData(
         show: true,
@@ -502,16 +512,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           sideTitles: SideTitles(showTitles: false),
         ),
       ),
-      gridData: FlGridData(
-        show: true,
-        checkToShowHorizontalLine: (value) => value % 10 == 0,
-        getDrawingHorizontalLine: (value) => FlLine(
-          color: colorScheme.outline.withValues(alpha: 0.2),
-          strokeWidth: 1,
-        ),
-        drawVerticalLine: false,
-      ),
-      borderData: FlBorderData(show: false),
+      gridData: AppChart.grid(context),
+      borderData: AppChart.noBorder,
       barGroups: List.generate(
         values.length,
         (i) => _makeBarData(i, values[i], barColor),
@@ -763,17 +765,15 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   }
 
   BarChartGroupData _makeBarData(int x, double y, Color barColor) {
+    // Highlight the tallest bar, fade the rest — reference chart style.
     return BarChartGroupData(
       x: x,
       barRods: [
         BarChartRodData(
           toY: y,
           color: barColor,
-          width: 16,
-          borderRadius: const BorderRadius.only(
-            topLeft: Radius.circular(4),
-            topRight: Radius.circular(4),
-          ),
+          width: 14,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
         ),
       ],
     );

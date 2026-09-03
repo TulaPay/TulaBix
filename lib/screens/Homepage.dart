@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/screens/cash_receipts_screen.dart';
 import 'package:tulapay/screens/more_actions_screen.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
 import 'package:tulapay/screens/scan_qr_screen.dart';
+import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/custom_drawer.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/widgets/ui/ui.dart';
+
+/// Bundles what the balance card + Recent Activity list need, so both can
+/// come from one Future instead of loading twice.
+class _HomeData {
+  final MerchantBusinessSummary summary;
+  final List<LedgerTransaction> recent;
+  const _HomeData(this.summary, this.recent);
+}
 
 class Homepage extends StatefulWidget {
   final ValueChanged<bool>? onDrawerChanged;
@@ -19,50 +31,48 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   bool _isBalanceVisible = true;
 
+  // seedDemoDataIfEmpty() is idempotent and safe on every launch (see its
+  // own doc comment) — this is exactly the call site it names as replacing
+  // the old hardcoded `_transactions` list.
+  late final Future<_HomeData> _dataFuture = _loadHomeData();
+
+  Future<_HomeData> _loadHomeData() async {
+    await MerchantRepository.instance.seedDemoDataIfEmpty();
+    final summary = await MerchantRepository.instance.businessSummary();
+    final recent = await MerchantRepository.instance.transactions(limit: 5);
+    return _HomeData(summary, recent);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final balanceCardOpacity = isDark ? 0.18 : 0.10;
-    final balanceCardBlur = isDark ? 18.0 : 12.0;
+    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
       onDrawerChanged: widget.onDrawerChanged,
       appBar: AppBar(
-        title: Text(
-          "TulaBiz",
-          style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.w800,
-            fontSize: 22,
-            letterSpacing: -1,
-          ),
-        ),
-        centerTitle: false,
+        titleSpacing: 0,
+        title: Text('TulaBiz', style: AppText.screenTitle(size: 22)),
         leading: Builder(
           builder: (context) => IconButton(
-            icon: Icon(
-              Icons.notes_rounded,
-              color: colorScheme.onSurface,
-              size: 28,
-            ),
+            icon: Icon(Icons.notes_rounded, color: cs.onSurface, size: 26),
             onPressed: () => Scaffold.of(context).openDrawer(),
           ),
         ),
         actions: [
-          _AppBarAction(icon: Icons.notifications_none_rounded, onTap: () {}),
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.notifications_none_rounded, color: cs.onSurface),
+          ),
           Padding(
-            padding: const EdgeInsets.only(right: 16.0),
+            padding: const EdgeInsets.only(right: AppSpacing.lg),
             child: GestureDetector(
               onTap: () {},
               child: CircleAvatar(
-                radius: 20,
-                backgroundColor: colorScheme.primary.withValues(alpha: 0.12),
-                child: Icon(
-                  Icons.person_outline_rounded,
-                  color: colorScheme.primary,
-                  size: 24,
-                ),
+                radius: 18,
+                backgroundColor: cs.primary.withValues(alpha: 0.12),
+                child: Icon(Icons.person_outline_rounded,
+                    color: cs.primary, size: 22),
               ),
             ),
           ),
@@ -70,657 +80,299 @@ class _HomepageState extends State<Homepage> {
       ),
       drawer: const CustomDrawer(),
       body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
+        // physics: const BouncingScrollPhysics(),
         slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-              child: GlassSurface(
-                borderRadius: BorderRadius.circular(30),
-                opacity: balanceCardOpacity,
-                blur: balanceCardBlur,
-                tint: isDark
-                    ? colorScheme.surface
-                    : colorScheme.surfaceContainerHighest,
-                border: Border.all(
-                  color: isDark
-                      ? Colors.white.withValues(alpha: 0.14)
-                      : colorScheme.outline.withValues(alpha: 0.10),
-                ),
-                padding: const EdgeInsets.all(1),
-                child: RevenueCard(
-                  colorScheme: colorScheme,
-                  isBalanceVisible: _isBalanceVisible,
-                  onToggleVisibility: () {
-                    setState(() {
-                      _isBalanceVisible = !_isBalanceVisible;
-                    });
-                  },
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, 0),
+            sliver: SliverToBoxAdapter(
+              child: FutureBuilder<_HomeData>(
+                future: _dataFuture,
+                builder: (context, snap) => _BalanceCard(
+                  isVisible: _isBalanceVisible,
+                  onToggle: () => setState(
+                      () => _isBalanceVisible = !_isBalanceVisible),
+                  summary: snap.data?.summary,
                 ),
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 5),
-              child: _SectionHeader(
-                title: "Quick Actions",
-                action: "More",
-                onTap: () => Navigator.push(
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl, AppSpacing.huge, AppSpacing.xl, AppSpacing.md),
+            sliver: SliverToBoxAdapter(
+              child: SectionHeader(
+                'Quick Actions',
+                actionLabel: 'More',
+                onAction: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const MoreActionsScreen()),
                 ),
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: SizedBox(
-              height: 100,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  _buildQuickAction(
-                    context,
-                    icon: Icons.link,
-                    label: "Payment Links",
-                    color: const Color(0xFF6366F1),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const PaymentLinksScreen(),
-                      ),
-                    ),
-                  ),
-                  _buildQuickAction(
-                    context,
-                    icon: Icons.qr_code_scanner_rounded,
-                    label: "Scan Qr",
-                    color: const Color(0xFFF59E0B),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const ScanQrScreen()),
-                    ),
-                  ),
-                  _buildQuickAction(
-                    context,
-                    icon: Icons.receipt_long_outlined,
-                    label: "Cash Receipts",
-                    color: const Color(0xFFEC4899),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const CashReceiptsScreen(),
-                      ),
-                    ),
-                  ),
-                  _buildQuickAction(
-                    context,
-                    icon: Icons.grid_view_rounded,
-                    label: "More",
-                    color: colorScheme.secondary,
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const MoreActionsScreen(),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 22, 20, 10),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            sliver: SliverToBoxAdapter(
               child: GlassSurface(
-                borderRadius: BorderRadius.circular(24),
-                opacity: 0.12,
-                blur: 12,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                child: _SectionHeader(
-                  title: "Recent Activity",
-                  action: "All",
-                  onTap: () {},
+                padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm, vertical: AppSpacing.md),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _quickAction(context,
+                        icon: Icons.link_rounded,
+                        label: 'Payment Links',
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (_) => const PaymentLinksScreen()))),
+                    _quickAction(context,
+                        icon: Icons.qr_code_scanner_rounded,
+                        label: 'Scan QR',
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (_) => const ScanQrScreen()))),
+                    _quickAction(context,
+                        icon: Icons.receipt_long_outlined,
+                        label: 'Cash Receipts',
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (_) => const CashReceiptsScreen()))),
+                    _quickAction(context,
+                        icon: Icons.grid_view_rounded,
+                        label: 'More',
+                        onTap: () => Navigator.push(context,
+                            MaterialPageRoute(
+                                builder: (_) => const MoreActionsScreen()))),
+                  ],
                 ),
               ),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 2),
-            sliver: SliverList.separated(
-              itemCount: _transactions.length,
-              separatorBuilder: (_, __) => const SizedBox(height: 10),
-              itemBuilder: (context, index) {
-                final tx = _transactions[index];
-                final isIncome = tx['isIncome'] as bool;
-                return _ActivityCard(
-                  title: tx['name'] as String,
-                  date: tx['date'] as String,
-                  amount: tx['amount'] as String,
-                  image: tx['image'] as String,
-                  isIncome: isIncome,
-                );
-              },
+            padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl, AppSpacing.huge, AppSpacing.xl, AppSpacing.md),
+            sliver: SliverToBoxAdapter(
+              child: SectionHeader('Recent Activity',
+                  actionLabel: 'All', onAction: () {}),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 112)),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            sliver: SliverToBoxAdapter(
+              child: FutureBuilder<_HomeData>(
+                future: _dataFuture,
+                builder: (context, snap) {
+                  if (snap.connectionState == ConnectionState.waiting) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 24),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+                  final recent = snap.data?.recent ?? const [];
+                  if (recent.isEmpty) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      child: Text(
+                        'No activity yet — payments will show up here.',
+                        style: AppText.caption(color: cs.onSurfaceVariant),
+                      ),
+                    );
+                  }
+                  return Column(
+                    children: [
+                      for (final tx in recent) ...[
+                        ListRowCard(
+                          icon: tx.isInflow
+                              ? Icons.south_west_rounded
+                              : Icons.north_east_rounded,
+                          iconColor: tx.isInflow
+                              ? const Color(0xFF10B981)
+                              : cs.secondary,
+                          title: tx.counterpartyName ?? tx.typeLabel,
+                          subtitle: DateFormat('MMM d, h:mm a').format(tx.createdAt),
+                          value: signedMoney(tx.signedAmount, currency: tx.amountCurrency),
+                          secondaryValue: tx.status[0].toUpperCase() + tx.status.substring(1),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                      ],
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.section)),
         ],
       ),
     );
   }
 
-  Widget _buildQuickAction(
+  Widget _quickAction(
     BuildContext context, {
     required IconData icon,
     required String label,
-    required Color color,
     required VoidCallback onTap,
   }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
-      child: GlassSurface(
-        borderRadius: BorderRadius.circular(20),
-        opacity: 0.14,
-        blur: 14,
-        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(22),
-          child: SizedBox(
-            width: 75,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  height: 48,
-                  width: 48,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        color.withValues(alpha: 0.26),
-                        color.withValues(alpha: 0.12),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Icon(icon, size: 22, color: color),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.8),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class RevenueCard extends StatelessWidget {
-  const RevenueCard({
-    super.key,
-    required this.colorScheme,
-    required this.isBalanceVisible,
-    required this.onToggleVisibility,
-  });
-
-  final ColorScheme colorScheme;
-  final bool isBalanceVisible;
-  final VoidCallback onToggleVisibility;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
-        gradient: LinearGradient(
-          colors: [
-            colorScheme.primary.withValues(alpha: 0.84),
-            colorScheme.secondary.withValues(alpha: 0.74),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -20,
-            top: -20,
-            child: Container(
-              height: 150,
-              width: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    Colors.white.withValues(alpha: 0.14),
-                    Colors.white.withValues(alpha: 0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(30),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Main Balance",
-                              style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white70,
-                                fontSize: 13,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            GestureDetector(
-                              onTap: onToggleVisibility,
-                              child: Icon(
-                                isBalanceVisible
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                color: Colors.white54,
-                                size: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.baseline,
-                          textBaseline: TextBaseline.alphabetic,
-                          children: [
-                            Text(
-                              "XAF",
-                              style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white60,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              isBalanceVisible ? "2,450,000" : "••••••••",
-                              style: GoogleFonts.plusJakartaSans(
-                                color: Colors.white,
-                                fontSize: 30,
-                                fontWeight: FontWeight.w800,
-                                letterSpacing: isBalanceVisible ? -1 : 2,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.12),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: const Icon(
-                        Icons.wallet_rounded,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 18),
-                GlassSurface(
-                  borderRadius: BorderRadius.circular(20),
-                  opacity: 0.12,
-                  blur: 10,
-                  padding: const EdgeInsets.all(14),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.12),
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _MiniMetric(
-                          title: "Today's Profit",
-                          value: isBalanceVisible
-                              ? "+ XAF 12,500"
-                              : "+ XAF ••••",
-                          valueColor: const Color(0xFFB6F2D3),
-                        ),
-                      ),
-                      Container(height: 30, width: 1, color: Colors.white24),
-                      Expanded(
-                        child: _MiniMetric(
-                          title: "Invoices Sent",
-                          value: "24 Active",
-                          valueColor: Colors.white,
-                        ),
-                      ),
-                      Container(height: 30, width: 1, color: Colors.white24),
-                      Expanded(
-                        child: _MiniMetric(
-                          title: "Avg. Ticket",
-                          value: "XAF 8,200",
-                          valueColor: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _MiniMetric extends StatelessWidget {
-  final String title;
-  final String value;
-  final Color valueColor;
-
-  const _MiniMetric({
-    required this.title,
-    required this.value,
-    required this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.plusJakartaSans(
-              color: Colors.white70,
-              fontSize: 10,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: GoogleFonts.plusJakartaSans(
-              color: valueColor,
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _SectionHeader extends StatelessWidget {
-  final String title;
-  final String? action;
-  final VoidCallback? onTap;
-
-  const _SectionHeader({required this.title, this.action, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          title,
-          style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
-            letterSpacing: -0.5,
-          ),
-        ),
-        if (action != null)
-          TextButton(
-            onPressed: onTap,
-            child: Text(
-              action!,
-              style: GoogleFonts.plusJakartaSans(
-                fontWeight: FontWeight.w700,
-                color: colorScheme.primary,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-}
-
-class _ActivityCard extends StatelessWidget {
-  final String title;
-  final String date;
-  final String amount;
-  final String image;
-  final bool isIncome;
-
-  const _ActivityCard({
-    required this.title,
-    required this.date,
-    required this.amount,
-    required this.image,
-    required this.isIncome,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final accent = isIncome ? const Color(0xFF10B981) : colorScheme.secondary;
-
-    return GlassSurface(
-      borderRadius: BorderRadius.circular(28),
-      opacity: 0.15,
-      blur: 18,
-      padding: const EdgeInsets.all(14),
-      border: Border.all(
-        color: accent.withValues(alpha: 0.12),
-      ),
-      child: Stack(
-        children: [
-          Positioned(
-            right: -24,
-            top: -18,
-            child: Container(
-              height: 92,
-              width: 92,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    accent.withValues(alpha: 0.14),
-                    accent.withValues(alpha: 0.0),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          Row(
+    final cs = Theme.of(context).colorScheme;
+    return Expanded(
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                height: 56,
-                width: 56,
+                height: 42,
+                width: 42,
                 decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      accent.withValues(alpha: 0.28),
-                      accent.withValues(alpha: 0.12),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(18),
+                  color: context.trackColor,
+                  shape: BoxShape.circle,
                 ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: Image.asset(
-                    image,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) => Icon(
-                      Icons.account_balance_wallet_rounded,
-                      color: accent,
-                    ),
-                  ),
-                ),
+                child: Icon(icon, size: 19, color: cs.onSurface),
               ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 15,
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      date,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: colorScheme.onSurfaceVariant.withValues(alpha: 0.68),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: accent.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(999),
-                          ),
-                          child: Text(
-                            isIncome ? 'Income' : 'Expense',
-                            style: GoogleFonts.plusJakartaSans(
-                              fontSize: 10,
-                              fontWeight: FontWeight.w800,
-                              color: accent,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          isIncome ? 'Completed' : 'Processed',
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w700,
-                            color: colorScheme.onSurfaceVariant.withValues(alpha: 0.65),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+              const SizedBox(height: 6),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.caption(color: cs.onSurfaceVariant).copyWith(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  height: 1.15,
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Text(
-                    amount,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 15,
-                      color: isIncome ? accent : colorScheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Icon(
-                    isIncome ? Icons.trending_up_rounded : Icons.trending_down_rounded,
-                    size: 18,
-                    color: accent.withValues(alpha: 0.8),
-                  ),
-                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
 }
 
-const _transactions = [
-  {
-    'name': 'MTN Mobile Money',
-    'date': 'Today, 14:20',
-    'amount': '+ XAF 25,000',
-    'image': 'assets/images/mtn.jpeg',
-    'isIncome': true,
-  },
-  {
-    'name': 'Mastercard Payment',
-    'date': 'Today, 12:45',
-    'amount': '- XAF 4,500',
-    'image': 'assets/images/mastercard.jpeg',
-    'isIncome': false,
-  },
-  {
-    'name': 'Subscription Refill',
-    'date': 'Yesterday, 09:20',
-    'amount': '- XAF 1,200',
-    'image': 'assets/images/card.png',
-    'isIncome': false,
-  },
-];
+class _BalanceCard extends StatelessWidget {
+  final bool isVisible;
+  final VoidCallback onToggle;
+  final MerchantBusinessSummary? summary;
 
-class _AppBarAction extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _AppBarAction({required this.icon, required this.onTap});
+  const _BalanceCard({required this.isVisible, required this.onToggle, this.summary});
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(right: 8),
-      child: Container(
-        decoration: BoxDecoration(
-          color: colorScheme.surface.withValues(alpha: 0.16),
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
-        ),
-        child: IconButton(
-          onPressed: onTap,
-          icon: Icon(icon, color: colorScheme.onSurface, size: 22),
+    return GradientHeroCard(
+      padding: const EdgeInsets.all(AppSpacing.xxl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Text('MAIN BALANCE',
+                      style: AppText.microLabel(
+                          color: Colors.white.withValues(alpha: 0.75))),
+                  const SizedBox(width: AppSpacing.sm),
+                  GestureDetector(
+                    onTap: onToggle,
+                    child: Icon(
+                      isVisible
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.white.withValues(alpha: 0.6),
+                      size: 16,
+                    ),
+                  ),
+                ],
+              ),
+              Container(
+                padding: const EdgeInsets.all(AppSpacing.md),
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.14),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                ),
+                child: const Icon(Icons.wallet_rounded,
+                    color: Colors.white, size: 22),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.baseline,
+            textBaseline: TextBaseline.alphabetic,
+            children: [
+              Text('XAF ',
+                  style: AppText.cardTitle(
+                      size: 15, color: Colors.white.withValues(alpha: 0.7))),
+              Text(
+                isVisible
+                    ? (summary == null ? '••••••••' : amountOnly(summary!.balance))
+                    : '••••••••',
+                style: AppText.hero(size: 34, color: Colors.white),
+              ),
+            ],
+          ),
+          const SizedBox(height: AppSpacing.xl),
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.12),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+            ),
+            child: Row(
+              children: [
+                _miniMetric(
+                  '30-Day Revenue',
+                  isVisible
+                      ? (summary == null ? '••••' : signedMoney(summary!.revenue30d))
+                      : '+ XAF ••••',
+                  const Color(0xFFB6F2D3),
+                ),
+                _divider(),
+                _miniMetric(
+                  'Transactions',
+                  summary == null ? '••' : '${summary!.transactionCount30d} (30d)',
+                  Colors.white,
+                ),
+                _divider(),
+                _miniMetric(
+                  'Avg. Ticket',
+                  summary == null ? '••••' : money(summary!.avgTicket),
+                  Colors.white,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _divider() =>
+      Container(height: 28, width: 1, color: Colors.white24);
+
+  Widget _miniMetric(String title, String value, Color valueColor) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.caption(
+                    color: Colors.white.withValues(alpha: 0.7))
+                    .copyWith(fontSize: 10)),
+            const SizedBox(height: 4),
+            Text(value,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppText.cardTitle(size: 13, color: valueColor)),
+          ],
         ),
       ),
     );

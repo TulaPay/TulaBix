@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/screens/onboarding.dart';
+import 'package:tulapay/themes/app_theme.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -38,21 +38,13 @@ class _SplashScreenState extends State<SplashScreen> {
               // Brand Logo/Name Section
               Text(
                 "TulaPay",
-                style: GoogleFonts.inter(
-                  fontSize: 42,
-                  fontWeight: FontWeight.bold,
-                  color: colorScheme.onPrimary,
-                  letterSpacing: -1,
-                ),
+                style: AppText.hero(size: 42, color: colorScheme.onPrimary),
               ),
               const SizedBox(height: 8),
               Text(
                 "Securely Connected",
-                style: GoogleFonts.inter(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w500,
+                style: AppText.microLabel(
                   color: colorScheme.onPrimary.withValues(alpha: 0.8),
-                  letterSpacing: 1.2,
                 ),
               ),
               const Spacer(flex: 2),
@@ -70,10 +62,8 @@ class _SplashScreenState extends State<SplashScreen> {
                     const SizedBox(width: 8),
                     Text(
                       "Powered by TulaPay",
-                      style: GoogleFonts.inter(
-                        fontSize: 14,
+                      style: AppText.caption(
                         color: colorScheme.onPrimary.withValues(alpha: 0.7),
-                        fontWeight: FontWeight.w400,
                       ),
                     ),
                   ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class ScanQrScreen extends StatelessWidget {
@@ -45,12 +46,7 @@ class ScanQrScreen extends StatelessWidget {
                       width: 54,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(18),
-                        gradient: LinearGradient(
-                          colors: [
-                            cs.primary.withValues(alpha: 0.22),
-                            cs.secondary.withValues(alpha: 0.12),
-                          ],
-                        ),
+                        color: cs.primary.withValues(alpha: 0.16),
                       ),
                       child: Icon(
                         Icons.qr_code_2_rounded,
@@ -244,9 +240,8 @@ class _StatBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: cs.surface.withValues(alpha: 0.07),
+        color: context.trackColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: cs.outlineVariant.withValues(alpha: 0.12)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

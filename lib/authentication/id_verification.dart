@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tulapay/authentication/verification_in_progress_page.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
@@ -12,6 +13,52 @@ class IdVerification extends StatefulWidget {
 
 class _IdVerificationState extends State<IdVerification> {
   String? _selectedDocument;
+  XFile? _capturedFile;
+
+  Future<void> _capturePhoto() async {
+    final file = await showModalBottomSheet<XFile?>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        final cs = Theme.of(context).colorScheme;
+        return SafeArea(
+          child: GlassSurface(
+            borderRadius: BorderRadius.circular(24),
+            opacity: 0.18,
+            blur: 18,
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: Icon(Icons.photo_camera_outlined, color: cs.primary),
+                  title: const Text("Take a photo"),
+                  onTap: () async {
+                    final picked = await ImagePicker()
+                        .pickImage(source: ImageSource.camera, imageQuality: 85);
+                    if (context.mounted) Navigator.pop(context, picked);
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.photo_library_outlined, color: cs.primary),
+                  title: const Text("Choose from gallery"),
+                  onTap: () async {
+                    final picked = await ImagePicker()
+                        .pickImage(source: ImageSource.gallery, imageQuality: 85);
+                    if (context.mounted) Navigator.pop(context, picked);
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (file != null) {
+      setState(() => _capturedFile = file);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,15 +126,59 @@ class _IdVerificationState extends State<IdVerification> {
                         title: "International Passport",
                         icon: Icons.public_outlined,
                       ),
+                      if (_selectedDocument != null) ...[
+                        const SizedBox(height: 20),
+                        InkWell(
+                          onTap: _capturePhoto,
+                          borderRadius: BorderRadius.circular(18),
+                          child: GlassSurface(
+                            borderRadius: BorderRadius.circular(18),
+                            opacity: 0.12,
+                            blur: 12,
+                            border: Border.all(
+                              color: _capturedFile != null
+                                  ? cs.primary
+                                  : cs.outline.withValues(alpha: 0.16),
+                              width: _capturedFile != null ? 2 : 1,
+                            ),
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  _capturedFile != null
+                                      ? Icons.check_circle_rounded
+                                      : Icons.camera_alt_outlined,
+                                  color: cs.primary,
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _capturedFile != null
+                                        ? "Document captured — tap to retake"
+                                        : "Take a photo or upload your document",
+                                    style: GoogleFonts.plusJakartaSans(
+                                      fontWeight: FontWeight.w700,
+                                      color: cs.onSurface,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                       const SizedBox(height: 24),
                       ElevatedButton(
-                        onPressed: _selectedDocument == null
+                        onPressed: (_selectedDocument == null || _capturedFile == null)
                             ? null
                             : () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const VerificationInProgressPage(),
+                                    builder: (_) => VerificationInProgressPage(
+                                      docType: _selectedDocument!,
+                                      documentFile: _capturedFile!,
+                                    ),
                                   ),
                                 );
                               },
@@ -151,12 +242,7 @@ class _IdVerificationState extends State<IdVerification> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    cs.primary.withValues(alpha: isSelected ? 0.30 : 0.18),
-                    cs.primary.withValues(alpha: 0.08),
-                  ],
-                ),
+                color: cs.primary.withValues(alpha: isSelected ? 0.24 : 0.14),
                 shape: BoxShape.circle,
               ),
               child: Icon(

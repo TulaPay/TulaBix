@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/kyc_onboarding.dart';
+import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class CreatePinScreen extends StatefulWidget {
@@ -14,9 +16,11 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
   String _pin = "";
   String _confirmPin = "";
   bool _isConfirming = false;
+  bool _isSubmitting = false;
   String _errorMessage = "";
 
   void _onKeyTap(String val) {
+    if (_isSubmitting) return;
     setState(() {
       _errorMessage = "";
       if (!_isConfirming) {
@@ -56,14 +60,27 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
     });
   }
 
-  void _verifyPin() {
-    if (_pin == _confirmPin) {
-      _showSuccessDialog();
-    } else {
+  Future<void> _verifyPin() async {
+    if (_pin != _confirmPin) {
       setState(() {
         _confirmPin = "";
         _errorMessage = "PINs do not match. Please try again.";
       });
+      return;
+    }
+
+    setState(() => _isSubmitting = true);
+    try {
+      await AuthService.instance.setTransactionPin(_pin);
+      if (!mounted) return;
+      _showSuccessDialog();
+    } on PostgrestException catch (e) {
+      setState(() {
+        _confirmPin = "";
+        _errorMessage = e.message;
+      });
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -163,14 +180,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                         height: 72,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              cs.primary.withValues(alpha: 0.28),
-                              cs.secondary.withValues(alpha: 0.12),
-                            ],
-                          ),
+                          color: cs.primary.withValues(alpha: 0.16),
                         ),
                         child: Icon(Icons.pin_rounded, color: cs.primary, size: 34),
                       ),
@@ -205,6 +215,15 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                         children: List.generate(6, (index) => _buildIndicator(index)),
                       ),
                       const SizedBox(height: 24),
+                      if (_isSubmitting)
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 12),
+                          child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          ),
+                        ),
                       if (_errorMessage.isNotEmpty)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),

@@ -102,15 +102,20 @@ class StatGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final rows = <Widget>[];
     for (var i = 0; i < cards.length; i += 2) {
-      rows.add(Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(child: cards[i]),
-          SizedBox(width: spacing),
-          Expanded(
-            child: i + 1 < cards.length ? cards[i + 1] : const SizedBox(),
-          ),
-        ],
+      // IntrinsicHeight gives the row a bounded height (its tallest card) so
+      // CrossAxisAlignment.stretch can equalise the two cards instead of
+      // forcing an infinite height inside the scrolling column.
+      rows.add(IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(child: cards[i]),
+            SizedBox(width: spacing),
+            Expanded(
+              child: i + 1 < cards.length ? cards[i + 1] : const SizedBox(),
+            ),
+          ],
+        ),
       ));
       if (i + 2 < cards.length) rows.add(SizedBox(height: spacing));
     }

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -20,7 +19,6 @@ class _ProductsScreenState extends State<ProductsScreen>
   late List<Product> _filteredProducts;
   String _activeCategory = 'All';
   String _searchQuery = '';
-  bool _isGrid = true;
   final TextEditingController _searchCtrl = TextEditingController();
 
   final List<String> _categories = [
@@ -59,43 +57,11 @@ class _ProductsScreenState extends State<ProductsScreen>
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
       body: Stack(
         children: [
-          // Premium Background Branded Decorations
-          Positioned(
-            top: 150,
-            right: -80,
-            child: Opacity(
-              opacity: 0.06,
-              child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 25, sigmaY: 25),
-                child: Image.asset(
-                  'assets/images/TULAPAYICON_SVG.png',
-                  width: 350,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 100,
-            left: -60,
-            child: Opacity(
-              opacity: 0.04,
-              child: ImageFiltered(
-                imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-                child: Image.asset(
-                  'assets/images/TULAPAYICON_SVG.png',
-                  width: 250,
-                  color: colorScheme.primary,
-                ),
-              ),
-            ),
-          ),
           CustomScrollView(
             physics: const BouncingScrollPhysics(),
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -127,7 +93,7 @@ class _ProductsScreenState extends State<ProductsScreen>
       pinned: true,
       elevation: 0,
       scrolledUnderElevation: 0,
-      backgroundColor: theme.scaffoldBackgroundColor.withValues(alpha: 0.8),
+      backgroundColor: theme.scaffoldBackgroundColor,
       leadingWidth: 60,
       leading: Align(
         alignment: Alignment.centerLeft,
@@ -143,27 +109,6 @@ class _ProductsScreenState extends State<ProductsScreen>
       flexibleSpace: FlexibleSpaceBar(
         expandedTitleScale: 1.2,
         titlePadding: const EdgeInsets.only(left: 20, bottom: 16, right: 20),
-        background: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Stack(
-              children: [
-                Positioned(
-                  right: 20,
-                  bottom: 40,
-                  child: Opacity(
-                    opacity: 0.08,
-                    child: Image.asset(
-                      'assets/images/TULAPAYICON_SVG.png',
-                      width: 120,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
         title: LayoutBuilder(
           builder: (context, constraints) {
             final isExpanded = constraints.maxHeight > 100;
@@ -188,9 +133,9 @@ class _ProductsScreenState extends State<ProductsScreen>
                         'Products',
                         style: GoogleFonts.plusJakartaSans(
                           color: colorScheme.onSurface,
-                          fontWeight: FontWeight.w900,
-                          fontSize: 16,
-                          letterSpacing: -0.5,
+                          fontWeight: FontWeight.w800,
+                          fontSize: isExpanded ? 26 : 20,
+                          letterSpacing: -1,
                         ),
                       ),
                     ],
@@ -462,20 +407,17 @@ class _ProductsScreenState extends State<ProductsScreen>
     return SliverPersistentHeader(
       pinned: true,
       delegate: _PremiumFilterDelegate(
-        child: ClipRect(
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                color: theme.scaffoldBackgroundColor.withValues(alpha: 0.8),
-                border: Border(
-                  bottom: BorderSide(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
-                    width: 1,
-                  ),
-                ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: theme.scaffoldBackgroundColor,
+            border: Border(
+              bottom: BorderSide(
+                color: theme.colorScheme.onSurface.withValues(alpha: 0.05),
+                width: 1,
               ),
-              child: ListView.builder(
+            ),
+          ),
+          child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 physics: const BouncingScrollPhysics(),
                 padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -529,13 +471,12 @@ class _ProductsScreenState extends State<ProductsScreen>
               ),
             ),
           ),
-        ),
-      ),
     );
   }
 
   // ─────────────────────────────────────────────────────────────────────────────
   // 5. Product Grid/List
+
   // ─────────────────────────────────────────────────────────────────────────────
   Widget _buildProductSection(BuildContext context, ThemeData theme) {
     return SliverPadding(
@@ -714,14 +655,7 @@ class _ProductProCard extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            theme.colorScheme.primary.withValues(alpha: 0.05),
-                            theme.colorScheme.surface,
-                          ],
-                        ),
+                        color: theme.colorScheme.surfaceContainerLow,
                       ),
                       child: _ProductImage(
                         imagePath: product.imagePath,

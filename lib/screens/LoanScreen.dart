@@ -2,33 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-// ─── Custom Background Pattern ───────────────────────────────────────────────
-
-class _GeometricPatternPainter extends CustomPainter {
-  final Color color;
-  _GeometricPatternPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color.withValues(alpha: 0.015)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    for (var i = 0.0; i < size.width; i += 50) {
-      for (var j = 0.0; j < size.height; j += 50) {
-        canvas.drawCircle(Offset(i, j), 1.5, paint);
-        if ((i + j) % 100 == 0) {
-          canvas.drawRect(Rect.fromLTWH(i, j, 12, 12), paint);
-        }
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 class Loanscreen extends StatefulWidget {
@@ -135,31 +108,25 @@ class _LoanscreenState extends State<Loanscreen> {
     final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: cs.surface,
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _GeometricPatternPainter(cs.primary),
+      backgroundColor: Colors.transparent,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildAppBar(context, cs),
+            Expanded(
+              child: SingleChildScrollView(
+                physics: const BouncingScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                child: _isSubmitting
+                    ? _buildVettingState(cs)
+                    : (_hasActiveLoan
+                        ? _buildActiveLoanView(cs)
+                        : _buildLoanApplicationView(cs)),
+              ),
             ),
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                _buildAppBar(context, cs),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                    child: _isSubmitting 
-                      ? _buildVettingState(cs)
-                      : (_hasActiveLoan ? _buildActiveLoanView(cs) : _buildLoanApplicationView(cs)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

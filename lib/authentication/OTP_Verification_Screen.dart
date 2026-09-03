@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/create_pin_Screen.dart';
-import 'package:tulapay/screens/Navigation_bar.dart';
+import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
+// Used only to confirm the phone number entered at signup — ordinary sign-in
+// is password-only and never reaches this screen (see AuthService).
 class OtpVerificationScreen extends StatefulWidget {
   final String phoneNumber;
-  final bool isSignUp;
 
   const OtpVerificationScreen({
     super.key,
-    this.phoneNumber = "+237 600 000 000",
-    this.isSignUp = false,
+    this.phoneNumber = "+237600000000",
   });
 
   @override
@@ -65,32 +66,47 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     super.dispose();
   }
 
-  void _verifyOtp() async {
+  Future<void> _verifyOtp() async {
     final otp = _controllers.map((e) => e.text).join();
-    if (otp.length == 6) {
-      setState(() => _isLoading = true);
-      await Future.delayed(const Duration(seconds: 2));
-      if (mounted) {
-        setState(() => _isLoading = false);
-        if (widget.isSignUp) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (_) => const CreatePinScreen()),
-          );
-        } else {
-          Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (_) => const Navigation_Bar()),
-            (route) => false,
-          );
-        }
-      }
-    } else {
+    if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text("Please enter the complete 6-digit code"),
           behavior: SnackBarBehavior.floating,
         ),
+      );
+      return;
+    }
+
+    setState(() => _isLoading = true);
+    try {
+      await AuthService.instance.verifySignupOtp(
+        phone: widget.phoneNumber,
+        token: otp,
+      );
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const CreatePinScreen()),
+      );
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
+      );
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _resendOtp() async {
+    try {
+      await AuthService.instance.resendSignupOtp(phone: widget.phoneNumber);
+      _startTimer();
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
       );
     }
   }
@@ -131,14 +147,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         height: 72,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              cs.primary.withValues(alpha: 0.28),
-                              cs.secondary.withValues(alpha: 0.12),
-                            ],
-                          ),
+                          color: cs.primary.withValues(alpha: 0.16),
                         ),
                         child: Icon(
                           Icons.lock_person_rounded,
@@ -194,7 +203,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           ),
                           _canResend
                               ? GestureDetector(
-                                  onTap: _startTimer,
+                                  onTap: _resendOtp,
                                   child: Text(
                                     "Resend",
                                     style: TextStyle(

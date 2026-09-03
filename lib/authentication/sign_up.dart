@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/OTP_Verification_Screen.dart';
 import 'package:tulapay/authentication/sign_in.dart';
+import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class Country {
@@ -23,6 +25,7 @@ class _SignUpState extends State<SignUp> {
   final _formKey = GlobalKey<FormState>();
   bool _obscurePassword = true;
   bool _acceptTerms = false;
+  bool _isSubmitting = false;
 
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
@@ -137,28 +140,43 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  void _handleSignUp() {
-    if (_formKey.currentState!.validate()) {
-      if (!_acceptTerms) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Please accept the Terms and Conditions to proceed'),
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        return;
-      }
-      // Route to OTP verification immediately after basic registration
+  Future<void> _handleSignUp() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    if (!_acceptTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please accept the Terms and Conditions to proceed'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final fullPhoneNumber = "${_selectedCountry.code}${_phoneController.text}";
+
+    setState(() => _isSubmitting = true);
+    try {
+      await AuthService.instance.signUp(
+        phone: fullPhoneNumber,
+        password: _passwordController.text,
+        fullName: _nameController.text,
+        email: _emailController.text,
+      );
+      if (!mounted) return;
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => OtpVerificationScreen(
-            phoneNumber: "${_selectedCountry.code} ${_phoneController.text}",
-            isSignUp: true,
-          ),
+          builder: (_) => OtpVerificationScreen(phoneNumber: fullPhoneNumber),
         ),
       );
-      debugPrint("Registering with: ${_selectedCountry.code}${_phoneController.text}");
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -203,14 +221,7 @@ class _SignUpState extends State<SignUp> {
                               height: 64,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20),
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    colorScheme.primary.withValues(alpha: 0.26),
-                                    colorScheme.secondary.withValues(alpha: 0.12),
-                                  ],
-                                ),
+                                color: colorScheme.primary.withValues(alpha: 0.16),
                               ),
                               child: Icon(
                                 Icons.person_add_alt_1_rounded,
@@ -426,8 +437,14 @@ class _SignUpState extends State<SignUp> {
                             const SizedBox(height: 22),
 
                             ElevatedButton(
-                              onPressed: _handleSignUp,
-                              child: const Text("Create Account"),
+                              onPressed: _isSubmitting ? null : _handleSignUp,
+                              child: _isSubmitting
+                                  ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                    )
+                                  : const Text("Create Account"),
                             ),
                             const SizedBox(height: 14),
 

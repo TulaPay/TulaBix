@@ -60,12 +60,7 @@ class HelpScreen extends StatelessWidget {
                       width: 64,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(
-                          colors: [
-                            colorScheme.primary.withValues(alpha: 0.28),
-                            colorScheme.secondary.withValues(alpha: 0.12),
-                          ],
-                        ),
+                        color: colorScheme.primary.withValues(alpha: 0.16),
                       ),
                       child: Icon(
                         Icons.help_center_rounded,
@@ -127,12 +122,7 @@ class HelpScreen extends StatelessWidget {
                         width: 48,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(16),
-                          gradient: LinearGradient(
-                            colors: [
-                              colorScheme.primary.withValues(alpha: 0.22),
-                              colorScheme.secondary.withValues(alpha: 0.10),
-                            ],
-                          ),
+                          color: colorScheme.primary.withValues(alpha: 0.16),
                         ),
                         child: Icon(
                           topic.icon,
@@ -256,12 +246,7 @@ class _ActionTile extends StatelessWidget {
                 width: 52,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(18),
-                  gradient: LinearGradient(
-                    colors: [
-                      colorScheme.primary.withValues(alpha: 0.22),
-                      colorScheme.secondary.withValues(alpha: 0.12),
-                    ],
-                  ),
+                  color: colorScheme.primary.withValues(alpha: 0.16),
                 ),
                 child: Icon(icon, color: colorScheme.primary),
               ),

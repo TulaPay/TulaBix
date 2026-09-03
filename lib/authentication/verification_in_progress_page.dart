@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tulapay/authentication/business_details.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class VerificationInProgressPage extends StatefulWidget {
-  const VerificationInProgressPage({super.key});
+  final String docType;
+  final XFile documentFile;
+
+  const VerificationInProgressPage({
+    super.key,
+    required this.docType,
+    required this.documentFile,
+  });
 
   @override
   State<VerificationInProgressPage> createState() =>
@@ -44,14 +52,7 @@ class _VerificationInProgressPageState extends State<VerificationInProgressPage>
                                   padding: const EdgeInsets.all(24),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(24),
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        cs.primary.withValues(alpha: 0.22),
-                                        cs.secondary.withValues(alpha: 0.12),
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
+                                    color: cs.primary.withValues(alpha: 0.16),
                                   ),
                                   child: Column(
                                     children: [
@@ -163,7 +164,10 @@ class _VerificationInProgressPageState extends State<VerificationInProgressPage>
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const BusinessDetails(),
+                              builder: (_) => BusinessDetails(
+                                docType: widget.docType,
+                                documentFile: widget.documentFile,
+                              ),
                             ),
                           );
                         },
@@ -205,12 +209,7 @@ class _VerificationInProgressPageState extends State<VerificationInProgressPage>
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  cs.primary.withValues(alpha: 0.22),
-                  cs.primary.withValues(alpha: 0.08),
-                ],
-              ),
+              color: cs.primary.withValues(alpha: 0.16),
               shape: BoxShape.circle,
             ),
             child: Icon(icon, color: cs.primary, size: 24),

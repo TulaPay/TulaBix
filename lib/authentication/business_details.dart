@@ -1,10 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tulapay/screens/Navigation_bar.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tulapay/authentication/settlement_account_screen.dart';
+import 'package:tulapay/services/merchant_service.dart';
+import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class BusinessDetails extends StatefulWidget {
-  const BusinessDetails({super.key});
+  final String docType;
+  final XFile documentFile;
+
+  const BusinessDetails({
+    super.key,
+    required this.docType,
+    required this.documentFile,
+  });
 
   @override
   State<BusinessDetails> createState() => _BusinessDetailsState();
@@ -12,12 +22,14 @@ class BusinessDetails extends StatefulWidget {
 
 class _BusinessDetailsState extends State<BusinessDetails> {
   final _formKey = GlobalKey<FormState>();
+  bool _isSubmitting = false;
   final TextEditingController _ownerNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _businessNameController = TextEditingController();
   final TextEditingController _registrationNumberController = TextEditingController();
   final TextEditingController _taxIdController = TextEditingController();
-  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _streetController = TextEditingController();
+  final TextEditingController _cityController = TextEditingController();
 
   String? _selectedCategory;
   final List<String> _categories = [
@@ -38,17 +50,49 @@ class _BusinessDetailsState extends State<BusinessDetails> {
     _businessNameController.dispose();
     _registrationNumberController.dispose();
     _taxIdController.dispose();
-    _addressController.dispose();
+    _streetController.dispose();
+    _cityController.dispose();
     super.dispose();
   }
 
-  void _handleContinue() {
-    if (_formKey.currentState!.validate()) {
+  Future<void> _handleContinue() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isSubmitting = true);
+    try {
+      final merchantId = await MerchantService.instance.createMerchantProfile(
+        businessName: _businessNameController.text,
+        ownerName: _ownerNameController.text,
+        ownerPhone: _phoneController.text,
+        businessCategory: _selectedCategory!,
+        registrationNumber: _registrationNumberController.text,
+        taxId: _taxIdController.text,
+        addressStreet: _streetController.text,
+        addressCity: _cityController.text,
+        ownerEmail: supabase.auth.currentUser?.userMetadata?['email'] as String?,
+      );
+
+      await MerchantService.instance.uploadIdentityDocument(
+        merchantId: merchantId,
+        docType: widget.docType,
+        file: widget.documentFile,
+      );
+
+      if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const Navigation_Bar()),
+        MaterialPageRoute(
+          builder: (_) => SettlementAccountScreen(merchantId: merchantId),
+        ),
         (route) => false,
       );
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('$e'), behavior: SnackBarBehavior.floating),
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -172,15 +216,27 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                               (val == null || val.isEmpty) ? "Tax ID is required" : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Business Address"),
+                        _buildLabel("Street Address"),
                         TextFormField(
-                          controller: _addressController,
+                          controller: _streetController,
                           decoration: const InputDecoration(
-                            hintText: "Street, City, Country",
+                            hintText: "e.g. 12 Rue de la Paix",
                             prefixIcon: Icon(Icons.location_on_outlined),
                           ),
                           validator: (val) =>
-                              (val == null || val.isEmpty) ? "Address is required" : null,
+                              (val == null || val.isEmpty) ? "Street address is required" : null,
+                        ),
+                        const SizedBox(height: 16),
+                        _buildLabel("City"),
+                        TextFormField(
+                          controller: _cityController,
+                          textCapitalization: TextCapitalization.words,
+                          decoration: const InputDecoration(
+                            hintText: "e.g. Douala",
+                            prefixIcon: Icon(Icons.location_city_outlined),
+                          ),
+                          validator: (val) =>
+                              (val == null || val.isEmpty) ? "City is required" : null,
                         ),
                         const SizedBox(height: 16),
                         _buildLabel("Business Category"),
@@ -226,8 +282,14 @@ class _BusinessDetailsState extends State<BusinessDetails> {
                         ),
                         const SizedBox(height: 24),
                         ElevatedButton(
-                          onPressed: _handleContinue,
-                          child: const Text("Continue"),
+                          onPressed: _isSubmitting ? null : _handleContinue,
+                          child: _isSubmitting
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Text("Continue"),
                         ),
                       ],
                     ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tulapay/authentication/OTP_Verification_Screen.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/forgot_password_Screen.dart';
 import 'package:tulapay/authentication/sign_up.dart';
+import 'package:tulapay/screens/Navigation_bar.dart';
+import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class Country {
@@ -23,6 +25,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final _formKey = GlobalKey<FormState>();
   bool _isPasswordVisible = false;
+  bool _isSubmitting = false;
 
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -132,21 +135,31 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  void _handleSignIn() {
-    if (_formKey.currentState!.validate()) {
-      final fullPhoneNumber =
-          "${_selectedCountry.code} ${_phoneController.text}";
-      debugPrint("Signing in: $fullPhoneNumber");
+  Future<void> _handleSignIn() async {
+    if (!_formKey.currentState!.validate()) return;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => OtpVerificationScreen(
-            phoneNumber: fullPhoneNumber,
-            isSignUp: false,
-          ),
-        ),
+    final fullPhoneNumber =
+        "${_selectedCountry.code}${_phoneController.text}";
+
+    setState(() => _isSubmitting = true);
+    try {
+      await AuthService.instance.signInWithPassword(
+        phone: fullPhoneNumber,
+        password: _passwordController.text,
       );
+      if (!mounted) return;
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (_) => const Navigation_Bar()),
+        (route) => false,
+      );
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
     }
   }
 
@@ -188,14 +201,7 @@ class _SignInState extends State<SignIn> {
                           height: 64,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            gradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                colorScheme.primary.withValues(alpha: 0.26),
-                                colorScheme.secondary.withValues(alpha: 0.12),
-                              ],
-                            ),
+                            color: colorScheme.primary.withValues(alpha: 0.16),
                           ),
                           child: Icon(
                             Icons.lock_person_rounded,
@@ -321,8 +327,14 @@ class _SignInState extends State<SignIn> {
                         const SizedBox(height: 18),
 
                         ElevatedButton(
-                          onPressed: _handleSignIn,
-                          child: const Text("Sign In"),
+                          onPressed: _isSubmitting ? null : _handleSignIn,
+                          child: _isSubmitting
+                              ? const SizedBox(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                )
+                              : const Text("Sign In"),
                         ),
                         const SizedBox(height: 14),
 

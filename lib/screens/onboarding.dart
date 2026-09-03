@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/screens/select_language.dart';
+import 'package:tulapay/themes/app_theme.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -80,21 +80,16 @@ class OnBoardingPageState extends State<OnBoardingPage> {
                   // Logo or App Name
                   Text(
                     "TulaBiz",
-                    style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w800,
-                      fontSize: 18,
-                      color: colorScheme.primary,
-                    ),
+                    style: AppText.screenTitle(
+                        size: 18, color: colorScheme.primary),
                   ),
                   if (_currentPage < _onboardingData.length - 1)
                     TextButton(
                       onPressed: _onFinish,
                       child: Text(
                         "Skip",
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w600,
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                        style: AppText.pillLabel(
+                            color: colorScheme.onSurfaceVariant),
                       ),
                     ),
                 ],
@@ -139,23 +134,16 @@ class OnBoardingPageState extends State<OnBoardingPage> {
                               Text(
                                 _onboardingData[index]['title']!,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -1,
-                                  color: colorScheme.onSurface,
-                                ),
+                                style: AppText.screenTitle(
+                                    size: 28, color: colorScheme.onSurface),
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 _onboardingData[index]['subtitle']!,
                                 textAlign: TextAlign.center,
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: colorScheme.onSurfaceVariant,
-                                  height: 1.5,
-                                ),
+                                style: AppText.body(
+                                    size: 16,
+                                    color: colorScheme.onSurfaceVariant),
                               ),
                             ],
                           ),

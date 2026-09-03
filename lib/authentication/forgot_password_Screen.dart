@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/sign_in.dart';
+import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -35,6 +37,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController _confirmPinController = TextEditingController();
   bool _obscurePin = true;
   bool _obscureConfirmPin = true;
+  bool _isSubmitting = false;
+
+  String get _fullPhone => "${_selectedCountry.code}${_phoneController.text}";
 
   @override
   void initState() {
@@ -56,16 +61,65 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     super.dispose();
   }
 
-  void _nextStep() {
-    if (_currentStep < 2) {
-      setState(() => _currentStep++);
-    } else {
-      _resetPassword();
+  Future<void> _sendResetOtp() async {
+    if (!_formKey.currentState!.validate()) return;
+    setState(() => _isSubmitting = true);
+    try {
+      await AuthService.instance.sendPinResetOtp(phone: _fullPhone);
+      if (!mounted) return;
+      setState(() {
+        _currentStep = 1;
+        _isSubmitting = false;
+      });
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      setState(() => _isSubmitting = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
+      );
     }
   }
 
-  void _resetPassword() {
+  Future<void> _verifyResetOtp() async {
+    final otp = _otpControllers.map((e) => e.text).join();
+    if (otp.length != 6) return;
+
+    setState(() => _isSubmitting = true);
+    try {
+      await AuthService.instance.verifyPinResetOtp(phone: _fullPhone, token: otp);
+      if (!mounted) return;
+      setState(() {
+        _currentStep = 2;
+        _isSubmitting = false;
+      });
+    } on AuthException catch (e) {
+      if (!mounted) return;
+      setState(() => _isSubmitting = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
+      );
+    }
+  }
+
+  Future<void> _resetPassword() async {
     if (_formKey.currentState!.validate()) {
+      setState(() => _isSubmitting = true);
+      try {
+        // verifyResetOtp above already established a session for this
+        // phone's account; use it to set the new PIN, then sign out so the
+        // merchant logs back in with their normal phone+password below.
+        await AuthService.instance.setTransactionPin(_pinController.text);
+        await AuthService.instance.signOut();
+      } on PostgrestException catch (e) {
+        if (!mounted) return;
+        setState(() => _isSubmitting = false);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
+        );
+        return;
+      }
+      if (!mounted) return;
+      setState(() => _isSubmitting = false);
       showDialog(
         context: context,
         builder: (context) {
@@ -232,10 +286,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-          onPressed: () {
-            if (_formKey.currentState!.validate()) _nextStep();
-          },
-          child: const Text("Send Code"),
+          onPressed: _isSubmitting ? null : _sendResetOtp,
+          child: _isSubmitting
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text("Send Code"),
         ),
       ],
     );
@@ -271,11 +329,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-          onPressed: () {
-            final otp = _otpControllers.map((e) => e.text).join();
-            if (otp.length == 6) _nextStep();
-          },
-          child: const Text("Verify Code"),
+          onPressed: _isSubmitting ? null : _verifyResetOtp,
+          child: _isSubmitting
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text("Verify Code"),
         ),
       ],
     );
@@ -346,8 +407,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-          onPressed: _resetPassword,
-          child: const Text("Reset Password"),
+          onPressed: _isSubmitting ? null : _resetPassword,
+          child: _isSubmitting
+              ? const SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                )
+              : const Text("Reset Password"),
         ),
       ],
     );

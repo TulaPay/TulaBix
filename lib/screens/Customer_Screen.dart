@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/widgets/ui/ui.dart';
 
 // ─── Data Models ─────────────────────────────────────────────────────────────
 
@@ -254,33 +255,6 @@ final _customers = <_Customer>[
   ),
 ];
 
-// ─── Custom Background Pattern ───────────────────────────────────────────────
-
-class _GeometricPatternPainter extends CustomPainter {
-  final Color color;
-  _GeometricPatternPainter(this.color);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = color.withValues(alpha: 0.03)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    for (var i = 0.0; i < size.width; i += 40) {
-      for (var j = 0.0; j < size.height; j += 40) {
-        canvas.drawCircle(Offset(i, j), 2, paint);
-        if ((i + j) % 80 == 0) {
-          canvas.drawRect(Rect.fromLTWH(i, j, 15, 15), paint);
-        }
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 class CustomerScreen extends StatefulWidget {
@@ -321,158 +295,66 @@ class _CustomerScreenState extends State<CustomerScreen> {
 
     return Scaffold(
       backgroundColor: Colors.transparent,
-      body: Stack(
-        children: [
-          // The Subtle Geometric Wallpaper
-          Positioned.fill(
-            child: CustomPaint(painter: _GeometricPatternPainter(cs.primary)),
-          ),
-
-          SafeArea(
-            child: Column(
-              children: [
-                _buildHeader(cs),
-                // _buildMetricStrip(cs),
-                _buildSearchAndFilters(cs),
-                Expanded(
-                  child: RefreshIndicator(
-                    onRefresh: _refresh,
-                    color: cs.primary,
-                    child: filtered.isEmpty
-                        ? _buildEmptyState(cs)
-                        : ListView.separated(
-                            padding: const EdgeInsets.fromLTRB(24, 16, 24, 100),
-                            itemCount: filtered.length,
-                            separatorBuilder: (_, __) =>
-                                const SizedBox(height: 12),
-                            itemBuilder: (context, i) {
-                              final c = filtered[i];
-                              return _CustomerRow(
-                                    customer: c,
-                                    onTap: () => _showDetail(context, c),
-                                  )
-                                  .animate()
-                                  .fadeIn(delay: (i * 40).ms)
-                                  .slideX(begin: 0.02);
-                            },
-                          ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-      floatingActionButton: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          boxShadow: [
-            BoxShadow(
-              color: cs.primary.withValues(alpha: 0.3),
-              blurRadius: 20,
-              offset: const Offset(0, 8),
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildHeader(cs),
+            _buildSearchAndFilters(cs),
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: _refresh,
+                color: cs.primary,
+                child: filtered.isEmpty
+                    ? _buildEmptyState(cs)
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(24, 16, 24, 100),
+                        itemCount: filtered.length,
+                        separatorBuilder: (_, __) =>
+                            const SizedBox(height: 12),
+                        itemBuilder: (context, i) {
+                          final c = filtered[i];
+                          return _CustomerRow(
+                                customer: c,
+                                onTap: () => _showDetail(context, c),
+                              )
+                              .animate()
+                              .fadeIn(delay: (i * 40).ms)
+                              .slideX(begin: 0.02);
+                        },
+                      ),
+              ),
             ),
           ],
         ),
-        child: FloatingActionButton(
-          onPressed: () => _showAddCustomerSheet(context),
-          backgroundColor: cs.primary,
-          foregroundColor: cs.onPrimary,
-          shape: const CircleBorder(),
-          child: const Icon(Icons.add_rounded, size: 28),
-        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showAddCustomerSheet(context),
+        child: const Icon(Icons.add_rounded, size: 28),
       ),
     );
   }
 
   Widget _buildHeader(ColorScheme cs) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(24, 20, 24, 8),
-      child: GlassSurface(
-        borderRadius: BorderRadius.circular(24),
-        opacity: 0.14,
-        blur: 12,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'DIRECTORY',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    color: cs.primary,
-                    letterSpacing: 1.5,
-                  ),
-                ),
-                Text(
-                  'Customers',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: cs.onSurface,
-                    letterSpacing: -1,
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                _circleIconButton(Icons.ios_share_rounded, cs, () {}),
-                const SizedBox(width: 12),
-                _circleIconButton(Icons.tune_rounded, cs, () {}),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _circleIconButton(IconData icon, ColorScheme cs, VoidCallback onTap) {
-    return GlassSurface(
-      borderRadius: BorderRadius.circular(999),
-      opacity: 0.14,
-      blur: 12,
-      padding: EdgeInsets.zero,
-      child: IconButton(
-        icon: Icon(icon, size: 20, color: cs.onSurface),
-        onPressed: onTap,
-        constraints: const BoxConstraints(minWidth: 40, minHeight: 40),
-        padding: EdgeInsets.zero,
-      ),
-    );
-  }
-
-  Widget _buildMetricStrip(ColorScheme cs) {
-    final totalRev = _customers.fold(0.0, (s, c) => s + c.totalSpent);
-    return Container(
-      height: 90,
-      margin: const EdgeInsets.symmetric(vertical: 16),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+      padding: const EdgeInsets.fromLTRB(24, 16, 20, 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          _StatCard(
-            label: 'Customers',
-            value: '${_customers.length}',
-            icon: Icons.people_outline_rounded,
-            color: Colors.blueAccent,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const MicroLabel('Directory'),
+              const SizedBox(height: 2),
+              Text('Customers', style: AppText.screenTitle(size: 28)),
+            ],
           ),
-          _StatCard(
-            label: 'Revenue',
-            value: '₦${(totalRev / 1000000).toStringAsFixed(1)}M',
-            icon: Icons.account_balance_wallet_outlined,
-            color: Colors.teal,
-          ),
-          _StatCard(
-            label: 'Growth',
-            value: '+12.5%',
-            icon: Icons.auto_graph_rounded,
-            color: Colors.orange,
+          Row(
+            children: [
+              CircleIconButton(Icons.ios_share_rounded, onTap: () {}),
+              const SizedBox(width: 10),
+              CircleIconButton(Icons.tune_rounded, onTap: () {}),
+            ],
           ),
         ],
       ),
@@ -484,30 +366,17 @@ class _CustomerScreenState extends State<CustomerScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(
         children: [
-          GlassSurface(
-            borderRadius: BorderRadius.circular(18),
-            opacity: 0.14,
-            blur: 12,
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: TextField(
-              onChanged: (v) => setState(() => _searchQuery = v),
-              style: GoogleFonts.plusJakartaSans(fontSize: 14),
-              decoration: InputDecoration(
-                hintText: 'Search customers...',
-                prefixIcon: Icon(
-                  Icons.search_rounded,
-                  color: cs.onSurfaceVariant,
-                  size: 20,
-                ),
-                filled: true,
-                fillColor: Colors.transparent,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: BorderSide.none,
-                ),
-                contentPadding: const EdgeInsets.symmetric(vertical: 12),
-                isDense: true,
+          TextField(
+            onChanged: (v) => setState(() => _searchQuery = v),
+            decoration: InputDecoration(
+              hintText: 'Search customers...',
+              prefixIcon: Icon(
+                Icons.search_rounded,
+                color: cs.onSurfaceVariant,
+                size: 20,
               ),
+              contentPadding: const EdgeInsets.symmetric(vertical: 12),
+              isDense: true,
             ),
           ),
           const SizedBox(height: 12),
@@ -516,27 +385,28 @@ class _CustomerScreenState extends State<CustomerScreen> {
             child: Row(
               children: _filters.map((f) {
                 final sel = _selectedFilter == f;
-                return GestureDetector(
-                  onTap: () => setState(() => _selectedFilter = f),
-                  child: GlassSurface(
-                    borderRadius: BorderRadius.circular(20),
-                    opacity: sel ? 0.22 : 0.12,
-                    blur: 10,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    border: Border.all(
-                      color: sel
-                          ? cs.primary.withValues(alpha: 0.35)
-                          : cs.outlineVariant.withValues(alpha: 0.2),
-                    ),
-                    child: Text(
-                      f,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: sel ? cs.onSurface : cs.onSurfaceVariant,
-                        fontWeight: sel ? FontWeight.w700 : FontWeight.w600,
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: GestureDetector(
+                    onTap: () => setState(() => _selectedFilter = f),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 9,
+                      ),
+                      decoration: BoxDecoration(
+                        color: sel
+                            ? cs.primary.withValues(alpha: 0.12)
+                            : context.trackColor,
+                        borderRadius: BorderRadius.circular(AppRadius.pill),
+                      ),
+                      child: Text(
+                        f,
+                        style: AppText.caption(
+                          color: sel ? cs.primary : cs.onSurfaceVariant,
+                        ).copyWith(
+                            fontWeight:
+                                sel ? FontWeight.w700 : FontWeight.w600),
                       ),
                     ),
                   ),
@@ -665,80 +535,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
   }
 }
 
-// ─── Premium Metric Card ─────────────────────────────────────────────────────
-
-class _StatCard extends StatelessWidget {
-  final String label;
-  final String value;
-  final IconData icon;
-  final Color color;
-
-  const _StatCard({
-    required this.label,
-    required this.value,
-    required this.icon,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    return Container(
-      width: 156,
-      margin: const EdgeInsets.only(right: 16),
-      child: GlassSurface(
-        borderRadius: BorderRadius.circular(24),
-        opacity: 0.14,
-        blur: 12,
-        padding: EdgeInsets.zero,
-        child: Stack(
-          children: [
-            Positioned(
-              right: -10,
-              bottom: -10,
-              child: Icon(icon, size: 80, color: color.withValues(alpha: 0.03)),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: color.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Icon(icon, color: color, size: 18),
-                  ),
-                  const Spacer(),
-                  Text(
-                    value,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: -0.5,
-                      color: cs.onSurface,
-                    ),
-                  ),
-                  Text(
-                    label,
-                    style: GoogleFonts.plusJakartaSans(
-                      fontSize: 11,
-                      color: cs.onSurfaceVariant,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // ─── Metallic Tier Indicator ─────────────────────────────────────────────────
 
 class _TierDot extends StatelessWidget {
@@ -753,15 +549,7 @@ class _TierDot extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(color: Colors.white, width: 2),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            color,
-            color.withValues(alpha: 0.8),
-            color.withValues(alpha: 0.6),
-          ],
-        ),
+        color: color,
         boxShadow: [
           BoxShadow(
             color: color.withValues(alpha: 0.4),

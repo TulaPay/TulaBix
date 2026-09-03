@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tulapay/authentication/business_details.dart';
+import 'package:tulapay/authentication/id_verification.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class KycOnboarding extends StatefulWidget {
@@ -51,14 +51,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                             width: double.infinity,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(24),
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  cs.primary.withValues(alpha: 0.28),
-                                  cs.secondary.withValues(alpha: 0.14),
-                                ],
-                              ),
+                              color: cs.primary.withValues(alpha: 0.16),
                             ),
                             child: Stack(
                               children: [
@@ -150,7 +143,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const BusinessDetails(),
+                            builder: (_) => const IdVerification(),
                           ),
                         );
                       },
@@ -184,12 +177,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  cs.primary.withValues(alpha: 0.24),
-                  cs.primary.withValues(alpha: 0.10),
-                ],
-              ),
+              color: cs.primary.withValues(alpha: 0.16),
               borderRadius: BorderRadius.circular(16),
             ),
             child: Icon(icon, color: cs.primary, size: 24),

@@ -5,7 +5,7 @@ import 'package:tulapay/screens/Homepage.dart';
 import 'package:tulapay/screens/Analytics.dart';
 import 'package:tulapay/screens/Customer_Screen.dart' show CustomerScreen;
 import 'package:tulapay/screens/settings_screen.dart';
-import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/themes/app_theme.dart';
 
 class Navigation_Bar extends StatefulWidget {
   const Navigation_Bar({super.key});
@@ -25,29 +25,25 @@ class _Navigation_BarState extends State<Navigation_Bar> {
     const SettingsScreen(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
+  static const _items = <_NavItem>[
+    _NavItem(FontAwesomeIcons.house, 'Home'),
+    _NavItem(FontAwesomeIcons.chartLine, 'Analytics'),
+    _NavItem(FontAwesomeIcons.briefcase, 'Business'),
+    _NavItem(FontAwesomeIcons.users, 'Customers'),
+    _NavItem(FontAwesomeIcons.gear, 'Settings'),
+  ];
 
-  void _onHomeDrawerChanged(bool isOpen) {
-    setState(() {
-      _isHomeDrawerOpen = isOpen;
-    });
-  }
+  void _onItemTapped(int index) => setState(() => _selectedIndex = index);
+
+  void _onHomeDrawerChanged(bool isOpen) =>
+      setState(() => _isHomeDrawerOpen = isOpen);
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final barOpacity = isDark ? 0.16 : 0.10;
-    final barBlur = isDark ? 18.0 : 12.0;
-    final barBorder = isDark
-        ? Colors.white.withValues(alpha: 0.14)
-        : colorScheme.outline.withValues(alpha: 0.12);
+    final cs = Theme.of(context).colorScheme;
+    final hideBar = _selectedIndex == 0 && _isHomeDrawerOpen;
+
     return Scaffold(
-      extendBody: true,
       backgroundColor: Colors.transparent,
       body: IndexedStack(
         index: _selectedIndex,
@@ -56,53 +52,70 @@ class _Navigation_BarState extends State<Navigation_Bar> {
           ..._screens,
         ],
       ),
-      bottomNavigationBar: (_selectedIndex == 0 && _isHomeDrawerOpen)
+      bottomNavigationBar: hideBar
           ? const SizedBox.shrink()
-          : Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
-              child: GlassSurface(
-                borderRadius: BorderRadius.circular(30),
-                opacity: barOpacity,
-                blur: barBlur,
-                tint: isDark
-                    ? colorScheme.surface
-                    : colorScheme.surfaceContainerHighest,
-                border: Border.all(color: barBorder),
-                child: BottomNavigationBar(
-                  items: const <BottomNavigationBarItem>[
-                    BottomNavigationBarItem(
-                      icon: FaIcon(FontAwesomeIcons.house),
-                      label: 'Home',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: FaIcon(FontAwesomeIcons.chartLine),
-                      label: 'Analytics',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: FaIcon(FontAwesomeIcons.briefcase),
-                      label: 'Business',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: FaIcon(FontAwesomeIcons.users),
-                      label: 'Customers',
-                    ),
-                    BottomNavigationBarItem(
-                      icon: FaIcon(FontAwesomeIcons.gear),
-                      label: 'Settings',
-                    ),
-                  ],
-                  currentIndex: _selectedIndex,
-                  selectedItemColor: colorScheme.primary,
-                  unselectedItemColor: colorScheme.onSurfaceVariant.withValues(
-                    alpha: isDark ? 0.6 : 0.72,
+          : DecoratedBox(
+              decoration: BoxDecoration(
+                color: context.cardColor,
+                border: Border(top: BorderSide(color: context.hairlineColor)),
+              ),
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.sm,
                   ),
-                  onTap: _onItemTapped,
-                  type: BottomNavigationBarType.fixed,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
+                  child: Row(
+                    children: List.generate(_items.length, (i) {
+                      final selected = i == _selectedIndex;
+                      final item = _items[i];
+                      return Expanded(
+                        child: InkWell(
+                          onTap: () => _onItemTapped(i),
+                          borderRadius: BorderRadius.circular(AppRadius.md),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                FaIcon(
+                                  item.icon,
+                                  size: 18,
+                                  color: selected
+                                      ? cs.primary
+                                      : cs.onSurfaceVariant,
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  item.label,
+                                  style: AppText.caption(
+                                    color: selected
+                                        ? cs.primary
+                                        : cs.onSurfaceVariant,
+                                  ).copyWith(
+                                    fontSize: 10,
+                                    fontWeight: selected
+                                        ? FontWeight.w700
+                                        : FontWeight.w500,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+                  ),
                 ),
               ),
             ),
     );
   }
+}
+
+class _NavItem {
+  final FaIconData icon;
+  final String label;
+  const _NavItem(this.icon, this.label);
 }
