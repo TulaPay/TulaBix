@@ -26,6 +26,22 @@ class MerchantService {
   }) async {
     final userId = supabase.auth.currentUser!.id;
 
+    // Resume rather than duplicate: if a previous attempt got this far but
+    // failed before the document upload below completed, `merchants`/
+    // `kyb_submissions` already exist for this owner. Neither table grants
+    // the client UPDATE (by design — see 0001/0007, direct edits are
+    // withheld in favor of the staff-only RPCs), so there's nothing to
+    // correct here even if the resubmitted form differs; just reuse the
+    // existing row instead of inserting a second merchant for one owner.
+    final existing = await supabase
+        .from('merchants')
+        .select('id')
+        .eq('owner_user_id', userId)
+        .maybeSingle();
+    if (existing != null) {
+      return existing['id'] as String;
+    }
+
     final merchantRow = await supabase
         .from('merchants')
         .insert({
