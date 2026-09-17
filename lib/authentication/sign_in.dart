@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/forgot_password_Screen.dart';
+import 'package:tulapay/authentication/otp_sign_in_screen.dart';
 import 'package:tulapay/authentication/sign_up.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/services/auth_service.dart';
@@ -157,6 +158,14 @@ class _SignInState extends State<SignIn> {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(e.message), behavior: SnackBarBehavior.floating),
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Something went wrong — please try again.'),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -336,7 +345,22 @@ class _SignInState extends State<SignIn> {
                                 )
                               : const Text("Sign In"),
                         ),
-                        const SizedBox(height: 14),
+                        const SizedBox(height: 10),
+                        Center(
+                          child: TextButton.icon(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const OtpSignInScreen(),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.sms_outlined, size: 18),
+                            label: const Text("Sign in with OTP instead"),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
 
                         Center(
                           child: Wrap(
