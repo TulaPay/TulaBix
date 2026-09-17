@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:tulapay/format.dart';
+import 'package:tulapay/models/commerce.dart';
+import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/themes/app_theme.dart';
+import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/widgets/pin_prompt.dart';
 
 class CashReceiptsScreen extends StatefulWidget {
   const CashReceiptsScreen({super.key});
@@ -16,6 +22,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
   final TextEditingController _customerController = TextEditingController();
   final TextEditingController _noteController = TextEditingController();
   String _selectedCategory = 'General';
+  bool _submitting = false;
 
   final List<Map<String, dynamic>> _categories = [
     {'name': 'General', 'icon': Icons.grid_view_rounded},
@@ -34,6 +41,54 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
     super.dispose();
   }
 
+  Future<void> _handleGenerate() async {
+    final amount = num.tryParse(_amountController.text.trim());
+    if (amount == null || amount <= 0) {
+      AppFeedback.toast(context, 'Enter a valid amount');
+      return;
+    }
+
+    final verified = await PinPrompt.show(context);
+    if (!mounted || !verified) return;
+
+    setState(() => _submitting = true);
+    try {
+      final item = _itemController.text.trim();
+      final customer = _customerController.text.trim();
+      final note = _noteController.text.trim();
+      await MerchantRepository.instance.recordCashReceipt(
+        amount: amount,
+        category: item.isEmpty ? _selectedCategory : '$_selectedCategory — $item',
+        customerName: customer.isEmpty ? null : customer,
+        note: note.isEmpty ? null : note,
+      );
+      if (!mounted) return;
+      _amountController.clear();
+      _itemController.clear();
+      _customerController.clear();
+      _noteController.clear();
+      AppFeedback.toast(context, 'Receipt recorded');
+    } catch (e) {
+      if (!mounted) return;
+      AppFeedback.toast(context, 'Could not record receipt: $e');
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  void _showHistory() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      ),
+      builder: (_) => const _CashReceiptHistorySheet(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
@@ -50,7 +105,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: _showHistory,
             icon: const Icon(Icons.history_rounded),
             tooltip: "History",
           ),
@@ -296,7 +351,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                       _SummaryRow(label: 'Payment mode', value: 'Cash'),
                       _SummaryRow(
                         label: 'Status',
-                        value: 'Ready to generate',
+                        value: _submitting ? 'Recording…' : 'Ready to generate',
                         valueColor: cs.primary,
                       ),
                     ],
@@ -307,10 +362,19 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                   width: double.infinity,
                   height: 58,
                   child: FilledButton.icon(
-                    onPressed: () {},
-                    icon: const Icon(Icons.receipt_long_rounded),
+                    onPressed: _submitting ? null : _handleGenerate,
+                    icon: _submitting
+                        ? const SizedBox(
+                            width: 18,
+                            height: 18,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2,
+                              color: Colors.white,
+                            ),
+                          )
+                        : const Icon(Icons.receipt_long_rounded),
                     label: Text(
-                      'Generate receipt',
+                      _submitting ? 'Recording…' : 'Generate receipt',
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w800,
                         fontSize: 15,
@@ -395,6 +459,134 @@ class _FieldRow extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _CashReceiptHistorySheet extends StatefulWidget {
+  const _CashReceiptHistorySheet();
+
+  @override
+  State<_CashReceiptHistorySheet> createState() =>
+      _CashReceiptHistorySheetState();
+}
+
+class _CashReceiptHistorySheetState extends State<_CashReceiptHistorySheet> {
+  late final Future<List<CashReceipt>> _future =
+      MerchantRepository.instance.cashReceipts();
+
+  @override
+  Widget build(BuildContext context) {
+    final cs = Theme.of(context).colorScheme;
+    return Padding(
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 24,
+        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Center(
+            child: Container(
+              width: 32,
+              height: 4,
+              decoration: BoxDecoration(
+                color: cs.outlineVariant,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+          const SizedBox(height: 24),
+          Text(
+            'Recent cash receipts',
+            style: GoogleFonts.plusJakartaSans(
+              fontWeight: FontWeight.w800,
+              fontSize: 18,
+              color: cs.onSurface,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.5,
+            ),
+            child: FutureBuilder<List<CashReceipt>>(
+              future: _future,
+              builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 32),
+                    child: Center(child: CircularProgressIndicator()),
+                  );
+                }
+                final receipts = snap.data ?? const [];
+                if (receipts.isEmpty) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    child: Text(
+                      'No cash receipts recorded yet.',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 13,
+                        color: cs.onSurfaceVariant,
+                      ),
+                    ),
+                  );
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: receipts.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  itemBuilder: (context, i) {
+                    final r = receipts[i];
+                    return GlassSurface(
+                      borderRadius: BorderRadius.circular(16),
+                      opacity: 0.12,
+                      blur: 10,
+                      padding: const EdgeInsets.all(14),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  r.category,
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                    color: cs.onSurface,
+                                  ),
+                                ),
+                                Text(
+                                  DateFormat('MMM d, h:mm a').format(r.createdAt),
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    color: cs.onSurfaceVariant,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Text(
+                            money(r.amount),
+                            style: GoogleFonts.plusJakartaSans(
+                              fontWeight: FontWeight.w900,
+                              color: cs.onSurface,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

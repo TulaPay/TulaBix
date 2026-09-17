@@ -7,6 +7,7 @@ import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/widgets/pin_prompt.dart';
 
 class PaymentLinksScreen extends StatefulWidget {
   const PaymentLinksScreen({super.key});
@@ -45,6 +46,9 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
       AppFeedback.toast(context, 'Add a payment description');
       return;
     }
+
+    final verified = await PinPrompt.show(context);
+    if (!mounted || !verified) return;
 
     setState(() => _generating = true);
     try {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tulapay/screens/products_screen.dart';
+import 'package:tulapay/screens/Customer_Screen.dart';
 import 'package:tulapay/screens/more_actions_demos.dart';
+import 'package:tulapay/screens/statements_screen.dart';
+import 'package:tulapay/screens/transfer_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class MoreActionsScreen extends StatelessWidget {
@@ -33,11 +35,6 @@ class MoreActionsScreen extends StatelessWidget {
         'route': 'add_customer',
       },
       {
-        'icon': Icons.inventory_2_outlined,
-        'label': 'Inventory',
-        'route': 'products',
-      },
-      {
         'icon': Icons.settings_applications_outlined,
         'label': 'POS Settings',
         'route': 'pos_settings',
@@ -66,7 +63,7 @@ class MoreActionsScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final action = actions[index];
           final route = action['route'] as String?;
-          final isNavigable = route == 'products' || route != null;
+          final isNavigable = route != null;
 
           return GlassActionTile(
             icon: action['icon'] as IconData,
@@ -78,38 +75,31 @@ class MoreActionsScreen extends StatelessWidget {
                 ? colorScheme.primary
                 : colorScheme.secondary,
             onTap: () {
-              if (route == 'products') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const ProductsScreen()),
-                );
-              } else if (route == 'bank_transfer') {
+              if (route == 'bank_transfer') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const BankTransferDemoScreen(),
+                    builder: (_) => const TransferScreen(kind: 'bank'),
                   ),
                 );
               } else if (route == 'internal_transfer') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => const InternalTransferDemoScreen(),
+                    builder: (_) => const TransferScreen(kind: 'internal'),
                   ),
                 );
               } else if (route == 'statements') {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const StatementsDemoScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const StatementsScreen()),
                 );
               } else if (route == 'add_customer') {
+                // Redirects to the real Customers tab's own Add Customer
+                // flow instead of duplicating a second entry point.
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const AddCustomerDemoScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const CustomerScreen()),
                 );
               } else if (route == 'pos_settings') {
                 Navigator.push(
