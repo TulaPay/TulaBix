@@ -50,17 +50,27 @@ class AuthService {
     return supabase.auth.resend(type: OtpType.sms, phone: phone);
   }
 
-  /// Starts a "forgot PIN" flow for an existing account — does not create a
-  /// new user if the phone isn't already registered.
-  Future<void> sendPinResetOtp({required String phone}) {
+  /// Starts an account-recovery flow for an existing account (forgot
+  /// password OR forgot PIN — this step is identical for both, it just
+  /// proves phone ownership) — does not create a new user if the phone
+  /// isn't already registered.
+  Future<void> sendRecoveryOtp({required String phone}) {
     return supabase.auth.signInWithOtp(phone: phone, shouldCreateUser: false);
   }
 
   /// Verifying this OTP also signs the user in (Supabase returns a session
-  /// on success), which is what lets setTransactionPin below act on their
-  /// behalf immediately afterward without asking for their old PIN.
-  Future<void> verifyPinResetOtp({required String phone, required String token}) {
+  /// on success), which is what lets resetPassword/setTransactionPin below
+  /// act on their behalf immediately afterward without asking for the old
+  /// password/PIN.
+  Future<void> verifyRecoveryOtp({required String phone, required String token}) {
     return supabase.auth.verifyOTP(phone: phone, token: token, type: OtpType.sms);
+  }
+
+  /// Sets a new Auth password on the current (OTP-recovered) session — the
+  /// actual "forgot password" action. Distinct from [setTransactionPin]:
+  /// this changes the sign-in credential, not the 6-digit transaction PIN.
+  Future<void> resetPassword(String newPassword) async {
+    await supabase.auth.updateUser(UserAttributes(password: newPassword));
   }
 
   Future<void> setTransactionPin(String pin) async {
