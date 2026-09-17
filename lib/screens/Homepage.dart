@@ -31,13 +31,9 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   bool _isBalanceVisible = true;
 
-  // seedDemoDataIfEmpty() is idempotent and safe on every launch (see its
-  // own doc comment) — this is exactly the call site it names as replacing
-  // the old hardcoded `_transactions` list.
   late final Future<_HomeData> _dataFuture = _loadHomeData();
 
   Future<_HomeData> _loadHomeData() async {
-    await MerchantRepository.instance.seedDemoDataIfEmpty();
     final summary = await MerchantRepository.instance.businessSummary();
     final recent = await MerchantRepository.instance.transactions(limit: 5);
     return _HomeData(summary, recent);
