@@ -40,7 +40,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     try {
       final m = await MerchantRepository.instance.myMerchant();
       if (mounted) setState(() => _merchant = m);
-    } catch (_) {}
+    } catch (_) {
+      if (mounted) {
+        AppFeedback.toast(context, 'Could not load your profile');
+      }
+    }
   }
 
   void _push(Widget screen) => Navigator.push(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/models/merchant.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class NotificationsSettingsScreen extends StatefulWidget {
@@ -42,7 +43,22 @@ class _NotificationsSettingsScreenState
         'notif_push': _push,
         'notif_sms': _sms,
       });
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) return;
+      AppFeedback.toast(context, 'Could not save — reverting');
+      // Resync from the server rather than guessing which toggle to revert.
+      try {
+        final p = await MerchantRepository.instance.preferences();
+        if (!mounted) return;
+        setState(() {
+          _email = p.notifEmail;
+          _push = p.notifPush;
+          _sms = p.notifSms;
+        });
+      } catch (_) {
+        // Best-effort resync only — leave local state as-is if this fails too.
+      }
+    }
   }
 
   @override

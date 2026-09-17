@@ -79,6 +79,12 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         _confirmPin = "";
         _errorMessage = e.message;
       });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _confirmPin = "";
+        _errorMessage = "Something went wrong — please try again.";
+      });
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }

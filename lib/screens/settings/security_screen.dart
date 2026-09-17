@@ -31,7 +31,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
         _prefs = p;
         _appLock = p.posSettings['biometric_lock'] == true;
       });
-    }).catchError((_) {});
+    }).catchError((_) {
+      if (mounted) {
+        AppFeedback.toast(context, 'Could not load your security settings');
+      }
+    });
   }
 
   @override
@@ -74,7 +78,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
     try {
       await MerchantRepository.instance
           .savePreferences({'pos_settings': merged});
-    } catch (_) {}
+    } catch (_) {
+      if (!mounted) return;
+      setState(() => _appLock = !value);
+      AppFeedback.toast(context, 'Could not save this setting — try again');
+    }
   }
 
   @override
