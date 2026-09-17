@@ -1,12 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tulapay/format.dart';
+import 'package:tulapay/models/commerce.dart';
+import 'package:tulapay/models/ledger.dart';
+import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
 /// The merchant "money cockpit": leads with net revenue + trend, then money
 /// in motion, a money-in-vs-out cash-flow chart, an operating-cost breakdown,
-/// exceptions that need attention, and the top payment channels.
+/// exceptions that need attention, and the top payment channels. All figures
+/// are computed live from `transactions`/`settlement_batches`/`merchant_expenses`
+/// — nothing here is fabricated, so a fresh merchant with no activity yet
+/// sees honest zeros rather than a canned demo dashboard.
 class BusinessScreen extends StatefulWidget {
   const BusinessScreen({super.key});
 
@@ -18,10 +25,47 @@ class _BusinessScreenState extends State<BusinessScreen> {
   static const _periods = ['Week', 'Month', 'Quarter', 'Year'];
   int _period = 1; // Month
 
-  Future<void> _refresh() async {
-    await Future.delayed(const Duration(milliseconds: 800));
-    if (mounted) setState(() {});
+  bool _loading = true;
+  String? _error;
+  List<LedgerTransaction> _txns = const [];
+  List<SettlementBatch> _settlements = const [];
+  List<MerchantExpense> _expenses = const [];
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
   }
+
+  Future<void> _load() async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final repo = MerchantRepository.instance;
+      final results = await Future.wait([
+        repo.transactions(limit: 1000),
+        repo.settlements(),
+        repo.expenses(),
+      ]);
+      if (!mounted) return;
+      setState(() {
+        _txns = results[0] as List<LedgerTransaction>;
+        _settlements = results[1] as List<SettlementBatch>;
+        _expenses = results[2] as List<MerchantExpense>;
+        _loading = false;
+      });
+    } catch (_) {
+      if (!mounted) return;
+      setState(() {
+        _error = 'Could not load business data. Pull to try again.';
+        _loading = false;
+      });
+    }
+  }
+
+  Future<void> _refresh() => _load();
 
   void _export() {
     ScaffoldMessenger.of(
@@ -32,8 +76,6 @@ class _BusinessScreenState extends State<BusinessScreen> {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final m = _metricsFor(_period);
-    final period = _periods[_period].toLowerCase();
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -45,65 +87,94 @@ class _BusinessScreenState extends State<BusinessScreen> {
               child: RefreshIndicator(
                 onRefresh: _refresh,
                 color: cs.primary,
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.fromLTRB(
-                    AppSpacing.xxl,
-                    AppSpacing.lg,
-                    AppSpacing.xxl,
-                    100,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SegmentedControl(
-                        segments: _periods,
-                        selectedIndex: _period,
-                        onChanged: (i) => setState(() => _period = i),
-                      ),
-                      const SizedBox(height: AppSpacing.xl),
-
-                      MetricHeadline(
-                        label: 'Net revenue',
-                        value: money(m.net),
-                        caption: 'this $period',
-                        deltaLabel:
-                            '${m.deltaPct.abs().toStringAsFixed(1)}% ${m.deltaCaption}',
-                        deltaPositive: m.deltaPct >= 0,
-                        sparkline: m.sparkline,
-                      ),
-                      const SizedBox(height: AppSpacing.section),
-
-                      const SectionHeader('Money in motion'),
-                      const SizedBox(height: AppSpacing.md),
-                      _moneyInMotion(m),
-                      const SizedBox(height: AppSpacing.section),
-
-                      const SectionHeader('Cash flow'),
-                      const SizedBox(height: AppSpacing.md),
-                      _cashFlowCard(m, cs),
-                      const SizedBox(height: AppSpacing.section),
-
-                      const SectionHeader('Operating costs'),
-                      const SizedBox(height: AppSpacing.md),
-                      _costsCard(m, cs),
-                      const SizedBox(height: AppSpacing.section),
-
-                      const SectionHeader('Needs attention'),
-                      const SizedBox(height: AppSpacing.md),
-                      _alerts(),
-                      const SizedBox(height: AppSpacing.section),
-
-                      const SectionHeader('Top channels'),
-                      const SizedBox(height: AppSpacing.md),
-                      _channels(m, cs),
-                    ],
-                  ),
-                ),
+                child: _loading
+                    ? ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: const [
+                          SizedBox(height: 160),
+                          Center(child: CircularProgressIndicator()),
+                        ],
+                      )
+                    : _error != null
+                        ? _errorState(cs)
+                        : _content(cs),
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _errorState(ColorScheme cs) {
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(AppSpacing.xxl, 120, AppSpacing.xxl, 100),
+      children: [
+        Icon(Icons.cloud_off_rounded, size: 48, color: cs.outlineVariant),
+        const SizedBox(height: 12),
+        Text(_error!, style: AppText.body(color: cs.onSurfaceVariant)),
+      ],
+    );
+  }
+
+  Widget _content(ColorScheme cs) {
+    final m = _computeMetrics(_period, _txns, _settlements, _expenses);
+    final period = _periods[_period].toLowerCase();
+
+    return SingleChildScrollView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xxl,
+        AppSpacing.lg,
+        AppSpacing.xxl,
+        100,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SegmentedControl(
+            segments: _periods,
+            selectedIndex: _period,
+            onChanged: (i) => setState(() => _period = i),
+          ),
+          const SizedBox(height: AppSpacing.xl),
+
+          MetricHeadline(
+            label: 'Net revenue',
+            value: money(m.net),
+            caption: 'this $period',
+            deltaLabel:
+                '${m.deltaPct.abs().toStringAsFixed(1)}% ${m.deltaCaption}',
+            deltaPositive: m.deltaPct >= 0,
+            sparkline: m.sparkline,
+          ),
+          const SizedBox(height: AppSpacing.section),
+
+          const SectionHeader('Money in motion'),
+          const SizedBox(height: AppSpacing.md),
+          _moneyInMotion(m),
+          const SizedBox(height: AppSpacing.section),
+
+          const SectionHeader('Cash flow'),
+          const SizedBox(height: AppSpacing.md),
+          _cashFlowCard(m, cs),
+          const SizedBox(height: AppSpacing.section),
+
+          const SectionHeader('Operating costs'),
+          const SizedBox(height: AppSpacing.md),
+          _costsCard(m, cs),
+          const SizedBox(height: AppSpacing.section),
+
+          const SectionHeader('Needs attention'),
+          const SizedBox(height: AppSpacing.md),
+          _alerts(m),
+          const SizedBox(height: AppSpacing.section),
+
+          const SectionHeader('Top channels'),
+          const SizedBox(height: AppSpacing.md),
+          _channels(m, cs),
+        ],
       ),
     );
   }
@@ -160,10 +231,10 @@ class _BusinessScreenState extends State<BusinessScreen> {
           icon: Icons.sync_rounded,
         ),
         StatCard(
-          label: 'In review',
-          value: money(m.heldAmount, compact: true),
-          secondary: 'On hold',
-          icon: Icons.gpp_maybe_rounded,
+          label: 'Failed',
+          value: money(m.failedAmount, compact: true),
+          secondary: '${m.failedCount} to review',
+          icon: Icons.error_outline_rounded,
         ),
         StatCard(
           label: 'Settled',
@@ -272,92 +343,52 @@ class _BusinessScreenState extends State<BusinessScreen> {
     return ChartCard(
       title: 'Operating costs',
       value: money(total, compact: true),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BreakdownList(
-            rows: [
-              for (var i = 0; i < m.costs.length; i++)
-                BreakdownRow(
-                  label: m.costs[i].label,
-                  amount: money(m.costs[i].amount, compact: true),
-                  fraction: total == 0 ? 0 : m.costs[i].amount / total,
-                  color: palette[i % palette.length],
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.xl),
-          _insightCallout(cs),
-        ],
-      ),
-    );
-  }
-
-  Widget _insightCallout(ColorScheme cs) {
-    return InkWell(
-      onTap: _showInsightSheet,
-      borderRadius: BorderRadius.circular(AppRadius.md),
-      child: Container(
-        padding: const EdgeInsets.all(AppSpacing.lg),
-        decoration: BoxDecoration(
-          color: cs.primary.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          border: Border.all(color: cs.primary.withValues(alpha: 0.12)),
-        ),
-        child: Row(
-          children: [
-            Icon(Icons.lightbulb_outline_rounded, color: cs.primary, size: 20),
-            const SizedBox(width: AppSpacing.md),
-            Expanded(
-              child: Text(
-                'Cut SMS alerts to save about ${money(12000)} a month. Tap for details.',
-                style: AppText.caption(
-                  color: cs.onSurface,
-                ).copyWith(fontWeight: FontWeight.w600, height: 1.4),
-              ),
+      child: m.costs.isEmpty
+          ? Text(
+              'No costs logged this period.',
+              style: AppText.caption(color: cs.onSurfaceVariant),
+            )
+          : BreakdownList(
+              rows: [
+                for (var i = 0; i < m.costs.length; i++)
+                  BreakdownRow(
+                    label: m.costs[i].label,
+                    amount: money(m.costs[i].amount, compact: true),
+                    fraction: total == 0 ? 0 : m.costs[i].amount / total,
+                    color: palette[i % palette.length],
+                  ),
+              ],
             ),
-            const SizedBox(width: AppSpacing.sm),
-            Icon(Icons.chevron_right_rounded, color: cs.primary, size: 18),
-          ],
-        ),
-      ),
     );
   }
 
   // ── Needs attention ───────────────────────────────────────────────────────
 
-  Widget _alerts() {
-    final tiles = <Widget>[
-      const AlertTile(
-        severity: AlertSeverity.critical,
-        title: '2 payments failed to settle',
-        subtitle: 'XAF 46,000 will retry tonight — or retry now.',
-      ),
-      AlertTile(
-        severity: AlertSeverity.warning,
-        title: 'SMS spend up 32% this period',
-        subtitle: 'Switch to in-app alerts to cut about XAF 12,000 / month.',
-        onTap: _showInsightSheet,
-      ),
-      const AlertTile(
+  Widget _alerts(_Metrics m) {
+    if (m.failedCount == 0) {
+      return const AlertTile(
         severity: AlertSeverity.info,
-        title: 'KYB re-verification due in 5 days',
-        subtitle: 'Upload a recent utility bill to keep payouts active.',
-      ),
-    ];
-    return Column(
-      children: [
-        for (var i = 0; i < tiles.length; i++) ...[
-          if (i > 0) const SizedBox(height: AppSpacing.md),
-          tiles[i],
-        ],
-      ],
+        title: 'All caught up',
+        subtitle: 'No failed payments this period.',
+      );
+    }
+    return AlertTile(
+      severity: AlertSeverity.critical,
+      title:
+          '${m.failedCount} payment${m.failedCount == 1 ? '' : 's'} failed to settle',
+      subtitle: '${money(m.failedAmount)} needs review.',
     );
   }
 
   // ── Top channels ──────────────────────────────────────────────────────────
 
   Widget _channels(_Metrics m, ColorScheme cs) {
+    if (m.channels.isEmpty) {
+      return Text(
+        'No transactions yet this period.',
+        style: AppText.caption(color: cs.onSurfaceVariant),
+      );
+    }
     return Column(
       children: [
         for (var i = 0; i < m.channels.length; i++) ...[
@@ -398,67 +429,9 @@ class _BusinessScreenState extends State<BusinessScreen> {
       onTap: () {},
     );
   }
-
-  // ── Insight sheet ─────────────────────────────────────────────────────────
-
-  void _showInsightSheet() {
-    final cs = Theme.of(context).colorScheme;
-    showModalBottomSheet(
-      context: context,
-      builder: (ctx) => Padding(
-        padding: const EdgeInsets.all(AppSpacing.xxl),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: 32,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: cs.outlineVariant,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSpacing.xxl),
-            Row(
-              children: [
-                IconChip(Icons.lightbulb_rounded, color: cs.primary, size: 44),
-                const SizedBox(width: AppSpacing.md),
-                Expanded(
-                  child: Text(
-                    'Cut your SMS spend',
-                    style: AppText.sectionTitle(color: cs.onSurface),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            Text(
-              "You're sending an SMS for every transaction. Switching to in-app "
-              "push alerts would cut about ${money(12000)} from your monthly "
-              "running costs, with no change for your customers.",
-              style: AppText.body(
-                color: cs.onSurfaceVariant,
-              ).copyWith(height: 1.6),
-            ),
-            const SizedBox(height: AppSpacing.huge),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Got it'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
-// ─── Mock data ────────────────────────────────────────────────────────────────
+// ─── Real metrics, computed from transactions / settlements / expenses ────────
 
 class _Cost {
   final String label;
@@ -483,7 +456,8 @@ class _Metrics {
   final String nextSettlement;
   final int processingCount;
   final double processingAmount;
-  final double heldAmount;
+  final double failedAmount;
+  final int failedCount;
   final double settled;
   final String settledCaption;
   final List<CashFlowPoint> cashFlow;
@@ -498,7 +472,8 @@ class _Metrics {
     required this.nextSettlement,
     required this.processingCount,
     required this.processingAmount,
-    required this.heldAmount,
+    required this.failedAmount,
+    required this.failedCount,
     required this.settled,
     required this.settledCaption,
     required this.cashFlow,
@@ -512,142 +487,226 @@ class _Metrics {
   double get costsTotal => costs.fold(0.0, (s, c) => s + c.amount);
 }
 
-_Metrics _metricsFor(int period) => switch (period) {
-  0 => _week,
-  2 => _quarter,
-  3 => _year,
-  _ => _month,
-};
+const _periodDays = [7, 30, 90, 365];
+const _periodLabels = ['week', 'month', 'quarter', 'year'];
 
 const _mtn = 0xFFFFCC00;
 const _orange = 0xFFFF6D00;
 const _card = 0xFF2D6CDF;
 const _bank = 0xFF10B981;
+const _other = 0xFF8E9AAB;
 
-const _week = _Metrics(
-  deltaCaption: 'vs last week',
-  deltaPct: 6.4,
-  sparkline: [0.90, 1.05, 0.98, 1.20, 1.10, 1.35, 1.28, 1.42],
-  availablePayout: 1180000,
-  nextSettlement: 'Tomorrow',
-  processingCount: 5,
-  processingAmount: 210000,
-  heldAmount: 40000,
-  settled: 4060000,
-  settledCaption: 'of XAF 4.3M in',
-  cashFlow: [
-    CashFlowPoint('Mon', 720000, 540000),
-    CashFlowPoint('Tue', 610000, 430000),
-    CashFlowPoint('Wed', 840000, 560000),
-    CashFlowPoint('Thu', 930000, 610000),
-    CashFlowPoint('Fri', 1180000, 720000),
-  ],
-  costs: [
-    _Cost('Platform fees', 224000),
-    _Cost('Refunds issued', 156000),
-    _Cost('SMS alerts', 78000),
-    _Cost('Payout fees', 36000),
-    _Cost('Other', 24000),
-  ],
-  channels: [
-    _Channel('MTN Mobile Money', 'MTN', _mtn, 107, 0.54),
-    _Channel('Orange Money', 'OM', _orange, 55, 0.28),
-    _Channel('Card payment', 'CARD', _card, 24, 0.12),
-    _Channel('Bank transfer', 'BANK', _bank, 12, 0.06),
-  ],
-);
+(String, String, int) _channelMeta(String key) => switch (key) {
+      'mtn_momo' => ('MTN Mobile Money', 'MTN', _mtn),
+      'orange_money' => ('Orange Money', 'OM', _orange),
+      'visa' || 'mastercard' || 'card' => ('Card payment', 'CARD', _card),
+      'bank_transfer' => ('Bank transfer', 'BANK', _bank),
+      'qr_checkout' => ('QR checkout', 'QR', _card),
+      'payment_link' => ('Payment link', 'LINK', _orange),
+      _ => (
+          key.isEmpty ? 'Other' : key,
+          key.length >= 3 ? key.substring(0, 3).toUpperCase() : key.toUpperCase(),
+          _other,
+        ),
+    };
 
-const _month = _Metrics(
-  deltaCaption: 'vs last month',
-  deltaPct: 14.2,
-  sparkline: [1.10, 1.35, 1.22, 1.60, 1.48, 1.95, 1.82, 2.45],
-  availablePayout: 1180000,
-  nextSettlement: 'Fri, 6 Sep',
-  processingCount: 12,
-  processingAmount: 340000,
-  heldAmount: 85000,
-  settled: 10900000,
-  settledCaption: 'of XAF 11.4M in',
-  cashFlow: [
-    CashFlowPoint('W1', 3100000, 2350000),
-    CashFlowPoint('W2', 2420000, 1980000),
-    CashFlowPoint('W3', 2980000, 2600000),
-    CashFlowPoint('W4', 2900000, 2020000),
-  ],
-  costs: [
-    _Cost('Platform fees', 890000),
-    _Cost('Refunds issued', 620000),
-    _Cost('SMS alerts', 310000),
-    _Cost('Payout fees', 145000),
-    _Cost('Other', 95000),
-  ],
-  channels: [
-    _Channel('MTN Mobile Money', 'MTN', _mtn, 428, 0.54),
-    _Channel('Orange Money', 'OM', _orange, 221, 0.28),
-    _Channel('Card payment', 'CARD', _card, 96, 0.12),
-    _Channel('Bank transfer', 'BANK', _bank, 48, 0.06),
-  ],
-);
+class _ChannelAgg {
+  final String key;
+  int count = 0;
+  num amount = 0;
+  _ChannelAgg(this.key);
+}
 
-const _quarter = _Metrics(
-  deltaCaption: 'vs last quarter',
-  deltaPct: 21.8,
-  sparkline: [5.2, 5.8, 6.1, 6.6, 7.2, 7.8, 8.1, 8.6],
-  availablePayout: 2640000,
-  nextSettlement: 'Fri, 6 Sep',
-  processingCount: 28,
-  processingAmount: 910000,
-  heldAmount: 190000,
-  settled: 31800000,
-  settledCaption: 'of XAF 33.5M in',
-  cashFlow: [
-    CashFlowPoint('Jul', 9800000, 7600000),
-    CashFlowPoint('Aug', 11200000, 8400000),
-    CashFlowPoint('Sep', 12500000, 8900000),
-  ],
-  costs: [
-    _Cost('Platform fees', 2670000),
-    _Cost('Refunds issued', 1860000),
-    _Cost('SMS alerts', 930000),
-    _Cost('Payout fees', 435000),
-    _Cost('Other', 285000),
-  ],
-  channels: [
-    _Channel('MTN Mobile Money', 'MTN', _mtn, 1284, 0.54),
-    _Channel('Orange Money', 'OM', _orange, 663, 0.28),
-    _Channel('Card payment', 'CARD', _card, 288, 0.12),
-    _Channel('Bank transfer', 'BANK', _bank, 144, 0.06),
-  ],
-);
+class _PeriodBucket {
+  final DateTime start;
+  final DateTime end; // exclusive
+  final String label;
+  const _PeriodBucket(this.start, this.end, this.label);
+}
 
-const _year = _Metrics(
-  deltaCaption: 'vs last year',
-  deltaPct: 38.5,
-  sparkline: [18, 21, 22, 25, 27, 29, 30.5, 31.6],
-  availablePayout: 3900000,
-  nextSettlement: 'Fri, 6 Sep',
-  processingCount: 46,
-  processingAmount: 1600000,
-  heldAmount: 320000,
-  settled: 121700000,
-  settledCaption: 'of XAF 128.5M in',
-  cashFlow: [
-    CashFlowPoint('Q1', 26000000, 21000000),
-    CashFlowPoint('Q2', 31000000, 24000000),
-    CashFlowPoint('Q3', 33500000, 24900000),
-    CashFlowPoint('Q4', 38000000, 27000000),
-  ],
-  costs: [
-    _Cost('Platform fees', 10680000),
-    _Cost('Refunds issued', 7440000),
-    _Cost('SMS alerts', 3720000),
-    _Cost('Payout fees', 1740000),
-    _Cost('Other', 1140000),
-  ],
-  channels: [
-    _Channel('MTN Mobile Money', 'MTN', _mtn, 5136, 0.54),
-    _Channel('Orange Money', 'OM', _orange, 2652, 0.28),
-    _Channel('Card payment', 'CARD', _card, 1152, 0.12),
-    _Channel('Bank transfer', 'BANK', _bank, 576, 0.06),
-  ],
-);
+List<_PeriodBucket> _buildBuckets(int period, DateTime now) {
+  switch (period) {
+    case 0: // week — 7 daily buckets
+      return List.generate(7, (i) {
+        final day = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(Duration(days: 6 - i));
+        return _PeriodBucket(
+          day,
+          day.add(const Duration(days: 1)),
+          DateFormat('E').format(day),
+        );
+      });
+    case 2: // quarter — 3 monthly buckets
+      return List.generate(3, (i) {
+        final anchor = DateTime(now.year, now.month - (2 - i), 1);
+        final end = DateTime(anchor.year, anchor.month + 1, 1);
+        return _PeriodBucket(anchor, end, DateFormat('MMM').format(anchor));
+      });
+    case 3: // year — 4 quarterly buckets
+      return List.generate(4, (i) {
+        final anchor = DateTime(now.year, now.month - (3 - i) * 3, 1);
+        final end = DateTime(anchor.year, anchor.month + 3, 1);
+        final q = ((anchor.month - 1) ~/ 3) + 1;
+        return _PeriodBucket(anchor, end, 'Q$q');
+      });
+    default: // month — 4 weekly buckets
+      return List.generate(4, (i) {
+        final start = DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(Duration(days: (3 - i) * 7 + 6));
+        final end = start.add(const Duration(days: 7));
+        return _PeriodBucket(start, end, 'W${i + 1}');
+      });
+  }
+}
+
+_Metrics _computeMetrics(
+  int period,
+  List<LedgerTransaction> allTxns,
+  List<SettlementBatch> settlements,
+  List<MerchantExpense> allExpenses,
+) {
+  final now = DateTime.now();
+  final days = _periodDays[period];
+  final start = now.subtract(Duration(days: days));
+  final prevStart = now.subtract(Duration(days: days * 2));
+
+  bool inCurrent(DateTime d) => !d.isBefore(start) && !d.isAfter(now);
+  bool inPrevious(DateTime d) => !d.isBefore(prevStart) && d.isBefore(start);
+
+  num netFor(bool Function(DateTime) inRange) {
+    num n = 0;
+    for (final t in allTxns) {
+      if (t.status != 'completed' || !inRange(t.createdAt)) continue;
+      if (t.type == 'payment') n += t.amount;
+      if (t.type == 'refund') n -= t.amount;
+    }
+    return n;
+  }
+
+  final currentNet = netFor(inCurrent);
+  final previousNet = netFor(inPrevious);
+  final deltaPct = previousNet == 0
+      ? (currentNet == 0 ? 0.0 : 100.0)
+      : ((currentNet - previousNet) / previousNet.abs()) * 100;
+
+  final txnsInPeriod = allTxns.where((t) => inCurrent(t.createdAt)).toList();
+
+  num processingAmount = 0;
+  var processingCount = 0;
+  num failedAmount = 0;
+  var failedCount = 0;
+  num settled = 0;
+  num grossCompleted = 0;
+  num platformFees = 0;
+  num refundsIssued = 0;
+  final channelTotals = <String, _ChannelAgg>{};
+
+  for (final t in txnsInPeriod) {
+    switch (t.status) {
+      case 'pending':
+        processingCount++;
+        processingAmount += t.amount;
+      case 'failed':
+        failedCount++;
+        failedAmount += t.amount;
+      case 'completed':
+        platformFees += t.feeAmount;
+        if (t.type == 'payment') {
+          grossCompleted += t.amount;
+          if (t.settledAt != null) settled += t.amount;
+          final key = t.provider ?? t.channel;
+          final agg = channelTotals.putIfAbsent(key, () => _ChannelAgg(key));
+          agg.count++;
+          agg.amount += t.amount;
+        } else if (t.type == 'refund') {
+          refundsIssued += t.amount;
+        }
+    }
+  }
+
+  final channelTotalAmount = channelTotals.values.fold<num>(
+    0,
+    (s, c) => s + c.amount,
+  );
+  final channels =
+      channelTotals.values.map((c) {
+          final meta = _channelMeta(c.key);
+          return _Channel(
+            meta.$1,
+            meta.$2,
+            meta.$3,
+            c.count,
+            channelTotalAmount == 0
+                ? 0
+                : (c.amount / channelTotalAmount).toDouble(),
+          );
+        }).toList()
+        ..sort((a, b) => b.share.compareTo(a.share));
+
+  // Available-to-pay-out is a current balance, not scoped to the period.
+  num availablePayout = 0;
+  for (final t in allTxns) {
+    if (t.status == 'completed' && t.settledAt == null) {
+      availablePayout += t.signedAmount - t.feeAmount;
+    }
+  }
+
+  SettlementBatch? next;
+  for (final s in settlements) {
+    if (s.status == 'scheduled' || s.status == 'processing') {
+      if (next == null || s.periodEnd.isBefore(next.periodEnd)) next = s;
+    }
+  }
+  final nextSettlement = next == null
+      ? 'Not scheduled'
+      : DateFormat('EEE, d MMM').format(next.periodEnd);
+
+  final buckets = _buildBuckets(period, now);
+  final cashFlow = buckets.map((b) {
+    num inflow = 0, outflow = 0;
+    for (final t in allTxns) {
+      if (t.status != 'completed') continue;
+      if (t.createdAt.isBefore(b.start) || !t.createdAt.isBefore(b.end)) {
+        continue;
+      }
+      if (t.isInflow) {
+        inflow += t.amount;
+      } else {
+        outflow += t.amount;
+      }
+    }
+    return CashFlowPoint(b.label, inflow.toDouble(), outflow.toDouble());
+  }).toList();
+
+  final sparkline = cashFlow.map((p) => p.inflow - p.outflow).toList();
+
+  final costs = <_Cost>[
+    if (platformFees > 0) _Cost('Platform fees', platformFees.toDouble()),
+    if (refundsIssued > 0) _Cost('Refunds issued', refundsIssued.toDouble()),
+    for (final e in allExpenses.where((e) => inCurrent(e.incurredAt)))
+      _Cost(e.category, e.amount.toDouble()),
+  ];
+
+  return _Metrics(
+    deltaCaption: 'vs last ${_periodLabels[period]}',
+    deltaPct: deltaPct.toDouble(),
+    sparkline: sparkline,
+    availablePayout: availablePayout.toDouble(),
+    nextSettlement: nextSettlement,
+    processingCount: processingCount,
+    processingAmount: processingAmount.toDouble(),
+    failedAmount: failedAmount.toDouble(),
+    failedCount: failedCount,
+    settled: settled.toDouble(),
+    settledCaption: 'of ${money(grossCompleted, compact: true)} in',
+    cashFlow: cashFlow,
+    costs: costs,
+    channels: channels,
+  );
+}

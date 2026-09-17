@@ -135,3 +135,58 @@ class CashReceipt implements CashReceiptLike {
         _ => paymentMode,
       };
 }
+
+/// `merchant_expenses` — merchant-logged operating costs (rent, salaries,
+/// SMS/payout fees, etc.). Free-text `category`, not an enum — merchants
+/// name their own cost categories. Schema only for now: nothing writes to
+/// this table yet, so lists read from it are expected to be empty until a
+/// creation flow is built.
+class MerchantExpense {
+  final String id;
+  final String category;
+  final num amount;
+  final String? note;
+  final DateTime incurredAt;
+
+  const MerchantExpense({
+    required this.id,
+    required this.category,
+    required this.amount,
+    this.note,
+    required this.incurredAt,
+  });
+
+  factory MerchantExpense.fromMap(Map<String, dynamic> m) => MerchantExpense(
+        id: m['id'] as String,
+        category: (m['category'] ?? '') as String,
+        amount: (m['amount'] as num?) ?? 0,
+        note: m['note'] as String?,
+        incurredAt: DateTime.parse(m['incurred_at'].toString()),
+      );
+}
+
+/// `merchant_budgets` — a merchant's own per-category spending allocation
+/// for a period. Schema only for now, same caveat as [MerchantExpense].
+class MerchantBudget {
+  final String id;
+  final String category;
+  final DateTime periodStart;
+  final DateTime periodEnd;
+  final num allocatedAmount;
+
+  const MerchantBudget({
+    required this.id,
+    required this.category,
+    required this.periodStart,
+    required this.periodEnd,
+    required this.allocatedAmount,
+  });
+
+  factory MerchantBudget.fromMap(Map<String, dynamic> m) => MerchantBudget(
+        id: m['id'] as String,
+        category: (m['category'] ?? '') as String,
+        periodStart: DateTime.parse(m['period_start'].toString()),
+        periodEnd: DateTime.parse(m['period_end'].toString()),
+        allocatedAmount: (m['allocated_amount'] as num?) ?? 0,
+      );
+}

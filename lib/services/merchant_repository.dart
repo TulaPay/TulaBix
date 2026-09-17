@@ -178,6 +178,25 @@ class MerchantRepository {
   // ---------------------------------------------------------------------------
   // Promo codes
   // ---------------------------------------------------------------------------
+  Future<List<MerchantExpense>> expenses({DateTime? since}) async {
+    final mid = await requireMerchantId();
+    var req = supabase.from('merchant_expenses').select().eq('merchant_id', mid);
+    if (since != null) req = req.gte('incurred_at', since.toIso8601String());
+    final rows = await req.order('incurred_at', ascending: false);
+    return rows.map<MerchantExpense>((r) => MerchantExpense.fromMap(r)).toList();
+  }
+
+  Future<List<MerchantBudget>> budgets({DateTime? activeOn}) async {
+    final mid = await requireMerchantId();
+    var req = supabase.from('merchant_budgets').select().eq('merchant_id', mid);
+    if (activeOn != null) {
+      final d = activeOn.toIso8601String().substring(0, 10);
+      req = req.lte('period_start', d).gte('period_end', d);
+    }
+    final rows = await req.order('period_start', ascending: false);
+    return rows.map<MerchantBudget>((r) => MerchantBudget.fromMap(r)).toList();
+  }
+
   Future<List<PromoCode>> promoCodes() async {
     final mid = await requireMerchantId();
     final rows = await supabase
@@ -570,17 +589,6 @@ class MerchantRepository {
   Future<void> requestTier2Upgrade({String? note}) async {
     await supabase.rpc('request_tier2_upgrade', params: {'p_note': note});
     await myMerchant(refresh: true);
-  }
-
-  // ---------------------------------------------------------------------------
-  // Demo data
-  // ---------------------------------------------------------------------------
-  Future<void> seedDemoDataIfEmpty() async {
-    try {
-      await supabase.rpc('seed_merchant_demo_data');
-    } catch (_) {
-      // Non-fatal: the app still works against empty tables (empty states).
-    }
   }
 
   /// Supabase returns a single-row RPC result either as a Map or as a
