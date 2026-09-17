@@ -4,17 +4,31 @@ import 'package:tulapay/screens/Business_Screen.dart' show BusinessScreen;
 import 'package:tulapay/screens/Homepage.dart';
 import 'package:tulapay/screens/Analytics.dart';
 import 'package:tulapay/screens/Customer_Screen.dart' show CustomerScreen;
+import 'package:tulapay/screens/account_status_gate.dart';
 import 'package:tulapay/screens/settings_screen.dart';
 import 'package:tulapay/themes/app_theme.dart';
 
-class Navigation_Bar extends StatefulWidget {
+/// The main app shell. Gated on account status: a `pending_kyb`/`rejected`/
+/// `suspended`/`closed` merchant sees [AccountStatusGate]'s pending/blocked
+/// screen instead of the tabs below — this is the one shared construction
+/// point every sign-in/sign-up/onboarding path routes through, so gating it
+/// here covers all of them without duplicating the check at each call site.
+class Navigation_Bar extends StatelessWidget {
   const Navigation_Bar({super.key});
 
   @override
-  State<Navigation_Bar> createState() => _Navigation_BarState();
+  Widget build(BuildContext context) =>
+      const AccountStatusGate(child: _NavigationShell());
 }
 
-class _Navigation_BarState extends State<Navigation_Bar> {
+class _NavigationShell extends StatefulWidget {
+  const _NavigationShell();
+
+  @override
+  State<_NavigationShell> createState() => _NavigationShellState();
+}
+
+class _NavigationShellState extends State<_NavigationShell> {
   int _selectedIndex = 0;
   bool _isHomeDrawerOpen = false;
 

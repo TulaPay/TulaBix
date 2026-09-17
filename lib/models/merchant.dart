@@ -20,6 +20,8 @@ class Merchant {
   final DateTime? memberSince;
   final String? linkedProvider;
   final String? linkedAccountLast4;
+  final String? suspendedReason;
+  final DateTime? suspendedAt;
 
   const Merchant({
     required this.id,
@@ -38,6 +40,8 @@ class Merchant {
     this.memberSince,
     this.linkedProvider,
     this.linkedAccountLast4,
+    this.suspendedReason,
+    this.suspendedAt,
   });
 
   factory Merchant.fromMap(Map<String, dynamic> m) => Merchant(
@@ -59,10 +63,18 @@ class Merchant {
             : DateTime.tryParse(m['member_since'].toString()),
         linkedProvider: m['linked_provider'] as String?,
         linkedAccountLast4: m['linked_account_last4'] as String?,
+        suspendedReason: m['suspended_reason'] as String?,
+        suspendedAt: m['suspended_at'] == null
+            ? null
+            : DateTime.tryParse(m['suspended_at'].toString()),
       );
 
   bool get isVerified => kycStatus == 'verified';
   bool get isTier1 => kybTier == 1;
+  bool get isActive => accountStatus == 'active';
+  bool get isBlocked => accountStatus == 'rejected' ||
+      accountStatus == 'suspended' ||
+      accountStatus == 'closed';
 
   String get addressLine {
     final parts = [addressStreet, addressCity, addressCountry]
@@ -151,10 +163,11 @@ class SetupChecklist {
         loadProducts: (m['load_products'] ?? false) as bool,
       );
 
+  // loadProducts is deliberately excluded from the checklist UI/progress —
+  // Products/Inventory was removed from the app entirely (no backend table
+  // ever existed for it). The DB column stays for now (harmless, unused).
   int get doneCount =>
-      [verifyProfile, connectPayments, enableQr, loadProducts]
-          .where((b) => b)
-          .length;
-  int get total => 4;
+      [verifyProfile, connectPayments, enableQr].where((b) => b).length;
+  int get total => 3;
   double get progress => doneCount / total;
 }
