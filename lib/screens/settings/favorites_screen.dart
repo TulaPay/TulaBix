@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tulapay/screens/activity_screen.dart';
 import 'package:tulapay/screens/cash_receipts_screen.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
-import 'package:tulapay/screens/products_screen.dart';
 import 'package:tulapay/screens/promo_codes_screen.dart';
 import 'package:tulapay/screens/scan_qr_screen.dart';
 import 'package:tulapay/screens/settings/billing_screen.dart';
@@ -31,8 +30,6 @@ final _catalogue = <_FavItem>[
       (_) => const CashReceiptsScreen()),
   _FavItem('promo_codes', 'Promo Codes', Icons.local_offer_rounded,
       (_) => const PromoCodesScreen()),
-  _FavItem('products', 'Products', Icons.inventory_2_rounded,
-      (_) => const ProductsScreen()),
   _FavItem('activity', 'Activity', Icons.timeline_rounded,
       (_) => const ActivityScreen()),
   _FavItem('growth_goals', 'Growth Goals', Icons.flag_rounded,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/models/merchant.dart';
-import 'package:tulapay/screens/products_screen.dart';
 import 'package:tulapay/screens/scan_qr_screen.dart';
 import 'package:tulapay/screens/settings/account_screen.dart';
 import 'package:tulapay/screens/settings/billing_screen.dart';
@@ -49,9 +48,6 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
           _Item('enable_qr', c.enableQr, 'Enable QR',
               'Show your QR so customers can scan and pay.',
               Icons.qr_code_2_rounded, (_) => const ScanQrScreen()),
-          _Item('load_products', c.loadProducts, 'Load products',
-              'Add products so sales and stock stay in sync.',
-              Icons.inventory_2_outlined, (_) => const ProductsScreen()),
         ];
         return GlassPageShell(
           title: 'Setup Checklist',
