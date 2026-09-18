@@ -22,8 +22,9 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
     _future = MerchantRepository.instance.growthGoals();
   }
 
-  void _reload() =>
-      setState(() => _future = MerchantRepository.instance.growthGoals());
+  void _reload() => setState(() {
+        _future = MerchantRepository.instance.growthGoals();
+      });
 
   Future<void> _editGoal([GrowthGoal? goal]) async {
     final titleCtrl = TextEditingController(text: goal?.title ?? '');

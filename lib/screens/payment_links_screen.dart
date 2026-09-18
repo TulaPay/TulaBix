@@ -32,7 +32,15 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
   }
 
   void _refreshLinks() {
-    setState(() => _linksFuture = MerchantRepository.instance.paymentLinks());
+    // A block body, not `=> _linksFuture = ...`: setState()'s callback must
+    // be void. An arrow-bodied closure that assigns an un-awaited Future
+    // evaluates to that Future, and Flutter's setState() explicitly throws
+    // on that ("setState() callback argument returned a Future") — the
+    // exact bug that made a successful link generation show as a failure,
+    // since this ran right after the real insert already succeeded.
+    setState(() {
+      _linksFuture = MerchantRepository.instance.paymentLinks();
+    });
   }
 
   Future<void> _handleGenerate() async {

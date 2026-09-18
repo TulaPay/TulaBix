@@ -23,8 +23,9 @@ class _AccountScreenState extends State<AccountScreen> {
     _future = MerchantRepository.instance.myMerchant(refresh: true);
   }
 
-  void _reload() =>
-      setState(() => _future = MerchantRepository.instance.myMerchant(refresh: true));
+  void _reload() => setState(() {
+        _future = MerchantRepository.instance.myMerchant(refresh: true);
+      });
 
   @override
   Widget build(BuildContext context) {

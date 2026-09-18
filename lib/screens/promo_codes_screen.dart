@@ -22,8 +22,9 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
     _future = MerchantRepository.instance.promoCodes();
   }
 
-  void _reload() =>
-      setState(() => _future = MerchantRepository.instance.promoCodes());
+  void _reload() => setState(() {
+        _future = MerchantRepository.instance.promoCodes();
+      });
 
   Future<void> _create() async {
     final codeCtrl = TextEditingController();

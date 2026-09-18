@@ -34,7 +34,12 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   }
 
   Future<void> _refresh() async {
-    setState(() => _future = _load());
+    // Block body, not arrow: setState()'s callback must be void, and an
+    // arrow body that assigns an un-awaited Future evaluates to that
+    // Future, which setState() explicitly throws on in debug builds.
+    setState(() {
+      _future = _load();
+    });
     await _future;
   }
 

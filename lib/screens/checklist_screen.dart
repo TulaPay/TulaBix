@@ -24,8 +24,9 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
     _future = MerchantRepository.instance.checklist();
   }
 
-  void _reload() =>
-      setState(() => _future = MerchantRepository.instance.checklist());
+  void _reload() => setState(() {
+        _future = MerchantRepository.instance.checklist();
+      });
 
   Future<void> _set(String key, bool value) async {
     await MerchantRepository.instance.setChecklistItem(key, value);

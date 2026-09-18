@@ -22,7 +22,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Future<void> _refresh() async {
-    setState(() => _future = MerchantRepository.instance.notifications());
+    setState(() {
+      _future = MerchantRepository.instance.notifications();
+    });
     await _future;
   }
 
