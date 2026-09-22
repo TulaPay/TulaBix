@@ -1,4 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Required for all real network calls (Supabase auth/DB/storage, PayDunya
+         checkout redirect, etc.) — the src/debug and src/profile manifests
+         also declare this (for the Flutter tool's hot-reload connection), which
+         is why this was missing here without `flutter run` ever surfacing it:
+         a built APK only merges this main manifest, not the debug one. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="TulaBiz"
         android:name="${applicationName}"
