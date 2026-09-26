@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/OTP_Verification_Screen.dart';
 import 'package:tulapay/authentication/sign_in.dart';
+import 'package:tulapay/models/business_type.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
@@ -28,9 +29,12 @@ class _SignUpState extends State<SignUp> {
   bool _isSubmitting = false;
 
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _businessNameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
+  String? _selectedBusinessType;
 
   final List<Country> _countries = [
     Country(name: "Cameroon", flag: '🇨🇲', code: '+237'),
@@ -52,6 +56,7 @@ class _SignUpState extends State<SignUp> {
   @override
   void dispose() {
     _nameController.dispose();
+    _businessNameController.dispose();
     _phoneController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
@@ -152,6 +157,15 @@ class _SignUpState extends State<SignUp> {
       );
       return;
     }
+    if (_selectedBusinessType == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Select a business type to proceed'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
 
     final fullPhoneNumber = "${_selectedCountry.code}${_phoneController.text}";
 
@@ -167,7 +181,13 @@ class _SignUpState extends State<SignUp> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => OtpVerificationScreen(phoneNumber: fullPhoneNumber),
+          builder: (_) => OtpVerificationScreen(
+            phoneNumber: fullPhoneNumber,
+            email: _emailController.text.trim(),
+            businessName: _businessNameController.text.trim(),
+            businessType: businessTypeLabels[_selectedBusinessType]!,
+            country: _selectedCountry.name,
+          ),
         ),
       );
     } on AuthException catch (e) {
@@ -274,6 +294,23 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 12),
 
+                            _buildLabel("Business Name"),
+                            TextFormField(
+                              controller: _businessNameController,
+                              textCapitalization: TextCapitalization.words,
+                              decoration: const InputDecoration(
+                                hintText: "Awa's Boutique",
+                                prefixIcon: Icon(Icons.storefront_outlined),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Business name is required';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 12),
+
                             _buildLabel("Phone Number"),
                             TextFormField(
                               controller: _phoneController,
@@ -329,7 +366,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Email Address (Optional)"),
+                            _buildLabel("Email Address"),
                             TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
@@ -338,13 +375,14 @@ class _SignUpState extends State<SignUp> {
                                 prefixIcon: Icon(Icons.email_outlined),
                               ),
                               validator: (value) {
-                                if (value != null && value.isNotEmpty) {
-                                  final emailRegex = RegExp(
-                                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                  );
-                                  if (!emailRegex.hasMatch(value)) {
-                                    return 'Enter a valid email address';
-                                  }
+                                if (value == null || value.isEmpty) {
+                                  return 'Email address is required';
+                                }
+                                final emailRegex = RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                );
+                                if (!emailRegex.hasMatch(value)) {
+                                  return 'Enter a valid email address';
                                 }
                                 return null;
                               },
@@ -382,6 +420,30 @@ class _SignUpState extends State<SignUp> {
                                 }
                                 if (!value.contains(RegExp(r'[A-Z]'))) {
                                   return 'Include at least one uppercase letter';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 12),
+
+                            _buildLabel("Business Type"),
+                            DropdownButtonFormField<String>(
+                              initialValue: _selectedBusinessType,
+                              decoration: const InputDecoration(
+                                prefixIcon: Icon(Icons.category_outlined),
+                              ),
+                              hint: const Text("Select business type"),
+                              items: businessTypeLabels.keys
+                                  .map((label) => DropdownMenuItem(
+                                        value: label,
+                                        child: Text(label),
+                                      ))
+                                  .toList(),
+                              onChanged: (value) =>
+                                  setState(() => _selectedBusinessType = value),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Select a business type';
                                 }
                                 return null;
                               },

@@ -1,3 +1,4 @@
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tulapay/models/ledger.dart' show CashReceiptLike;
 
 /// `merchant_promo_codes` — merchant-authored discount codes.
@@ -88,8 +89,14 @@ class PaymentLink {
             : DateTime.tryParse(m['expires_at'].toString()),
       );
 
-  static const _base = 'https://pay.tulabix.com';
-  String get url => '$_base/$slug';
+  // pay.tulabix.com isn't wired to anything yet (no custom domain on the
+  // Vercel deployment) — PAYMENT_LINK_BASE_URL overrides it to point at
+  // wherever the checkout page is actually reachable in the meantime. The
+  // checkout page's real path is /pay/<slug> (app/pay/[slug]/page.tsx)
+  // regardless of origin, not just <origin>/<slug>.
+  static String get _base =>
+      dotenv.env['PAYMENT_LINK_BASE_URL'] ?? 'https://pay.tulabix.com';
+  String get url => '$_base/pay/$slug';
 }
 
 /// `cash_receipts` — append-only.

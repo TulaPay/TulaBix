@@ -6,7 +6,16 @@ import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class CreatePinScreen extends StatefulWidget {
-  const CreatePinScreen({super.key});
+  final String businessName;
+  final String businessType;
+  final String country;
+
+  const CreatePinScreen({
+    super.key,
+    required this.businessName,
+    required this.businessType,
+    required this.country,
+  });
 
   @override
   State<CreatePinScreen> createState() => _CreatePinScreenState();
@@ -127,7 +136,13 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                 ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => const KycOnboarding()),
+                      MaterialPageRoute(
+                        builder: (_) => KycOnboarding(
+                          businessName: widget.businessName,
+                          businessType: widget.businessType,
+                          country: widget.country,
+                        ),
+                      ),
                       (route) => false,
                     );
                   },

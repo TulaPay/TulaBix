@@ -30,6 +30,17 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+            <!-- Deep link target for Supabase's email-confirmation redirect
+                 (see AuthService.sendEmailVerification's emailRedirectTo) —
+                 must also be allow-listed in the Supabase dashboard's
+                 Authentication > URL Configuration > Redirect URLs, or
+                 GoTrue silently falls back to the project's Site URL instead. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="com.tulapay.tulapay" android:host="login-callback"/>
+            </intent-filter>
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

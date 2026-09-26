@@ -76,6 +76,7 @@ class LedgerTransaction {
         'card' => 'Card',
         'mobile_money' => 'Mobile money',
         'bank_transfer' => 'Bank transfer',
+        'cash' => 'Cash',
         _ => channel,
       };
 }

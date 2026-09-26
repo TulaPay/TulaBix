@@ -50,6 +50,36 @@ class AuthService {
     return supabase.auth.resend(type: OtpType.sms, phone: phone);
   }
 
+  /// Deep link target Supabase redirects to after the user taps the
+  /// confirmation link — registered as a real intent-filter/URL scheme on
+  /// both platforms (AndroidManifest.xml, ios/Runner/Info.plist) and must
+  /// also be allow-listed in the Supabase dashboard's Authentication > URL
+  /// Configuration > Redirect URLs, or GoTrue silently falls back to the
+  /// project's Site URL instead of this.
+  static const emailConfirmRedirect = 'com.tulapay.tulapay://login-callback';
+
+  /// Attaches + verifies an email on the already phone-authenticated signup
+  /// session. Supabase has no separate "verify a second identifier" concept
+  /// for an existing user — attaching an email always goes through GoTrue's
+  /// secure email-change flow, which happens to be exactly right here too (a
+  /// signup email add is genuinely a change from "no email" to "this
+  /// email"). This can't send a 6-digit code — Supabase only lets you
+  /// customize an auth email template's body once a real custom SMTP
+  /// provider is configured, which isn't set up here, so the "Change Email
+  /// Address" template stays on its default link-based content. Instead,
+  /// this passes emailRedirectTo so the link deep-links back into the app;
+  /// updateUser() generates a PKCE code_challenge whenever `email` is set
+  /// (confirmed from the installed gotrue 2.27.2 client source), so the
+  /// resulting link carries `?code=...`, which supabase_flutter's built-in
+  /// deep-link handling (on by default) already completes automatically via
+  /// getSessionFromUrl — no manual token parsing needed on this end.
+  Future<void> sendEmailVerification(String email) async {
+    await supabase.auth.updateUser(
+      UserAttributes(email: email),
+      emailRedirectTo: emailConfirmRedirect,
+    );
+  }
+
   /// Starts an account-recovery flow for an existing account (forgot
   /// password OR forgot PIN — this step is identical for both, it just
   /// proves phone ownership) — does not create a new user if the phone

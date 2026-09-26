@@ -6,6 +6,7 @@ import 'package:tulapay/format.dart';
 import 'package:tulapay/models/commerce.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/utils/csv_export.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
 
@@ -84,6 +85,55 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
   Future<void> _refreshData() => _load();
 
+  Future<void> _export() async {
+    final rows = <List<Object?>>[
+      ['TulaBiz analytics export', DateFormat('MMM d, yyyy').format(DateTime.now())],
+      [],
+      ['Transactions'],
+      ['Date', 'Type', 'Channel', 'Status', 'Counterparty', 'Amount', 'Currency', 'Fee', 'Reference'],
+      for (final t in _txns)
+        [
+          DateFormat('yyyy-MM-dd HH:mm').format(t.createdAt),
+          t.typeLabel,
+          t.channelLabel,
+          t.status,
+          t.counterpartyName ?? '',
+          t.amount,
+          t.amountCurrency,
+          t.feeAmount,
+          t.reference ?? '',
+        ],
+      [],
+      ['Expenses'],
+      ['Date', 'Category', 'Amount', 'Note'],
+      for (final e in _expenses)
+        [DateFormat('yyyy-MM-dd').format(e.incurredAt), e.category, e.amount, e.note ?? ''],
+      [],
+      ['Budgets'],
+      ['Category', 'Period start', 'Period end', 'Allocated amount'],
+      for (final b in _budgets)
+        [
+          b.category,
+          DateFormat('yyyy-MM-dd').format(b.periodStart),
+          DateFormat('yyyy-MM-dd').format(b.periodEnd),
+          b.allocatedAmount,
+        ],
+    ];
+
+    try {
+      await shareAsCsv(
+        'tulabiz-analytics-${DateFormat('yyyyMMdd').format(DateTime.now())}.csv',
+        rows,
+        subject: 'TulaBiz analytics export',
+      );
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not export analytics')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -102,11 +152,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 'Export',
                 icon: Icons.ios_share_rounded,
                 dense: true,
-                onTap: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Exporting report as PDF...')),
-                  );
-                },
+                onTap: _export,
               ),
             ),
           ),

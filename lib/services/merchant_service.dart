@@ -22,7 +22,12 @@ class MerchantService {
     required String taxId,
     String? addressStreet,
     String? addressCity,
+    String? addressCountry,
     String? ownerEmail,
+    String? businessType,
+    String? businessPhone,
+    String? businessEmail,
+    num? estimatedMonthlyVolume,
   }) async {
     final userId = supabase.auth.currentUser!.id;
 
@@ -53,6 +58,11 @@ class MerchantService {
           'business_category': businessCategory,
           'address_street': addressStreet,
           'address_city': addressCity,
+          if (addressCountry != null) 'address_country': addressCountry,
+          'business_type': businessType,
+          'business_phone': businessPhone,
+          'business_email': businessEmail,
+          'estimated_monthly_volume': estimatedMonthlyVolume,
         })
         .select('id')
         .single();
@@ -68,14 +78,20 @@ class MerchantService {
     return merchantId;
   }
 
-  Future<void> uploadIdentityDocument({
+  // Generalized from the original single-document uploadIdentityDocument —
+  // same storage bucket/path pattern, now parameterized for the redesigned
+  // KYB flow's extra document types (RCCM, tax document, selfie) and for
+  // tagging a document to a beneficial owner instead of the merchant's own
+  // director/representative.
+  Future<void> uploadKybDocument({
     required String merchantId,
     required String docType,
     required XFile file,
+    String? beneficialOwnerId,
   }) async {
     final ext = file.path.contains('.') ? file.path.split('.').last : 'jpg';
     final storagePath =
-        '$merchantId/${DateTime.now().millisecondsSinceEpoch}.$ext';
+        '$merchantId/${DateTime.now().millisecondsSinceEpoch}_$docType.$ext';
 
     await supabase.storage.from('kyb-documents').upload(storagePath, File(file.path));
 
@@ -83,7 +99,29 @@ class MerchantService {
       'merchant_id': merchantId,
       'doc_type': docType,
       'storage_path': storagePath,
+      if (beneficialOwnerId != null) 'beneficial_owner_id': beneficialOwnerId,
     });
+  }
+
+  /// Adds one beneficial owner (anyone owning/controlling 25%+ of the
+  /// business, per the KYB spec) and returns the new row's id, so their
+  /// identity document (if provided) can be uploaded tagged to it via
+  /// [uploadKybDocument]'s beneficialOwnerId.
+  Future<String> addBeneficialOwner({
+    required String merchantId,
+    required String fullName,
+    required num ownershipPercent,
+  }) async {
+    final row = await supabase
+        .from('merchant_beneficial_owners')
+        .insert({
+          'merchant_id': merchantId,
+          'full_name': fullName,
+          'ownership_percent': ownershipPercent,
+        })
+        .select('id')
+        .single();
+    return row['id'] as String;
   }
 
   Future<void> submitSettlementAccount({

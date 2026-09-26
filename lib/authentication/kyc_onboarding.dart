@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tulapay/authentication/id_verification.dart';
+import 'package:tulapay/authentication/business_information_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 class KycOnboarding extends StatefulWidget {
-  const KycOnboarding({super.key});
+  final String businessName;
+  final String businessType;
+  final String country;
+
+  const KycOnboarding({
+    super.key,
+    required this.businessName,
+    required this.businessType,
+    required this.country,
+  });
 
   @override
   State<KycOnboarding> createState() => _KycOnboardingState();
@@ -143,7 +152,11 @@ class _KycOnboardingState extends State<KycOnboarding> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const IdVerification(),
+                            builder: (_) => BusinessInformationScreen(
+                              businessName: widget.businessName,
+                              businessType: widget.businessType,
+                              country: widget.country,
+                            ),
                           ),
                         );
                       },

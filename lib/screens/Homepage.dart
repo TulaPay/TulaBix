@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/screens/cash_receipts_screen.dart';
 import 'package:tulapay/screens/more_actions_screen.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
 import 'package:tulapay/screens/scan_qr_screen.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/custom_drawer.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
@@ -31,7 +33,49 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   bool _isBalanceVisible = true;
 
-  late final Future<_HomeData> _dataFuture = _loadHomeData();
+  late Future<_HomeData> _dataFuture;
+  RealtimeChannel? _transactionsChannel;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataFuture = _loadHomeData();
+    _subscribeToTransactions();
+  }
+
+  @override
+  void dispose() {
+    final channel = _transactionsChannel;
+    if (channel != null) supabase.removeChannel(channel);
+    super.dispose();
+  }
+
+  // Balance previously only ever loaded once per app session — a payment
+  // landing via the paydunya-ipn webhook (server-side, independent of this
+  // screen being open) never reflected until a full app restart. Listening
+  // for new transactions.owner_user_id = me rows makes it update live.
+  // owner_user_id (migration 0033) exists specifically because RLS's other
+  // policy here is a join through merchants, which Realtime's RLS-aware
+  // broadcast doesn't reliably evaluate — this filter needs a plain
+  // column-equality check to be trustworthy.
+  void _subscribeToTransactions() {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+    _transactionsChannel = supabase
+        .channel('home-transactions-$userId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'transactions',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'owner_user_id',
+            value: userId,
+          ),
+          callback: (_) => setState(() => _dataFuture = _loadHomeData()),
+        )
+        .subscribe();
+  }
 
   Future<_HomeData> _loadHomeData() async {
     final summary = await MerchantRepository.instance.businessSummary();
@@ -67,139 +111,197 @@ class _HomepageState extends State<Homepage> {
               child: CircleAvatar(
                 radius: 18,
                 backgroundColor: cs.primary.withValues(alpha: 0.12),
-                child: Icon(Icons.person_outline_rounded,
-                    color: cs.primary, size: 22),
+                child: Icon(
+                  Icons.person_outline_rounded,
+                  color: cs.primary,
+                  size: 22,
+                ),
               ),
             ),
           ),
         ],
       ),
       drawer: const CustomDrawer(),
-      body: CustomScrollView(
-        // physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, 0),
-            sliver: SliverToBoxAdapter(
-              child: FutureBuilder<_HomeData>(
-                future: _dataFuture,
-                builder: (context, snap) => _BalanceCard(
-                  isVisible: _isBalanceVisible,
-                  onToggle: () => setState(
-                      () => _isBalanceVisible = !_isBalanceVisible),
-                  summary: snap.data?.summary,
+      body: RefreshIndicator(
+        onRefresh: () async {
+          final next = _loadHomeData();
+          setState(() => _dataFuture = next);
+          await next;
+        },
+        child: CustomScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.sm,
+                AppSpacing.xl,
+                0,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: FutureBuilder<_HomeData>(
+                  future: _dataFuture,
+                  builder: (context, snap) => _BalanceCard(
+                    isVisible: _isBalanceVisible,
+                    onToggle: () =>
+                        setState(() => _isBalanceVisible = !_isBalanceVisible),
+                    summary: snap.data?.summary,
+                  ),
                 ),
               ),
             ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.huge, AppSpacing.xl, AppSpacing.md),
-            sliver: SliverToBoxAdapter(
-              child: SectionHeader(
-                'Quick Actions',
-                actionLabel: 'More',
-                onAction: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const MoreActionsScreen()),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.huge,
+                AppSpacing.xl,
+                AppSpacing.md,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: SectionHeader(
+                  'Quick Actions',
+                  actionLabel: 'More',
+                  onAction: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MoreActionsScreen(),
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            sliver: SliverToBoxAdapter(
-              child: GlassSurface(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm, vertical: AppSpacing.md),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _quickAction(context,
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+              sliver: SliverToBoxAdapter(
+                child: GlassSurface(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.md,
+                  ),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _quickAction(
+                        context,
                         icon: Icons.link_rounded,
                         label: 'Payment Links',
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (_) => const PaymentLinksScreen()))),
-                    _quickAction(context,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const PaymentLinksScreen(),
+                          ),
+                        ),
+                      ),
+                      _quickAction(
+                        context,
                         icon: Icons.qr_code_scanner_rounded,
                         label: 'Scan QR',
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (_) => const ScanQrScreen()))),
-                    _quickAction(context,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const ScanQrScreen(),
+                          ),
+                        ),
+                      ),
+                      _quickAction(
+                        context,
                         icon: Icons.receipt_long_outlined,
                         label: 'Cash Receipts',
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (_) => const CashReceiptsScreen()))),
-                    _quickAction(context,
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CashReceiptsScreen(),
+                          ),
+                        ),
+                      ),
+                      _quickAction(
+                        context,
                         icon: Icons.grid_view_rounded,
                         label: 'More',
-                        onTap: () => Navigator.push(context,
-                            MaterialPageRoute(
-                                builder: (_) => const MoreActionsScreen()))),
-                  ],
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const MoreActionsScreen(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.huge, AppSpacing.xl, AppSpacing.md),
-            sliver: SliverToBoxAdapter(
-              child: SectionHeader('Recent Activity',
-                  actionLabel: 'All', onAction: () {}),
-            ),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
-            sliver: SliverToBoxAdapter(
-              child: FutureBuilder<_HomeData>(
-                future: _dataFuture,
-                builder: (context, snap) {
-                  if (snap.connectionState == ConnectionState.waiting) {
-                    return const Padding(
-                      padding: EdgeInsets.symmetric(vertical: 24),
-                      child: Center(child: CircularProgressIndicator()),
-                    );
-                  }
-                  final recent = snap.data?.recent ?? const [];
-                  if (recent.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Text(
-                        'No activity yet — payments will show up here.',
-                        style: AppText.caption(color: cs.onSurfaceVariant),
-                      ),
-                    );
-                  }
-                  return Column(
-                    children: [
-                      for (final tx in recent) ...[
-                        ListRowCard(
-                          icon: tx.isInflow
-                              ? Icons.south_west_rounded
-                              : Icons.north_east_rounded,
-                          iconColor: tx.isInflow
-                              ? const Color(0xFF10B981)
-                              : cs.secondary,
-                          title: tx.counterpartyName ?? tx.typeLabel,
-                          subtitle: DateFormat('MMM d, h:mm a').format(tx.createdAt),
-                          value: signedMoney(tx.signedAmount, currency: tx.amountCurrency),
-                          secondaryValue: tx.status[0].toUpperCase() + tx.status.substring(1),
-                        ),
-                        const SizedBox(height: AppSpacing.md),
-                      ],
-                    ],
-                  );
-                },
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(
+                AppSpacing.xl,
+                AppSpacing.huge,
+                AppSpacing.xl,
+                AppSpacing.md,
+              ),
+              sliver: SliverToBoxAdapter(
+                child: SectionHeader(
+                  'Recent Activity',
+                  actionLabel: 'All',
+                  onAction: () {},
+                ),
               ),
             ),
-          ),
-          const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.section)),
-        ],
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+              sliver: SliverToBoxAdapter(
+                child: FutureBuilder<_HomeData>(
+                  future: _dataFuture,
+                  builder: (context, snap) {
+                    if (snap.connectionState == ConnectionState.waiting) {
+                      return const Padding(
+                        padding: EdgeInsets.symmetric(vertical: 24),
+                        child: Center(child: CircularProgressIndicator()),
+                      );
+                    }
+                    final recent = snap.data?.recent ?? const [];
+                    if (recent.isEmpty) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        child: Text(
+                          'No activity yet — payments will show up here.',
+                          style: AppText.caption(color: cs.onSurfaceVariant),
+                        ),
+                      );
+                    }
+                    return Column(
+                      children: [
+                        for (final tx in recent) ...[
+                          ListRowCard(
+                            icon: tx.isInflow
+                                ? Icons.south_west_rounded
+                                : Icons.north_east_rounded,
+                            iconColor: tx.isInflow
+                                ? const Color(0xFF10B981)
+                                : cs.secondary,
+                            title: tx.counterpartyName ?? tx.typeLabel,
+                            subtitle: DateFormat(
+                              'MMM d, h:mm a',
+                            ).format(tx.createdAt),
+                            value: signedMoney(
+                              tx.signedAmount,
+                              currency: tx.amountCurrency,
+                            ),
+                            secondaryValue:
+                                tx.status[0].toUpperCase() +
+                                tx.status.substring(1),
+                          ),
+                          const SizedBox(height: AppSpacing.md),
+                        ],
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ),
+            const SliverToBoxAdapter(
+              child: SizedBox(height: AppSpacing.section),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -254,7 +356,11 @@ class _BalanceCard extends StatelessWidget {
   final VoidCallback onToggle;
   final MerchantBusinessSummary? summary;
 
-  const _BalanceCard({required this.isVisible, required this.onToggle, this.summary});
+  const _BalanceCard({
+    required this.isVisible,
+    required this.onToggle,
+    this.summary,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -268,9 +374,12 @@ class _BalanceCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text('MAIN BALANCE',
-                      style: AppText.microLabel(
-                          color: Colors.white.withValues(alpha: 0.75))),
+                  Text(
+                    'MAIN BALANCE',
+                    style: AppText.microLabel(
+                      color: Colors.white.withValues(alpha: 0.75),
+                    ),
+                  ),
                   const SizedBox(width: AppSpacing.sm),
                   GestureDetector(
                     onTap: onToggle,
@@ -290,8 +399,11 @@ class _BalanceCard extends StatelessWidget {
                   color: Colors.white.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
-                child: const Icon(Icons.wallet_rounded,
-                    color: Colors.white, size: 22),
+                child: const Icon(
+                  Icons.wallet_rounded,
+                  color: Colors.white,
+                  size: 22,
+                ),
               ),
             ],
           ),
@@ -300,12 +412,18 @@ class _BalanceCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text('XAF ',
-                  style: AppText.cardTitle(
-                      size: 15, color: Colors.white.withValues(alpha: 0.7))),
+              Text(
+                'XAF ',
+                style: AppText.cardTitle(
+                  size: 15,
+                  color: Colors.white.withValues(alpha: 0.7),
+                ),
+              ),
               Text(
                 isVisible
-                    ? (summary == null ? '••••••••' : amountOnly(summary!.balance))
+                    ? (summary == null
+                          ? '••••••••'
+                          : amountOnly(summary!.balance))
                     : '••••••••',
                 style: AppText.hero(size: 34, color: Colors.white),
               ),
@@ -323,14 +441,18 @@ class _BalanceCard extends StatelessWidget {
                 _miniMetric(
                   '30-Day Revenue',
                   isVisible
-                      ? (summary == null ? '••••' : signedMoney(summary!.revenue30d))
+                      ? (summary == null
+                            ? '••••'
+                            : signedMoney(summary!.revenue30d))
                       : '+ XAF ••••',
                   const Color(0xFFB6F2D3),
                 ),
                 _divider(),
                 _miniMetric(
                   'Transactions',
-                  summary == null ? '••' : '${summary!.transactionCount30d} (30d)',
+                  summary == null
+                      ? '••'
+                      : '${summary!.transactionCount30d} (30d)',
                   Colors.white,
                 ),
                 _divider(),
@@ -347,8 +469,7 @@ class _BalanceCard extends StatelessWidget {
     );
   }
 
-  Widget _divider() =>
-      Container(height: 28, width: 1, color: Colors.white24);
+  Widget _divider() => Container(height: 28, width: 1, color: Colors.white24);
 
   Widget _miniMetric(String title, String value, Color valueColor) {
     return Expanded(
@@ -357,17 +478,21 @@ class _BalanceCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(title,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppText.caption(
-                    color: Colors.white.withValues(alpha: 0.7))
-                    .copyWith(fontSize: 10)),
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppText.caption(
+                color: Colors.white.withValues(alpha: 0.7),
+              ).copyWith(fontSize: 10),
+            ),
             const SizedBox(height: 4),
-            Text(value,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: AppText.cardTitle(size: 13, color: valueColor)),
+            Text(
+              value,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: AppText.cardTitle(size: 13, color: valueColor),
+            ),
           ],
         ),
       ),

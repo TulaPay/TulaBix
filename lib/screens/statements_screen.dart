@@ -5,6 +5,7 @@ import 'package:tulapay/format.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/utils/app_feedback.dart';
+import 'package:tulapay/utils/csv_export.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 /// Real statement screen — backs the "Statements" tile in More Actions.
@@ -58,16 +59,67 @@ class _StatementsViewState extends State<_StatementsView> {
 
   Future<void> _export(StatementPeriod s) async {
     final fmt = DateFormat('MMM d, yyyy');
-    final summary = '''
-Statement: ${fmt.format(s.periodStart)} – ${fmt.format(s.periodEnd)}
-Gross revenue: ${money(s.grossRevenue)}
-Refunds: ${money(s.refunds)}
-Net revenue: ${money(s.netRevenue)}
-Fees charged: ${money(s.feesCharged)}
-Payouts received: ${money(s.payoutsReceived)}
-Transactions: ${s.transactionCount}
-''';
-    await AppFeedback.share(summary, subject: 'TulaBiz statement');
+    final rangeLabel =
+        '${fmt.format(s.periodStart)} to ${fmt.format(s.periodEnd)}';
+
+    final rows = <List<Object?>>[
+      ['TulaBiz statement', rangeLabel],
+      [],
+      ['Gross revenue', s.grossRevenue],
+      ['Refunds', s.refunds],
+      ['Net revenue', s.netRevenue],
+      ['Fees charged', s.feesCharged],
+      ['Payouts received', s.payoutsReceived],
+      ['Transaction count', s.transactionCount],
+      [],
+      [
+        'Date',
+        'Type',
+        'Channel',
+        'Status',
+        'Counterparty',
+        'Amount',
+        'Currency',
+        'Fee',
+        'Reference',
+      ],
+    ];
+
+    try {
+      final all = await MerchantRepository.instance.transactions(limit: 1000);
+      final inRange = all.where(
+        (t) =>
+            !t.createdAt.isBefore(_range.start) &&
+            t.createdAt.isBefore(_range.end.add(const Duration(days: 1))),
+      );
+      for (final t in inRange) {
+        rows.add([
+          DateFormat('yyyy-MM-dd HH:mm').format(t.createdAt),
+          t.typeLabel,
+          t.channelLabel,
+          t.status,
+          t.counterpartyName ?? '',
+          t.amount,
+          t.amountCurrency,
+          t.feeAmount,
+          t.reference ?? '',
+        ]);
+      }
+    } catch (_) {
+      // Summary section is still useful on its own if the detail fetch
+      // fails — export what we have rather than blocking the whole thing.
+    }
+
+    if (!mounted) return;
+    try {
+      await shareAsCsv(
+        'tulabiz-statement-${DateFormat('yyyyMMdd').format(s.periodStart)}.csv',
+        rows,
+        subject: 'TulaBiz statement',
+      );
+    } catch (_) {
+      if (mounted) AppFeedback.toast(context, 'Could not export the statement');
+    }
   }
 
   @override

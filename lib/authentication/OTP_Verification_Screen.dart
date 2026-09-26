@@ -2,18 +2,30 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:tulapay/authentication/create_pin_Screen.dart';
+import 'package:tulapay/authentication/email_otp_verification_screen.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
 // Used only to confirm the phone number entered at signup — ordinary sign-in
-// is password-only and never reaches this screen (see AuthService).
+// is password-only and never reaches this screen (see AuthService). On
+// success, moves on to verifying the email (email_otp_verification_screen.dart)
+// rather than straight to PIN creation — businessName/businessType/country
+// are just forwarded through, collected at signup, needed by
+// BusinessInformationScreen at the end of this onboarding chain.
 class OtpVerificationScreen extends StatefulWidget {
   final String phoneNumber;
+  final String email;
+  final String businessName;
+  final String businessType;
+  final String country;
 
   const OtpVerificationScreen({
     super.key,
     required this.phoneNumber,
+    required this.email,
+    required this.businessName,
+    required this.businessType,
+    required this.country,
   });
 
   @override
@@ -87,7 +99,14 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       if (!mounted) return;
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const CreatePinScreen()),
+        MaterialPageRoute(
+          builder: (_) => EmailOtpVerificationScreen(
+            email: widget.email,
+            businessName: widget.businessName,
+            businessType: widget.businessType,
+            country: widget.country,
+          ),
+        ),
       );
     } on AuthException catch (e) {
       if (!mounted) return;

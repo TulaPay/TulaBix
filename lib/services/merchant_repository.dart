@@ -1,3 +1,4 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/models/commerce.dart';
 import 'package:tulapay/models/crm_customer.dart';
 import 'package:tulapay/models/engagement.dart';
@@ -373,6 +374,31 @@ class MerchantRepository {
       'p_note': note,
     });
     return MerchantTransfer.fromMap(_firstRow(res));
+  }
+
+  // Real PayDunya disbursement — called right after initiateTransfer()
+  // returns a pending row. Only kind='bank' transfers actually push money
+  // (see supabase/functions/initiate-payout's own header comment for why
+  // 'internal' is out of scope). Throws with the real error message from
+  // the function (e.g. "No settlement account on file") rather than a
+  // generic failure, matching this app's error-surfacing convention.
+  Future<void> initiatePayout(String transferId) async {
+    try {
+      final res = await supabase.functions.invoke(
+        'initiate-payout',
+        body: {'transferId': transferId},
+      );
+      final data = res.data;
+      if (data is Map && data['error'] != null) {
+        throw Exception(data['error'].toString());
+      }
+    } on FunctionException catch (e) {
+      final details = e.details;
+      final message = (details is Map && details['error'] != null)
+          ? details['error'].toString()
+          : (e.reasonPhrase ?? 'Payout could not be started');
+      throw Exception(message);
+    }
   }
 
   Future<List<FeeRate>> feeRates() async {

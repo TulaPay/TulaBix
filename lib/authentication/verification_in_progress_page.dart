@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:tulapay/authentication/business_details.dart';
+import 'package:tulapay/authentication/settlement_account_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
+// Brief reassurance screen shown right after KybDocumentsScreen uploads
+// everything — was between ID capture and Business Details in the old flow
+// order; now sits after all KYB documents are captured (the "we're
+// reviewing your documents" copy only makes sense once documents actually
+// exist), right before the final Settlement Account step.
 class VerificationInProgressPage extends StatefulWidget {
-  final String docType;
-  final XFile documentFile;
+  final String merchantId;
 
   const VerificationInProgressPage({
     super.key,
-    required this.docType,
-    required this.documentFile,
+    required this.merchantId,
   });
 
   @override
@@ -161,18 +163,18 @@ class _VerificationInProgressPageState extends State<VerificationInProgressPage>
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          Navigator.push(
+                          Navigator.pushAndRemoveUntil(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => BusinessDetails(
-                                docType: widget.docType,
-                                documentFile: widget.documentFile,
+                              builder: (_) => SettlementAccountScreen(
+                                merchantId: widget.merchantId,
                               ),
                             ),
+                            (route) => false,
                           );
                         },
-                        icon: const Icon(Icons.domain_rounded),
-                        label: const Text("Continue to KYB"),
+                        icon: const Icon(Icons.account_balance_outlined),
+                        label: const Text("Continue"),
                       ),
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
