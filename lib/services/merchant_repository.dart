@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/models/commerce.dart';
 import 'package:tulapay/models/crm_customer.dart';
@@ -388,16 +389,30 @@ class MerchantRepository {
         'initiate-payout',
         body: {'transferId': transferId},
       );
+      // TEMPORARY diagnostic logging while chasing the "Unexpected token
+      // '<'... is not valid JSON" toast (2026-09-27) — remove once the real
+      // cause is confirmed.
+      debugPrint(
+        'initiatePayout raw response: status=${res.status} data=(${res.data.runtimeType}) ${res.data}',
+      );
       final data = res.data;
       if (data is Map && data['error'] != null) {
         throw Exception(data['error'].toString());
       }
     } on FunctionException catch (e) {
+      debugPrint(
+        'initiatePayout FunctionException: type=${e.runtimeType} '
+        'status=${e is FunctionsHttpException ? e.status : '(n/a)'} '
+        'reasonPhrase=${e.reasonPhrase} details=(${e.details.runtimeType}) ${e.details}',
+      );
       final details = e.details;
       final message = (details is Map && details['error'] != null)
           ? details['error'].toString()
           : (e.reasonPhrase ?? 'Payout could not be started');
       throw Exception(message);
+    } catch (e) {
+      debugPrint('initiatePayout non-FunctionException error: type=${e.runtimeType} $e');
+      rethrow;
     }
   }
 
