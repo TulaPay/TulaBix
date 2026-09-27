@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/screens/Customer_Screen.dart';
+import 'package:tulapay/screens/collect_payment_screen.dart';
 import 'package:tulapay/screens/more_actions_demos.dart';
 import 'package:tulapay/screens/statements_screen.dart';
 import 'package:tulapay/screens/transfer_screen.dart';
@@ -18,6 +19,11 @@ class MoreActionsScreen extends StatelessWidget {
         'icon': Icons.account_balance_rounded,
         'label': 'Bank Transfer',
         'route': 'bank_transfer',
+      },
+      {
+        'icon': Icons.phone_android_rounded,
+        'label': 'Collect Payment',
+        'route': 'collect_payment',
       },
       {
         'icon': Icons.swap_horiz_rounded,
@@ -80,6 +86,13 @@ class MoreActionsScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (_) => const TransferScreen(kind: 'bank'),
+                  ),
+                );
+              } else if (route == 'collect_payment') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const CollectPaymentScreen(),
                   ),
                 );
               } else if (route == 'internal_transfer') {

@@ -401,6 +401,39 @@ class MerchantRepository {
     }
   }
 
+  // Real direct MTN MoMo collection — pushes a PayDunya SoftPay prompt to
+  // the customer's own phone. Mirrors initiatePayout's error-surfacing:
+  // throws with the function's real error message rather than a generic
+  // one. Returns immediately once PayDunya accepts the request; the
+  // transaction resolves to completed/failed later via the same
+  // paydunya-ipn webhook every other payment channel already uses.
+  Future<void> collectSoftpayPayment({
+    required String customerPhone,
+    required num amount,
+    String? description,
+  }) async {
+    try {
+      final res = await supabase.functions.invoke(
+        'initiate-softpay-collection',
+        body: {
+          'customerPhone': customerPhone,
+          'amount': amount,
+          'description': description,
+        },
+      );
+      final data = res.data;
+      if (data is Map && data['error'] != null) {
+        throw Exception(data['error'].toString());
+      }
+    } on FunctionException catch (e) {
+      final details = e.details;
+      final message = (details is Map && details['error'] != null)
+          ? details['error'].toString()
+          : (e.reasonPhrase ?? 'Collection request could not be started');
+      throw Exception(message);
+    }
+  }
+
   Future<List<FeeRate>> feeRates() async {
     final rows = await supabase.from('fee_rates').select().order('channel');
     return rows.map<FeeRate>((r) => FeeRate.fromMap(r)).toList();
