@@ -58,13 +58,21 @@ class _HomepageState extends State<Homepage> {
   // policy here is a join through merchants, which Realtime's RLS-aware
   // broadcast doesn't reliably evaluate — this filter needs a plain
   // column-equality check to be trustworthy.
+  //
+  // Must be `.all`, not just `.insert`: create-payment-invoice inserts the
+  // row as 'pending' (correctly invisible to the balance, which only counts
+  // 'completed'), and paydunya-ipn later flips it to 'completed' via an
+  // UPDATE once the customer actually pays — an insert-only listener misses
+  // that update entirely, so the balance never reflected a completed
+  // payment without a manual refresh or app restart (confirmed via a real
+  // sandbox payment, 2026-09-27).
   void _subscribeToTransactions() {
     final userId = supabase.auth.currentUser?.id;
     if (userId == null) return;
     _transactionsChannel = supabase
         .channel('home-transactions-$userId')
         .onPostgresChanges(
-          event: PostgresChangeEvent.insert,
+          event: PostgresChangeEvent.all,
           schema: 'public',
           table: 'transactions',
           filter: PostgresChangeFilter(
@@ -72,7 +80,9 @@ class _HomepageState extends State<Homepage> {
             column: 'owner_user_id',
             value: userId,
           ),
-          callback: (_) => setState(() => _dataFuture = _loadHomeData()),
+          callback: (_) => setState(() {
+            _dataFuture = _loadHomeData();
+          }),
         )
         .subscribe();
   }
@@ -125,7 +135,9 @@ class _HomepageState extends State<Homepage> {
       body: RefreshIndicator(
         onRefresh: () async {
           final next = _loadHomeData();
-          setState(() => _dataFuture = next);
+          setState(() {
+            _dataFuture = next;
+          });
           await next;
         },
         child: CustomScrollView(
