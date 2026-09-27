@@ -3,7 +3,7 @@ import 'package:tulapay/screens/activity_screen.dart';
 import 'package:tulapay/screens/cash_receipts_screen.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
 import 'package:tulapay/screens/promo_codes_screen.dart';
-import 'package:tulapay/screens/scan_qr_screen.dart';
+import 'package:tulapay/screens/payment_page_screen.dart';
 import 'package:tulapay/screens/settings/billing_screen.dart';
 import 'package:tulapay/screens/settings/growth_goals_screen.dart';
 import 'package:tulapay/services/merchant_repository.dart';
@@ -22,8 +22,11 @@ class _FavItem {
 }
 
 final _catalogue = <_FavItem>[
-  _FavItem('scan_qr', 'Scan QR', Icons.qr_code_scanner_rounded,
-      (_) => const ScanQrScreen()),
+  // key stays 'scan_qr' even though this now opens the real Payment Page —
+  // a merchant may already have this pinned as a favorite in
+  // merchant_favorites, and changing the key would silently orphan it.
+  _FavItem('scan_qr', 'My QR Code', Icons.qr_code_scanner_rounded,
+      (_) => const PaymentPageScreen()),
   _FavItem('payment_links', 'Payment Links', Icons.link_rounded,
       (_) => const PaymentLinksScreen()),
   _FavItem('cash_receipts', 'Cash Receipts', Icons.receipt_long_rounded,

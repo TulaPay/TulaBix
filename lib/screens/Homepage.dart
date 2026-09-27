@@ -5,7 +5,7 @@ import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/screens/cash_receipts_screen.dart';
 import 'package:tulapay/screens/more_actions_screen.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
-import 'package:tulapay/screens/scan_qr_screen.dart';
+import 'package:tulapay/screens/payment_page_screen.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/utils/money.dart';
@@ -195,11 +195,11 @@ class _HomepageState extends State<Homepage> {
                       _quickAction(
                         context,
                         icon: Icons.qr_code_scanner_rounded,
-                        label: 'Scan QR',
+                        label: 'My QR Code',
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const ScanQrScreen(),
+                            builder: (_) => const PaymentPageScreen(),
                           ),
                         ),
                       ),

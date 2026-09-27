@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:tulapay/models/merchant.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
 import 'package:tulapay/services/merchant_repository.dart';
@@ -29,9 +30,10 @@ class _PaymentPageScreenState extends State<PaymentPageScreen> {
       future: _future,
       builder: (context, snap) {
         final m = snap.data;
-        final pageUrl = m == null
-            ? null
-            : 'https://pay.tulabix.com/m/${m.id.toLowerCase()}';
+        // pay.tulabix.com isn't wired to anything yet — same override
+        // lib/models/commerce.dart uses for regular payment links.
+        final base = dotenv.env['PAYMENT_LINK_BASE_URL'] ?? 'https://pay.tulabix.com';
+        final pageUrl = m == null ? null : '$base/pay/m/${m.id.toLowerCase()}';
         return GlassPageShell(
           title: 'Payment Page',
           subtitle: 'Your always-on link customers can pay you from.',
