@@ -1,5 +1,4 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:tulapay/models/ledger.dart' show CashReceiptLike;
 
 /// `merchant_promo_codes` — merchant-authored discount codes.
 class PromoCode {
@@ -99,17 +98,18 @@ class PaymentLink {
   String get url => '$_base/pay/$slug';
 }
 
-/// `cash_receipts` — append-only.
-class CashReceipt implements CashReceiptLike {
+/// `cash_receipts` — append-only. Also mirrored as a real `transactions`
+/// row (channel 'cash') since migration 0035, which is what the Statement/
+/// balance calculators read from now — this class remains just for the
+/// Cash Receipts screen's own history view.
+class CashReceipt {
   final String id;
-  @override
   final num amount;
   final String currency;
   final String category;
   final String? customerName;
   final String? note;
   final String paymentMode; // cash | mobile_money | card | bank_transfer
-  @override
   final DateTime createdAt;
 
   const CashReceipt({

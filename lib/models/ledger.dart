@@ -11,7 +11,7 @@ class LedgerTransaction {
   final num amount;
   final String amountCurrency;
   final num feeAmount;
-  final String channel; // qr_checkout | payment_link | card | mobile_money | bank_transfer
+  final String channel; // qr_checkout | payment_link | card | mobile_money | bank_transfer | cash
   final String? provider; // mtn_momo | orange_money | visa | mastercard
   final String? counterpartyName;
   final String? counterpartyCustomerId;
@@ -79,6 +79,33 @@ class LedgerTransaction {
         'cash' => 'Cash',
         _ => channel,
       };
+}
+
+/// "Available to settle" (Business tab) / "MAIN BALANCE" (Homepage) — the
+/// single source of truth for platform-held balance. Cash is excluded
+/// entirely: a cash receipt is money the merchant already physically holds,
+/// never platform-held, so it must never move this number. A completed
+/// payout nets directly against the balance through its own negative
+/// `signedAmount` — this does not depend on `settled_at` ever being
+/// stamped on the originating payment (nothing in the system does that).
+num availableBalance(Iterable<LedgerTransaction> txns) {
+  num balance = 0;
+  for (final t in txns) {
+    if (t.status != 'completed' || t.channel == 'cash') continue;
+    balance += t.signedAmount - t.feeAmount;
+  }
+  return balance;
+}
+
+/// "Settled" — total actually paid out to the merchant via completed
+/// payouts (not to be confused with a payment's own `settled_at` stamp,
+/// which cash receipts also carry despite never having been paid out).
+num settledTotal(Iterable<LedgerTransaction> txns) {
+  num total = 0;
+  for (final t in txns) {
+    if (t.status == 'completed' && t.type == 'payout') total += t.amount;
+  }
+  return total;
 }
 
 class SettlementBatch {
@@ -184,7 +211,7 @@ class FeeRate {
 class StatementPeriod {
   final DateTime periodStart;
   final DateTime periodEnd;
-  final num grossRevenue; // completed payments + cash receipts
+  final num grossRevenue; // completed payments (cash included, via `transactions`)
   final num refunds; // completed refunds
   final num feesCharged;
   final num payoutsReceived; // completed payouts
@@ -202,19 +229,25 @@ class StatementPeriod {
 
   num get netRevenue => grossRevenue - refunds;
 
+  // `to` is treated as exclusive, matching the half-open [from, to) range
+  // the caller is expected to pass — see statements_screen.dart's `_load()`,
+  // which adds a day to the user-picked end date before calling this, so
+  // the exported CSV detail rows and this summary never disagree again.
   factory StatementPeriod.compute({
     required DateTime from,
     required DateTime to,
     required List<LedgerTransaction> transactions,
-    required List<CashReceiptLike> cashReceipts,
   }) {
     num gross = 0, refunds = 0, fees = 0, payouts = 0;
     var count = 0;
     for (final t in transactions) {
-      if (t.createdAt.isBefore(from) || t.createdAt.isAfter(to)) continue;
+      if (t.createdAt.isBefore(from) || !t.createdAt.isBefore(to)) continue;
       if (t.status != 'completed') continue;
       count++;
       switch (t.type) {
+        // Cash is already a real `transactions` row (channel 'cash') since
+        // it's recorded — no separate cash-receipts aggregation here, that
+        // used to double-count every cash receipt on top of this branch.
         case 'payment':
         case 'loan_disbursement':
           gross += t.amount;
@@ -227,11 +260,6 @@ class StatementPeriod {
       }
       fees += t.feeAmount;
     }
-    for (final r in cashReceipts) {
-      if (r.createdAt.isBefore(from) || r.createdAt.isAfter(to)) continue;
-      gross += r.amount;
-      count++;
-    }
     return StatementPeriod(
       periodStart: from,
       periodEnd: to,
@@ -242,11 +270,4 @@ class StatementPeriod {
       transactionCount: count,
     );
   }
-}
-
-/// Minimal shape the statement aggregator needs from a cash receipt, so
-/// `ledger.dart` doesn't have to import `commerce.dart`.
-abstract class CashReceiptLike {
-  DateTime get createdAt;
-  num get amount;
 }

@@ -217,7 +217,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
     return StatGrid(
       cards: [
         StatCard(
-          label: 'Available to pay out',
+          label: 'Available to settle',
           value: money(m.availablePayout, compact: true),
           secondary: 'Next: ${m.nextSettlement}',
           icon: Icons.account_balance_rounded,
@@ -619,13 +619,14 @@ _Metrics _computeMetrics(
         platformFees += t.feeAmount;
         if (t.type == 'payment') {
           grossCompleted += t.amount;
-          if (t.settledAt != null) settled += t.amount;
           final key = t.provider ?? t.channel;
           final agg = channelTotals.putIfAbsent(key, () => _ChannelAgg(key));
           agg.count++;
           agg.amount += t.amount;
         } else if (t.type == 'refund') {
           refundsIssued += t.amount;
+        } else if (t.type == 'payout') {
+          settled += t.amount;
         }
     }
   }
@@ -649,13 +650,9 @@ _Metrics _computeMetrics(
         }).toList()
         ..sort((a, b) => b.share.compareTo(a.share));
 
-  // Available-to-pay-out is a current balance, not scoped to the period.
-  num availablePayout = 0;
-  for (final t in allTxns) {
-    if (t.status == 'completed' && t.settledAt == null) {
-      availablePayout += t.signedAmount - t.feeAmount;
-    }
-  }
+  // Available-to-settle is a current balance, not scoped to the period —
+  // same formula as Homepage's MAIN BALANCE (lib/models/ledger.dart).
+  final availablePayout = availableBalance(allTxns);
 
   SettlementBatch? next;
   for (final s in settlements) {

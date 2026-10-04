@@ -326,11 +326,15 @@ class MerchantRepository {
     int limit = 50,
     String? typeFilter,
     String? statusFilter,
+    DateTime? from,
+    DateTime? to,
   }) async {
     final mid = await requireMerchantId();
     var req = supabase.from('transactions').select().eq('merchant_id', mid);
     if (typeFilter != null) req = req.eq('type', typeFilter);
     if (statusFilter != null) req = req.eq('status', statusFilter);
+    if (from != null) req = req.gte('created_at', from.toIso8601String());
+    if (to != null) req = req.lt('created_at', to.toIso8601String());
     final rows =
         await req.order('created_at', ascending: false).limit(limit);
     return rows
@@ -465,28 +469,23 @@ class MerchantRepository {
         .maybeSingle();
   }
 
+  // `to` is treated as exclusive — pass the day after the last day you want
+  // included (statements_screen.dart does this once, so the summary here
+  // and the exported CSV detail rows always agree on what "the end date"
+  // means). No cashReceipts fetch: cash is already a real `transactions`
+  // row (channel 'cash') since migration 0035.
   Future<StatementPeriod> statement(DateTime from, DateTime to) async {
-    final results = await Future.wait([
-      transactions(limit: 1000),
-      cashReceipts(limit: 1000),
-    ]);
-    return StatementPeriod.compute(
-      from: from,
-      to: to,
-      transactions: results[0] as List<LedgerTransaction>,
-      cashReceipts: results[1] as List<CashReceipt>,
-    );
+    final txns = await transactions(from: from, to: to, limit: 5000);
+    return StatementPeriod.compute(from: from, to: to, transactions: txns);
   }
 
   Future<MerchantBusinessSummary> businessSummary() async {
     final txns = await transactions(limit: 1000);
     final cutoff = DateTime.now().subtract(const Duration(days: 30));
-    num tpv = 0, rev = 0, balance = 0;
+    final balance = availableBalance(txns);
+    num tpv = 0, rev = 0;
     var count = 0;
     for (final t in txns) {
-      if (t.status == 'completed') {
-        balance += t.signedAmount - t.feeAmount;
-      }
       if (t.createdAt.isBefore(cutoff) || t.status != 'completed') continue;
       switch (t.type) {
         case 'payment':

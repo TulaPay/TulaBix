@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/format.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/utils/csv_export.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
@@ -29,6 +31,7 @@ class _StatementsView extends StatefulWidget {
 class _StatementsViewState extends State<_StatementsView> {
   late DateTimeRange _range;
   Future<StatementPeriod>? _future;
+  RealtimeChannel? _transactionsChannel;
 
   @override
   void initState() {
@@ -36,10 +39,49 @@ class _StatementsViewState extends State<_StatementsView> {
     final now = DateTime.now();
     _range = DateTimeRange(start: DateTime(now.year, now.month, 1), end: now);
     _load();
+    _subscribeToTransactions();
   }
 
+  @override
+  void dispose() {
+    final channel = _transactionsChannel;
+    if (channel != null) supabase.removeChannel(channel);
+    super.dispose();
+  }
+
+  // Previously only reloaded on an explicit date-range change — a
+  // transaction landing while this screen was already open (e.g. a payment
+  // completing via webhook) never showed up without leaving and
+  // re-entering. Same pattern as Homepage.dart's balance fix.
+  void _subscribeToTransactions() {
+    final userId = supabase.auth.currentUser?.id;
+    if (userId == null) return;
+    _transactionsChannel = supabase
+        .channel('statements-transactions-$userId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.all,
+          schema: 'public',
+          table: 'transactions',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'owner_user_id',
+            value: userId,
+          ),
+          callback: (_) => setState(_load),
+        )
+        .subscribe();
+  }
+
+  // `_range.end` is the last INCLUSIVE day the user picked; the repository/
+  // compute layer treats `to` as exclusive, so the day boundary is added
+  // once, here, and nowhere else — this is what keeps the summary and the
+  // exported CSV detail rows from disagreeing on what "the end date" means.
+  DateTime get _queryEnd =>
+      DateTime(_range.end.year, _range.end.month, _range.end.day)
+          .add(const Duration(days: 1));
+
   void _load() {
-    _future = MerchantRepository.instance.statement(_range.start, _range.end);
+    _future = MerchantRepository.instance.statement(_range.start, _queryEnd);
   }
 
   Future<void> _pickRange() async {
@@ -59,8 +101,7 @@ class _StatementsViewState extends State<_StatementsView> {
 
   Future<void> _export(StatementPeriod s) async {
     final fmt = DateFormat('MMM d, yyyy');
-    final rangeLabel =
-        '${fmt.format(s.periodStart)} to ${fmt.format(s.periodEnd)}';
+    final rangeLabel = '${fmt.format(_range.start)} to ${fmt.format(_range.end)}';
 
     final rows = <List<Object?>>[
       ['TulaBiz statement', rangeLabel],
@@ -86,11 +127,10 @@ class _StatementsViewState extends State<_StatementsView> {
     ];
 
     try {
-      final all = await MerchantRepository.instance.transactions(limit: 1000);
-      final inRange = all.where(
-        (t) =>
-            !t.createdAt.isBefore(_range.start) &&
-            t.createdAt.isBefore(_range.end.add(const Duration(days: 1))),
+      final inRange = await MerchantRepository.instance.transactions(
+        from: _range.start,
+        to: _queryEnd,
+        limit: 5000,
       );
       for (final t in inRange) {
         rows.add([
@@ -136,8 +176,13 @@ class _StatementsViewState extends State<_StatementsView> {
         title: Text('Statements',
             style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800)),
       ),
-      body: CustomScrollView(
-        physics: const BouncingScrollPhysics(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(_load);
+          await _future;
+        },
+        child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
@@ -232,6 +277,7 @@ class _StatementsViewState extends State<_StatementsView> {
             ),
           ),
         ],
+        ),
       ),
     );
   }
