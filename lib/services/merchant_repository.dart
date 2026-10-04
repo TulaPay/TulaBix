@@ -440,16 +440,29 @@ class MerchantRepository {
           'description': description,
         },
       );
+      // TEMPORARY diagnostic logging, same reasoning as initiatePayout's —
+      // remove once SoftPay collection is confirmed working end-to-end.
+      debugPrint(
+        'collectSoftpayPayment raw response: status=${res.status} data=(${res.data.runtimeType}) ${res.data}',
+      );
       final data = res.data;
       if (data is Map && data['error'] != null) {
         throw Exception(data['error'].toString());
       }
     } on FunctionException catch (e) {
+      debugPrint(
+        'collectSoftpayPayment FunctionException: type=${e.runtimeType} '
+        'status=${e is FunctionsHttpException ? e.status : '(n/a)'} '
+        'reasonPhrase=${e.reasonPhrase} details=(${e.details.runtimeType}) ${e.details}',
+      );
       final details = e.details;
       final message = (details is Map && details['error'] != null)
           ? details['error'].toString()
           : (e.reasonPhrase ?? 'Collection request could not be started');
       throw Exception(message);
+    } catch (e) {
+      debugPrint('collectSoftpayPayment non-FunctionException error: type=${e.runtimeType} $e');
+      rethrow;
     }
   }
 
