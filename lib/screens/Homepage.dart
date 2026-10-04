@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/screens/cash_receipts_screen.dart';
 import 'package:tulapay/screens/more_actions_screen.dart';
+import 'package:tulapay/screens/notification_screen.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
 import 'package:tulapay/screens/payment_page_screen.dart';
 import 'package:tulapay/services/merchant_repository.dart';
@@ -111,7 +112,10 @@ class _HomepageState extends State<Homepage> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const NotificationScreen()),
+            ),
             icon: Icon(Icons.notifications_none_rounded, color: cs.onSurface),
           ),
           Padding(
