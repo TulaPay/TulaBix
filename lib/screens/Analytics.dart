@@ -27,6 +27,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   late TabController _tabController;
   late final List<_MonthOption> _months;
   late _MonthOption _selectedMonth;
+  // Defaults to the current calendar month, which is usually empty for a
+  // merchant whose real activity happened earlier — once real data loads,
+  // _load() re-points the default at whichever month actually has it,
+  // unless the user has already picked one explicitly.
+  bool _monthsUserPicked = false;
 
   bool _loading = true;
   String? _error;
@@ -44,7 +49,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         setState(() {});
       }
     });
-    _months = _recentMonths(DateTime.now());
+    final now = DateTime.now();
+    _months = [
+      ..._recentMonths(now),
+      _MonthOption(DateTime(2000), DateTime(now.year + 1), 'All time'),
+    ];
     _selectedMonth = _months.first;
     _load();
   }
@@ -73,6 +82,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         _expenses = results[1] as List<MerchantExpense>;
         _budgets = results[2] as List<MerchantBudget>;
         _loading = false;
+        if (!_monthsUserPicked) {
+          final latest = _mostRecentCompletedMonth(_txns);
+          if (latest != null) {
+            _selectedMonth = _months.firstWhere(
+              (m) =>
+                  !latest.isBefore(m.start) && latest.isBefore(m.end),
+              orElse: () => _selectedMonth,
+            );
+          }
+        }
       });
     } catch (_) {
       if (!mounted) return;
@@ -246,7 +265,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                   underline: const SizedBox(),
                   dropdownColor: colorScheme.surface,
                   onChanged: (v) {
-                    if (v != null) setState(() => _selectedMonth = v);
+                    if (v != null) {
+                      setState(() {
+                        _selectedMonth = v;
+                        _monthsUserPicked = true;
+                      });
+                    }
                   },
                   items: _months
                       .map(
@@ -887,6 +911,19 @@ List<_MonthOption> _recentMonths(DateTime now, {int count = 3}) {
     final end = DateTime(anchor.year, anchor.month + 1, 1);
     return _MonthOption(anchor, end, DateFormat('MMM. yyyy').format(anchor));
   });
+}
+
+/// The createdAt of the most recent completed transaction, or null if there
+/// isn't one — used to default the month picker at whichever month a
+/// merchant's real activity actually falls in, instead of always the
+/// current (often empty) calendar month.
+DateTime? _mostRecentCompletedMonth(List<LedgerTransaction> txns) {
+  DateTime? latest;
+  for (final t in txns) {
+    if (t.status != 'completed') continue;
+    if (latest == null || t.createdAt.isAfter(latest)) latest = t.createdAt;
+  }
+  return latest;
 }
 
 class _PieSlice {
