@@ -23,8 +23,16 @@ class _BeneficialOwnerDraft {
 /// [merchantId] (already created by BusinessInformationScreen).
 class KybDocumentsScreen extends StatefulWidget {
   final String merchantId;
+  // The merchants.business_type literal (migration 0037) — RCCM/tax
+  // documents are only required when this is 'registered_business';
+  // informal/association/other businesses skip both entirely.
+  final String? businessType;
 
-  const KybDocumentsScreen({super.key, required this.merchantId});
+  const KybDocumentsScreen({
+    super.key,
+    required this.merchantId,
+    required this.businessType,
+  });
 
   @override
   State<KybDocumentsScreen> createState() => _KybDocumentsScreenState();
@@ -115,11 +123,12 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
     );
   }
 
+  bool get _requiresRegistrationDocs => widget.businessType == 'registered_business';
+
   bool get _canSubmit =>
       _idDocType != null &&
       _idFile != null &&
-      _rccmFile != null &&
-      _taxFile != null &&
+      (!_requiresRegistrationDocs || (_rccmFile != null && _taxFile != null)) &&
       _selfieFile != null &&
       _owners.every((o) =>
           o.nameController.text.trim().isNotEmpty &&
@@ -136,16 +145,18 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
         docType: _idDocType!,
         file: _idFile!,
       );
-      await service.uploadKybDocument(
-        merchantId: widget.merchantId,
-        docType: 'rccm',
-        file: _rccmFile!,
-      );
-      await service.uploadKybDocument(
-        merchantId: widget.merchantId,
-        docType: 'tax_document',
-        file: _taxFile!,
-      );
+      if (_requiresRegistrationDocs) {
+        await service.uploadKybDocument(
+          merchantId: widget.merchantId,
+          docType: 'rccm',
+          file: _rccmFile!,
+        );
+        await service.uploadKybDocument(
+          merchantId: widget.merchantId,
+          docType: 'tax_document',
+          file: _taxFile!,
+        );
+      }
       await service.uploadKybDocument(
         merchantId: widget.merchantId,
         docType: 'selfie',
@@ -254,27 +265,49 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       ],
                       const SizedBox(height: 20),
 
-                      _buildSectionTitle("RCCM / Business Registration"),
-                      _buildUploadTile(
-                        label: _rccmFile != null ? "RCCM document uploaded — tap to replace" : "Upload your RCCM document",
-                        done: _rccmFile != null,
-                        onTap: () async {
-                          final file = await _pickDocument();
-                          if (file != null) setState(() => _rccmFile = file);
-                        },
-                      ),
-                      const SizedBox(height: 20),
+                      if (_requiresRegistrationDocs) ...[
+                        _buildSectionTitle("RCCM / Business Registration"),
+                        _buildUploadTile(
+                          label: _rccmFile != null ? "RCCM document uploaded — tap to replace" : "Upload your RCCM document",
+                          done: _rccmFile != null,
+                          onTap: () async {
+                            final file = await _pickDocument();
+                            if (file != null) setState(() => _rccmFile = file);
+                          },
+                        ),
+                        const SizedBox(height: 20),
 
-                      _buildSectionTitle("Tax Identification (NIU)"),
-                      _buildUploadTile(
-                        label: _taxFile != null ? "Tax document uploaded — tap to replace" : "Upload your tax document",
-                        done: _taxFile != null,
-                        onTap: () async {
-                          final file = await _pickDocument();
-                          if (file != null) setState(() => _taxFile = file);
-                        },
-                      ),
-                      const SizedBox(height: 20),
+                        _buildSectionTitle("Tax Identification (NIU)"),
+                        _buildUploadTile(
+                          label: _taxFile != null ? "Tax document uploaded — tap to replace" : "Upload your tax document",
+                          done: _taxFile != null,
+                          onTap: () async {
+                            final file = await _pickDocument();
+                            if (file != null) setState(() => _taxFile = file);
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                      ] else ...[
+                        GlassSurface(
+                          borderRadius: BorderRadius.circular(16),
+                          opacity: 0.1,
+                          blur: 10,
+                          padding: const EdgeInsets.all(14),
+                          child: Row(
+                            children: [
+                              Icon(Icons.info_outline_rounded, size: 20, color: cs.primary),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Text(
+                                  "RCCM and tax documents aren't required for your business type.",
+                                  style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant, height: 1.4),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
 
                       _buildSectionTitle("Selfie"),
                       Text(

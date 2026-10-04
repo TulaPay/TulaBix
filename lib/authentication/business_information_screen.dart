@@ -47,6 +47,12 @@ class _BusinessInformationScreenState
 
   late String? _selectedBusinessType = businessTypeLabelFor(widget.businessType);
   String? _selectedCategory;
+
+  // Only a 'registered_business' is expected to have RCCM/tax documents —
+  // informal/association/other businesses skip both the fields here and
+  // the matching document uploads in KybDocumentsScreen.
+  bool get _isRegisteredBusiness =>
+      businessTypeLabels[_selectedBusinessType] == 'registered_business';
   final List<String> _categories = [
     "Retail & Wholesale",
     "Food & Beverage",
@@ -83,8 +89,12 @@ class _BusinessInformationScreenState
         ownerName: _ownerNameController.text.trim(),
         ownerPhone: _ownerPhoneController.text.trim(),
         businessCategory: _selectedCategory!,
-        registrationNumber: _registrationNumberController.text.trim(),
-        taxId: _taxIdController.text.trim(),
+        registrationNumber: _registrationNumberController.text.trim().isEmpty
+            ? null
+            : _registrationNumberController.text.trim(),
+        taxId: _taxIdController.text.trim().isEmpty
+            ? null
+            : _taxIdController.text.trim(),
         addressStreet: _streetController.text.trim(),
         addressCity: _cityController.text.trim(),
         addressCountry: widget.country,
@@ -98,7 +108,10 @@ class _BusinessInformationScreenState
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => KybDocumentsScreen(merchantId: merchantId),
+          builder: (_) => KybDocumentsScreen(
+            merchantId: merchantId,
+            businessType: businessTypeLabels[_selectedBusinessType],
+          ),
         ),
       );
     } catch (e) {
@@ -261,26 +274,36 @@ class _BusinessInformationScreenState
                               (val == null || val.isEmpty) ? "Business email is required" : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("RCCM / Business Registration Number"),
+                        _buildLabel(_isRegisteredBusiness
+                            ? "RCCM / Business Registration Number"
+                            : "RCCM / Business Registration Number (if registered)"),
                         TextFormField(
                           controller: _registrationNumberController,
                           decoration: const InputDecoration(
                             hintText: "RCCM number",
                             prefixIcon: Icon(Icons.confirmation_number_outlined),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "RCCM number is required" : null,
+                          validator: (val) {
+                            if (!_isRegisteredBusiness) return null;
+                            return (val == null || val.isEmpty)
+                                ? "RCCM number is required"
+                                : null;
+                          },
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("NIU (Tax Identification Number)"),
+                        _buildLabel(_isRegisteredBusiness
+                            ? "NIU (Tax Identification Number)"
+                            : "NIU (Tax Identification Number) (if registered)"),
                         TextFormField(
                           controller: _taxIdController,
                           decoration: const InputDecoration(
                             hintText: "Tax identification number",
                             prefixIcon: Icon(Icons.receipt_long_outlined),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "NIU is required" : null,
+                          validator: (val) {
+                            if (!_isRegisteredBusiness) return null;
+                            return (val == null || val.isEmpty) ? "NIU is required" : null;
+                          },
                         ),
                         const SizedBox(height: 16),
                         _buildLabel("Estimated Monthly Transaction Volume (XAF)"),
