@@ -8,10 +8,20 @@ import 'package:url_launcher/url_launcher.dart';
 class AppFeedback {
   const AppFeedback._();
 
-  static void toast(BuildContext context, String message) {
+  static void toast(
+    BuildContext context,
+    String message, {
+    Duration duration = const Duration(seconds: 4),
+  }) {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
-      ..showSnackBar(SnackBar(content: Text(message)));
+      ..showSnackBar(
+        SnackBar(
+          content: Text(message),
+          duration: duration,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
   }
 
   static Future<void> copy(

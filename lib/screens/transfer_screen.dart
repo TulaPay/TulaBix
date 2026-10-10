@@ -93,23 +93,25 @@ class _TransferScreenState extends State<TransferScreen> {
       _amountController.clear();
       _noteController.clear();
       setState(_refresh);
-      AppFeedback.toast(context, 'Transfer submitted');
-
-      // Best-effort: the transfer request itself is already recorded above
-      // (what actually matters), so a payout-initiation failure here gets
-      // its own distinct warning rather than making the whole action look
-      // like it failed — same pattern as the admin-session revoke call on
-      // the Control Panel side.
       if (widget.kind == 'bank') {
         try {
           await MerchantRepository.instance.initiatePayout(transfer.id);
+          if (!mounted) return;
+          AppFeedback.toast(
+            context,
+            'Transfer submitted and payout initiated successfully',
+            duration: const Duration(seconds: 5),
+          );
         } catch (payoutError) {
           if (!mounted) return;
           AppFeedback.toast(
             context,
-            'Transfer recorded, but the payout could not be started: $payoutError',
+            'Transfer recorded, but payout failed: $payoutError',
+            duration: const Duration(seconds: 8),
           );
         }
+      } else {
+        AppFeedback.toast(context, 'Transfer submitted');
       }
     } catch (e) {
       if (!mounted) return;

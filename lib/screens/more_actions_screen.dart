@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/screens/Customer_Screen.dart';
-import 'package:tulapay/screens/collect_payment_screen.dart';
 import 'package:tulapay/screens/more_actions_demos.dart';
 import 'package:tulapay/screens/statements_screen.dart';
 import 'package:tulapay/screens/transfer_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
+// Bank Transfer and Collect Payment moved to Homepage's own Quick Actions
+// row — removed from here rather than duplicated, matching how Payment
+// Links/My QR Code/Cash Receipts already live only in Quick Actions, never
+// in this grid.
 class MoreActionsScreen extends StatelessWidget {
   const MoreActionsScreen({super.key});
 
@@ -15,16 +18,6 @@ class MoreActionsScreen extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     final actions = [
-      {
-        'icon': Icons.account_balance_rounded,
-        'label': 'Bank Transfer',
-        'route': 'bank_transfer',
-      },
-      {
-        'icon': Icons.phone_android_rounded,
-        'label': 'Collect Payment',
-        'route': 'collect_payment',
-      },
       {
         'icon': Icons.swap_horiz_rounded,
         'label': 'Internal Transfer',
@@ -81,21 +74,7 @@ class MoreActionsScreen extends StatelessWidget {
                 ? colorScheme.primary
                 : colorScheme.secondary,
             onTap: () {
-              if (route == 'bank_transfer') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const TransferScreen(kind: 'bank'),
-                  ),
-                );
-              } else if (route == 'collect_payment') {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const CollectPaymentScreen(),
-                  ),
-                );
-              } else if (route == 'internal_transfer') {
+              if (route == 'internal_transfer') {
                 Navigator.push(
                   context,
                   MaterialPageRoute(

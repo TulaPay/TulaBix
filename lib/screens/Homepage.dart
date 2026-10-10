@@ -3,10 +3,12 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/screens/cash_receipts_screen.dart';
+import 'package:tulapay/screens/collect_payment_screen.dart';
 import 'package:tulapay/screens/more_actions_screen.dart';
 import 'package:tulapay/screens/notification_screen.dart';
 import 'package:tulapay/screens/payment_links_screen.dart';
 import 'package:tulapay/screens/payment_page_screen.dart';
+import 'package:tulapay/screens/transfer_screen.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/utils/money.dart';
@@ -227,6 +229,28 @@ class _HomepageState extends State<Homepage> {
                           context,
                           MaterialPageRoute(
                             builder: (_) => const CashReceiptsScreen(),
+                          ),
+                        ),
+                      ),
+                      _quickAction(
+                        context,
+                        icon: Icons.phone_android_rounded,
+                        label: 'Collect Payment',
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const CollectPaymentScreen(),
+                          ),
+                        ),
+                      ),
+                      _quickAction(
+                        context,
+                        icon: Icons.account_balance_rounded,
+                        label: 'Withdraw',
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const TransferScreen(kind: 'bank'),
                           ),
                         ),
                       ),
