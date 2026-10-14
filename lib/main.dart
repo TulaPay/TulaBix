@@ -4,6 +4,7 @@ import 'package:tulapay/screens/splash.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/services/app_preferences.dart';
 import 'package:tulapay/services/auth_service.dart';
+import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
@@ -12,10 +13,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initSupabase();
 
+  // Initialize Push Notification Service
+  await PushNotificationService.instance.initialize();
+
   // A restored session skips straight into the app — pull the merchant's
   // saved preferences (theme/language) so they carry over immediately.
   if (AuthService.instance.isSignedIn) {
     await AppPreferences.instance.hydrate();
+    PushNotificationService.instance.listenToRealtimeNotifications();
   }
 
   runApp(const TulaApp());

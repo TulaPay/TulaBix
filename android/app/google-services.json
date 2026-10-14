@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "40165471384",
+    "project_id": "tulabix",
+    "storage_bucket": "tulabix.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40165471384:android:565b869df05568d4a2cced",
+        "android_client_info": {
+          "package_name": "com.tulapay.tulapay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDQotTT9ASuSUfnWoIh999joW7KD43ewq0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tulapay/format.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
@@ -62,6 +64,10 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
       _amountController.clear();
       _descriptionController.clear();
       AppFeedback.toast(context, "Payment prompt sent to the customer's phone");
+      PushNotificationService.instance.showNotification(
+        title: 'Payment Prompt Sent',
+        body: 'MoMo prompt for ${money(amount)} sent to $phone',
+      );
     } catch (e) {
       if (!mounted) return;
       AppFeedback.toast(context, 'Could not send payment prompt: $e');

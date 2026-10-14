@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:tulapay/format.dart';
 import 'package:tulapay/models/commerce.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
@@ -68,6 +69,10 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
       _customerController.clear();
       _noteController.clear();
       AppFeedback.toast(context, 'Receipt recorded');
+      PushNotificationService.instance.showNotification(
+        title: 'Cash Payment Received',
+        body: 'Recorded ${money(amount)}${customer.isNotEmpty ? ' from $customer' : ''}',
+      );
     } catch (e) {
       if (!mounted) return;
       AppFeedback.toast(context, 'Could not record receipt: $e');

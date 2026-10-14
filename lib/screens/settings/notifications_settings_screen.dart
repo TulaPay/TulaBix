@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/models/merchant.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
@@ -127,8 +128,15 @@ class _NotificationsSettingsScreenState
                         "Push Notifications",
                         "Real-time payment and account alerts",
                         _push,
-                        (v) {
+                        (v) async {
                           setState(() => _push = v);
+                          if (v) {
+                            final granted = await PushNotificationService.instance
+                                .requestPermissions();
+                            if (granted) {
+                              await PushNotificationService.instance.syncToken();
+                            }
+                          }
                           _save();
                         },
                       ),

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:tulapay/format.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
@@ -93,6 +94,10 @@ class _TransferScreenState extends State<TransferScreen> {
       _amountController.clear();
       _noteController.clear();
       setState(_refresh);
+      PushNotificationService.instance.showNotification(
+        title: _isBank ? 'Bank Transfer Submitted' : 'Internal Transfer Completed',
+        body: '${money(amount)} transfer to $destination',
+      );
       if (widget.kind == 'bank') {
         try {
           await MerchantRepository.instance.initiatePayout(transfer.id);

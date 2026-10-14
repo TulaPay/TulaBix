@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:tulapay/models/commerce.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/utils/money.dart';
@@ -73,6 +74,10 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
       _referenceController.clear();
       _refreshLinks();
       AppFeedback.toast(context, 'Payment link generated');
+      PushNotificationService.instance.showNotification(
+        title: 'Payment Link Generated',
+        body: 'Created payment link for ${money(amount)} — $description',
+      );
     } catch (e) {
       if (!mounted) return;
       AppFeedback.toast(context, 'Could not generate link: $e');

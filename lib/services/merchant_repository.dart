@@ -654,6 +654,20 @@ class MerchantRepository {
     });
   }
 
+  /// Save or update FCM push notification token for the current merchant device.
+  Future<void> saveFcmToken(String token) async {
+    try {
+      final mid = await requireMerchantId();
+      await supabase.from('merchant_device_tokens').upsert({
+        'merchant_id': mid,
+        'fcm_token': token,
+        'updated_at': DateTime.now().toIso8601String(),
+      });
+    } catch (e) {
+      debugPrint('Could not save FCM token: $e');
+    }
+  }
+
   // ---------------------------------------------------------------------------
   // Account
   // ---------------------------------------------------------------------------
