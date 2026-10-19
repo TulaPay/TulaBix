@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/services/merchant_service.dart';
@@ -13,7 +14,8 @@ class SettlementAccountScreen extends StatefulWidget {
   const SettlementAccountScreen({super.key, required this.merchantId});
 
   @override
-  State<SettlementAccountScreen> createState() => _SettlementAccountScreenState();
+  State<SettlementAccountScreen> createState() =>
+      _SettlementAccountScreenState();
 }
 
 class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
@@ -71,7 +73,7 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 560),
                 child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
                   opacity: 0.16,
                   blur: 18,
                   padding: const EdgeInsets.all(20),
@@ -83,8 +85,8 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                         Text(
                           "Settlement Account",
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 24,
+                            fontWeight: FontWeight.w700,
                             letterSpacing: -0.6,
                             color: cs.onSurface,
                           ),
@@ -121,11 +123,11 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8, left: 4),
                           child: Text(
-                            "Mobile Money Number",
+                            "Mobile money number",
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 14,
+                              fontSize: 12,
                               fontWeight: FontWeight.w600,
-                              color: cs.onSurface.withValues(alpha: 0.8),
+                              color: context.textTertiary,
                             ),
                           ),
                         ),
@@ -134,7 +136,9 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                           keyboardType: TextInputType.phone,
                           decoration: const InputDecoration(
                             hintText: "+237 6XX XXX XXX",
-                            prefixIcon: Icon(Icons.account_balance_wallet_outlined),
+                            prefixIcon: Icon(
+                              Icons.account_balance_wallet_outlined,
+                            ),
                           ),
                           validator: (val) => (val == null || val.length < 8)
                               ? "Enter a valid mobile money number"
@@ -147,7 +151,9 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                               ? const SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : const Text("Finish"),
                         ),
@@ -173,19 +179,22 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
 
     return InkWell(
       onTap: () => setState(() => _provider = id),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       child: GlassSurface(
-        borderRadius: BorderRadius.circular(18),
-        opacity: isSelected ? 0.18 : 0.12,
-        blur: 12,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border.all(
-          color: isSelected ? cs.primary : cs.outline.withValues(alpha: 0.16),
-          width: isSelected ? 2 : 1,
+          color: isSelected ? cs.primary : context.hairlineColor,
+          width: isSelected ? 1.5 : 1,
         ),
         padding: const EdgeInsets.symmetric(vertical: 16),
         child: Column(
           children: [
-            Icon(icon, color: isSelected ? cs.primary : cs.onSurface.withValues(alpha: 0.6)),
+            Icon(
+              icon,
+              color: isSelected
+                  ? cs.primary
+                  : context.textSecondary,
+            ),
             const SizedBox(height: 8),
             Text(
               label,

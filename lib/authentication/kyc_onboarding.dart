@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/business_information_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
@@ -24,7 +25,6 @@ class _KycOnboardingState extends State<KycOnboarding> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final cs = theme.colorScheme;
-    final size = MediaQuery.of(context).size;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -33,7 +33,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: cs.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -48,7 +48,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     GlassSurface(
-                      borderRadius: BorderRadius.circular(28),
+                      borderRadius: BorderRadius.circular(12),
                       opacity: 0.16,
                       blur: 18,
                       padding: const EdgeInsets.all(20),
@@ -56,11 +56,11 @@ class _KycOnboardingState extends State<KycOnboarding> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            height: size.height * 0.24,
+                            height: 150,
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(24),
-                              color: cs.primary.withValues(alpha: 0.16),
+                              borderRadius: BorderRadius.circular(12),
+                              color: context.primaryTintColor,
                             ),
                             child: Stack(
                               children: [
@@ -76,8 +76,8 @@ class _KycOnboardingState extends State<KycOnboarding> {
                                 Center(
                                   child: Icon(
                                     Icons.verified_user_rounded,
-                                    size: 72,
-                                    color: cs.onPrimary,
+                                    size: 56,
+                                    color: cs.primary,
                                   ),
                                 ),
                               ],
@@ -88,7 +88,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                             "Verify your business in under 5 minutes",
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 26,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                               letterSpacing: -0.7,
                               color: cs.onSurface,
                               height: 1.2,
@@ -106,41 +106,40 @@ class _KycOnboardingState extends State<KycOnboarding> {
                           _buildRequirementItem(
                             context,
                             icon: Icons.business_outlined,
-                            title: "Business Details",
+                            title: "Business details",
                             subtitle: "Basic information about your company",
                           ),
-                          const SizedBox(height: 14),
                           _buildRequirementItem(
                             context,
                             icon: Icons.badge_outlined,
-                            title: "ID Verification",
+                            title: "ID verification",
                             subtitle: "A valid government-issued ID card",
                           ),
-                          const SizedBox(height: 14),
                           _buildRequirementItem(
                             context,
                             icon: Icons.account_balance_outlined,
-                            title: "Settlement Account",
+                            title: "Settlement account",
                             subtitle: "Where you will receive your payments",
                           ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 18),
-                    GlassSurface(
-                      borderRadius: BorderRadius.circular(24),
-                      opacity: 0.12,
-                      blur: 12,
-                      padding: const EdgeInsets.all(16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.lock_outline_rounded, size: 16, color: cs.primary),
+                          Icon(
+                            Icons.lock_outline_rounded,
+                            size: 14,
+                            color: context.textTertiary,
+                          ),
                           const SizedBox(width: 8),
                           Text(
                             "Data encrypted and strictly confidential",
                             style: theme.textTheme.bodySmall?.copyWith(
-                              color: cs.onSurface.withValues(alpha: 0.56),
+                              color: context.textTertiary,
                             ),
                           ),
                         ],
@@ -179,48 +178,46 @@ class _KycOnboardingState extends State<KycOnboarding> {
     required String subtitle,
   }) {
     final cs = Theme.of(context).colorScheme;
-    return GlassSurface(
-      borderRadius: BorderRadius.circular(20),
-      opacity: 0.12,
-      blur: 12,
-      padding: const EdgeInsets.all(14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: cs.primary.withValues(alpha: 0.16),
-              borderRadius: BorderRadius.circular(16),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.hairlineColor)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: context.primaryTintColor,
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+              ),
+              child: Icon(icon, color: cs.primary, size: 20),
             ),
-            child: Icon(icon, color: cs.primary, size: 24),
-          ),
-          const SizedBox(width: 14),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    color: cs.onSurface,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: GoogleFonts.plusJakartaSans(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: cs.onSurface,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: cs.onSurface.withValues(alpha: 0.56),
-                    height: 1.4,
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: AppText.caption(color: context.textSecondary),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

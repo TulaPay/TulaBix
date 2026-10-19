@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/models/merchant.dart';
 import 'package:tulapay/services/merchant_repository.dart';
@@ -80,33 +81,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         elevation: 0,
         title: Text(
           "Edit Profile",
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800),
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
               children: [
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
-                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       _field('Owner name', _name),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _field('Email', _email,
                           keyboardType: TextInputType.emailAddress),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _field('Street', _street),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _field('City', _city),
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 SizedBox(
-                  height: 56,
+                  height: 52,
                   child: FilledButton(
                     onPressed: _saving ? null : _save,
                     child: _saving
@@ -119,7 +118,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         : Text(
                             "Save changes",
                             style: GoogleFonts.plusJakartaSans(
-                                fontWeight: FontWeight.w800),
+                                fontWeight: FontWeight.w700),
                           ),
                   ),
                 ),
@@ -133,13 +132,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     TextEditingController controller, {
     TextInputType? keyboardType,
   }) {
-    return TextField(
-      controller: controller,
-      keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: AppText.microLabel(color: context.textTertiary)
+              .copyWith(fontSize: 10, letterSpacing: 1.4),
+        ),
+        const SizedBox(height: 8),
+        TextField(
+          controller: controller,
+          keyboardType: keyboardType,
+          style: GoogleFonts.plusJakartaSans(
+              fontSize: 15, fontWeight: FontWeight.w600),
+        ),
+      ],
     );
   }
 }

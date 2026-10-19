@@ -54,7 +54,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
     return AppScaffold(
       title: 'Notifications',
       actions: [
-        TextButton(onPressed: _markAll, child: const Text('Mark all read')),
+        TextButton(
+          onPressed: _markAll,
+          style: TextButton.styleFrom(foregroundColor: cs.secondary),
+          child: const Text('Mark all read'),
+        ),
       ],
       body: RefreshIndicator(
         onRefresh: _refresh,
@@ -79,24 +83,25 @@ class _NotificationScreenState extends State<NotificationScreen> {
             }
             return ListView.separated(
               padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.xl, AppSpacing.md, AppSpacing.xl, AppSpacing.section),
+                  AppSpacing.xxl, AppSpacing.md, AppSpacing.xxl, AppSpacing.section),
               itemCount: rows.length,
-              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.sm),
+              separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.xs),
               itemBuilder: (context, i) {
                 final n = rows[i];
                 return GlassSurface(
                   padding: EdgeInsets.zero,
-                  tint: n.read ? null : cs.primary.withValues(alpha: 0.06),
+                  borderRadius: AppRadius.smAll,
+                  tint: n.read ? null : context.primaryTintColor,
                   child: ListRowCard(
                     floating: false,
                     icon: _icon(n.category),
-                    iconColor: n.read ? cs.onSurfaceVariant : cs.primary,
+                    iconColor: cs.primary,
                     title: n.title,
                     subtitle: n.body,
                     onTap: () => _open(n),
                     trailing: Text(
                       DateFormat.MMMd().format(n.createdAt),
-                      style: AppText.caption(color: cs.onSurfaceVariant),
+                      style: AppText.caption(color: context.textTertiary),
                     ),
                   ),
                 );

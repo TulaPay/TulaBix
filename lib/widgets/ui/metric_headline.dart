@@ -1,10 +1,9 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
-import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/delta_chip.dart';
 
-/// The "one number that matters" card: a tracked micro-label, a large value,
+/// The "one number that matters" block (no card): a tracked micro-label, a large value,
 /// an optional caption + change chip, and an optional full-width sparkline
 /// along the bottom. Flat surface — calm and auditable, distinct from the
 /// gradient balance hero on Home.
@@ -37,57 +36,58 @@ class MetricHeadline extends StatelessWidget {
       null => cs.primary,
     };
 
-    return GlassSurface(
-      borderRadius: BorderRadius.circular(AppRadius.xl),
-      padding: const EdgeInsets.all(AppSpacing.xxl),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label.toUpperCase(),
-            style: AppText.microLabel(color: cs.primary),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: AppText.microLabel(
+            color: context.textTertiary,
+          ).copyWith(letterSpacing: 1.6),
+        ),
+        const SizedBox(height: AppSpacing.md),
+        Text(
+          value,
+          style: AppText.hero(size: 36, color: cs.onSurface).copyWith(
+            letterSpacing: -1,
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
-          const SizedBox(height: AppSpacing.md),
-          Text(
-            value,
-            style: AppText.hero(size: 32, color: cs.onSurface),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          if (caption != null || deltaLabel != null) ...[
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                if (deltaLabel != null)
-                  DeltaChip(deltaLabel!, positive: deltaPositive),
-                if (deltaLabel != null && caption != null)
-                  const SizedBox(width: AppSpacing.sm),
-                if (caption != null)
-                  Flexible(
-                    child: Text(
-                      caption!,
-                      style: AppText.caption(color: cs.onSurfaceVariant),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+        if (caption != null || deltaLabel != null) ...[
+          const SizedBox(height: AppSpacing.sm),
+          Row(
+            children: [
+              if (deltaLabel != null)
+                DeltaChip(deltaLabel!, positive: deltaPositive),
+              if (deltaLabel != null && caption != null)
+                const SizedBox(width: AppSpacing.sm),
+              if (caption != null)
+                Flexible(
+                  child: Text(
+                    caption!,
+                    style: AppText.caption(color: context.textSecondary),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
-              ],
-            ),
-          ],
-          if (sparkline != null && sparkline!.length > 1) ...[
-            const SizedBox(height: AppSpacing.xl),
-            // fl_chart 1.x can trip a semantics parent-data assertion when its
-            // render objects are re-laid-out inside a scroll view; the chart
-            // carries no useful semantics here, so exclude it.
-            ExcludeSemantics(
-              child: SizedBox(
-                height: 48,
-                child: LineChart(_sparkData(lineColor)),
-              ),
-            ),
-          ],
+                ),
+            ],
+          ),
         ],
-      ),
+        if (sparkline != null && sparkline!.length > 1) ...[
+          const SizedBox(height: AppSpacing.xl),
+          // fl_chart 1.x can trip a semantics parent-data assertion when its
+          // render objects are re-laid-out inside a scroll view; the chart
+          // carries no useful semantics here, so exclude it.
+          ExcludeSemantics(
+            child: SizedBox(
+              height: 48,
+              child: LineChart(_sparkData(lineColor)),
+            ),
+          ),
+        ],
+      ],
     );
   }
 

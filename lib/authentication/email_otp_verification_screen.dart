@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -74,7 +75,10 @@ class _EmailOtpVerificationScreenState
       setState(() => _sendError = e.message);
     } catch (_) {
       if (!mounted) return;
-      setState(() => _sendError = 'Could not send the confirmation email — please try again.');
+      setState(
+        () => _sendError =
+            'Could not send the confirmation email — please try again.',
+      );
     } finally {
       if (mounted) setState(() => _isSending = false);
     }
@@ -131,7 +135,7 @@ class _EmailOtpVerificationScreenState
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: cs.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -143,7 +147,7 @@ class _EmailOtpVerificationScreenState
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 520),
                 child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
                   opacity: 0.16,
                   blur: 18,
                   padding: const EdgeInsets.all(20),
@@ -151,11 +155,11 @@ class _EmailOtpVerificationScreenState
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: 72,
-                        height: 72,
+                        width: 56,
+                        height: 56,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: cs.primary.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(12),
+                          color: context.primaryTintColor,
                         ),
                         child: Icon(
                           Icons.mark_email_read_rounded,
@@ -167,8 +171,8 @@ class _EmailOtpVerificationScreenState
                       Text(
                         "Check Your Email",
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: -0.6,
                           color: cs.onSurface,
                         ),
@@ -189,7 +193,7 @@ class _EmailOtpVerificationScreenState
                         widget.email,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           color: cs.onSurface,
                         ),
                       ),

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -33,8 +34,10 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  final List<TextEditingController> _controllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> _controllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
   final List<FocusNode> _focusNodes = List.generate(6, (_) => FocusNode());
 
   int _timerSeconds = 60;
@@ -158,7 +161,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: cs.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -170,7 +173,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 520),
                 child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
                   opacity: 0.16,
                   blur: 18,
                   padding: const EdgeInsets.all(20),
@@ -178,11 +181,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: 72,
-                        height: 72,
+                        width: 56,
+                        height: 56,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: cs.primary.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(12),
+                          color: context.primaryTintColor,
                         ),
                         child: Icon(
                           Icons.lock_person_rounded,
@@ -192,10 +195,10 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        "Verification Code",
+                        "Verification code",
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: -0.6,
                           color: cs.onSurface,
                         ),
@@ -214,7 +217,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         widget.phoneNumber,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 16,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           color: cs.onSurface,
                         ),
                       ),
@@ -231,7 +234,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            _canResend ? "Didn't receive the code? " : "Resend code in ",
+                            _canResend
+                                ? "Didn't receive the code? "
+                                : "Resend code in ",
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: cs.onSurface.withValues(alpha: 0.66),
                             ),
@@ -261,7 +266,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: _verifyOtp,
-                              child: const Text("Verify Account"),
+                              child: const Text("Verify account"),
                             ),
                     ],
                   ),
@@ -280,20 +285,12 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       width: 45,
       height: 55,
       decoration: BoxDecoration(
-        color: cs.surface.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(12),
+        color: context.inputFillColor,
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: filled ? cs.primary : cs.outline.withValues(alpha: 0.2),
-          width: 2,
+          color: filled ? cs.primary : context.hairlineColor,
+          width: filled ? 1.5 : 1,
         ),
-        boxShadow: [
-          if (filled)
-            BoxShadow(
-              color: cs.primary.withValues(alpha: 0.1),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-        ],
       ),
       child: Center(
         child: TextField(
@@ -320,7 +317,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           maxLength: 1,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 22,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
             color: cs.onSurface,
           ),
           decoration: const InputDecoration(

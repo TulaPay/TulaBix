@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/sign_in.dart';
@@ -34,10 +35,11 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
   ];
   late Country _selectedCountry;
 
-  final List<TextEditingController> _otpControllers =
-      List.generate(6, (_) => TextEditingController());
-  final List<FocusNode> _otpFocusNodes =
-      List.generate(6, (_) => FocusNode());
+  final List<TextEditingController> _otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
+  final List<FocusNode> _otpFocusNodes = List.generate(6, (_) => FocusNode());
 
   bool _isSubmitting = false;
 
@@ -94,7 +96,10 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
 
     setState(() => _isSubmitting = true);
     try {
-      await AuthService.instance.verifyRecoveryOtp(phone: _fullPhone, token: otp);
+      await AuthService.instance.verifyRecoveryOtp(
+        phone: _fullPhone,
+        token: otp,
+      );
       if (!mounted) return;
       Navigator.pushAndRemoveUntil(
         context,
@@ -124,7 +129,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: cs.onSurface),
           onPressed: () {
             if (_currentStep > 0) {
               setState(() => _currentStep--);
@@ -142,7 +147,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 520),
                 child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
                   opacity: 0.16,
                   blur: 18,
                   padding: const EdgeInsets.all(20),
@@ -173,8 +178,8 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
         Text(
           "Sign In with OTP",
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 32,
-            fontWeight: FontWeight.w800,
+            fontSize: 26,
+            fontWeight: FontWeight.w700,
             letterSpacing: -0.8,
             color: cs.onSurface,
           ),
@@ -188,7 +193,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
           ),
         ),
         const SizedBox(height: 24),
-        _buildLabel("Phone Number"),
+        _buildLabel("Phone number"),
         TextFormField(
           controller: _phoneController,
           keyboardType: TextInputType.phone,
@@ -201,7 +206,10 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(_selectedCountry.flag, style: const TextStyle(fontSize: 20)),
+                    Text(
+                      _selectedCountry.flag,
+                      style: const TextStyle(fontSize: 20),
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       _selectedCountry.code,
@@ -215,14 +223,15 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
                     Container(
                       height: 24,
                       width: 1,
-                      color: cs.outline.withValues(alpha: 0.24),
+                      color: context.hairlineColor,
                     ),
                   ],
                 ),
               ),
             ),
           ),
-          validator: (value) => (value == null || value.isEmpty) ? 'Required' : null,
+          validator: (value) =>
+              (value == null || value.isEmpty) ? 'Required' : null,
         ),
         const SizedBox(height: 24),
         ElevatedButton(
@@ -249,8 +258,8 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
         Text(
           "Enter Your Code",
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
+            fontSize: 24,
+            fontWeight: FontWeight.w700,
             letterSpacing: -0.6,
           ),
         ),
@@ -287,13 +296,13 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
       width: 45,
       height: 55,
       decoration: BoxDecoration(
-        color: cs.surface.withValues(alpha: 0.55),
-        borderRadius: BorderRadius.circular(12),
+        color: context.inputFillColor,
+        borderRadius: BorderRadius.circular(8),
         border: Border.all(
           color: _otpControllers[index].text.isNotEmpty
               ? cs.primary
-              : cs.outline.withValues(alpha: 0.2),
-          width: 2,
+              : context.hairlineColor,
+          width: 1.5,
         ),
       ),
       child: Center(
@@ -328,17 +337,16 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
   void _showCountryPicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (context) {
         final cs = Theme.of(context).colorScheme;
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: GlassSurface(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(12),
             opacity: 0.18,
             blur: 18,
             padding: const EdgeInsets.all(16),
@@ -358,7 +366,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
                   "Select Country",
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -379,7 +387,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
                       trailing: Text(
                         _countries[index].code,
                         style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                       onTap: () {
@@ -398,14 +406,14 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
   }
 
   Widget _buildLabel(String text) => Padding(
-        padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
-        child: Text(
-          text,
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-          ),
-        ),
-      );
+    padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
+    child: Text(
+      text,
+      style: GoogleFonts.plusJakartaSans(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: context.textTertiary,
+      ),
+    ),
+  );
 }

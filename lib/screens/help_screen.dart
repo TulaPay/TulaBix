@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
@@ -37,7 +38,7 @@ class HelpScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           "Help & Support",
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800),
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -47,25 +48,21 @@ class HelpScreen extends StatelessWidget {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
               child: GlassSurface(
-                borderRadius: BorderRadius.circular(28),
-                opacity: 0.16,
-                blur: 18,
-                padding: const EdgeInsets.all(20),
                 child: Row(
                   children: [
                     Container(
-                      height: 64,
-                      width: 64,
+                      height: 56,
+                      width: 56,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: colorScheme.primary.withValues(alpha: 0.16),
+                        borderRadius: BorderRadius.circular(12),
+                        color: context.primaryTintColor,
                       ),
                       child: Icon(
                         Icons.help_center_rounded,
                         color: colorScheme.primary,
-                        size: 32,
+                        size: 28,
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -76,9 +73,9 @@ class HelpScreen extends StatelessWidget {
                           Text(
                             'How can we help?',
                             style: GoogleFonts.plusJakartaSans(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w800,
-                              letterSpacing: -0.6,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: -0.4,
                             ),
                           ),
                           const SizedBox(height: 6),
@@ -86,7 +83,7 @@ class HelpScreen extends StatelessWidget {
                             'Find answers, launch support, or learn the product flow.',
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 13,
-                              color: colorScheme.onSurfaceVariant,
+                              color: context.textSecondary,
                               height: 1.4,
                             ),
                           ),
@@ -99,7 +96,7 @@ class HelpScreen extends StatelessWidget {
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             sliver: SliverGrid(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -110,31 +107,30 @@ class HelpScreen extends StatelessWidget {
               delegate: SliverChildBuilderDelegate((context, index) {
                 final topic = topics[index];
                 return GlassSurface(
-                  borderRadius: BorderRadius.circular(24),
-                  opacity: 0.14,
-                  blur: 14,
+                  borderRadius: AppRadius.smAll,
+                  border: Border.all(color: context.hairlineColor),
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        height: 48,
-                        width: 48,
+                        height: 40,
+                        width: 40,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          color: colorScheme.primary.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(12),
+                          color: context.primaryTintColor,
                         ),
                         child: Icon(
                           topic.icon,
                           color: colorScheme.primary,
-                          size: 24,
+                          size: 20,
                         ),
                       ),
                       const Spacer(),
                       Text(
                         topic.title,
                         style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           fontSize: 15,
                           letterSpacing: -0.3,
                         ),
@@ -144,7 +140,7 @@ class HelpScreen extends StatelessWidget {
                         topic.subtitle,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 12,
-                          color: colorScheme.onSurfaceVariant,
+                          color: context.textSecondary,
                           height: 1.35,
                         ),
                       ),
@@ -156,19 +152,19 @@ class HelpScreen extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+              padding: const EdgeInsets.fromLTRB(24, 28, 24, 8),
               child: Text(
                 'Quick actions',
                 style: GoogleFonts.plusJakartaSans(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -0.4,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
                 ),
               ),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 _ActionTile(
@@ -177,14 +173,12 @@ class HelpScreen extends StatelessWidget {
                   subtitle: 'Get a human response during business hours.',
                   onTap: () {},
                 ),
-                const SizedBox(height: 12),
                 _ActionTile(
                   icon: Icons.mail_outline_rounded,
                   title: 'Email support',
                   subtitle: 'Send details and attachments to the support team.',
                   onTap: () {},
                 ),
-                const SizedBox(height: 12),
                 _ActionTile(
                   icon: Icons.article_outlined,
                   title: 'Read documentation',
@@ -229,57 +223,47 @@ class _ActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    return GlassSurface(
-      borderRadius: BorderRadius.circular(24),
-      opacity: 0.14,
-      blur: 14,
-      padding: const EdgeInsets.all(16),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.hairlineColor)),
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(24),
-          child: Row(
-            children: [
-              Container(
-                height: 52,
-                width: 52,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(18),
-                  color: colorScheme.primary.withValues(alpha: 0.16),
-                ),
-                child: Icon(icon, color: colorScheme.primary),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w800,
-                        fontSize: 15,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 14),
+            child: Row(
+              children: [
+                Icon(icon, color: colorScheme.primary, size: 22),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 15,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        color: colorScheme.onSurfaceVariant,
-                        height: 1.35,
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle,
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 12,
+                          color: context.textSecondary,
+                          height: 1.35,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.arrow_forward_ios_rounded,
-                size: 15,
-                color: colorScheme.onSurfaceVariant.withValues(alpha: 0.35),
-              ),
-            ],
+                Icon(Icons.chevron_right_rounded,
+                    size: 20, color: context.textTertiary),
+              ],
+            ),
           ),
         ),
       ),

@@ -64,12 +64,16 @@ class UnderlineTabs extends StatelessWidget {
                             : cs.onSurfaceVariant.withValues(alpha: 0.4),
                         shape: BoxShape.circle,
                       ),
-                      constraints: const BoxConstraints(minWidth: 16, minHeight: 16),
+                      constraints: const BoxConstraints(
+                        minWidth: 16,
+                        minHeight: 16,
+                      ),
                       alignment: Alignment.center,
                       child: Text(
                         '${item.count}',
-                        style: AppText.caption(color: Colors.white)
-                            .copyWith(fontSize: 9, fontWeight: FontWeight.w800),
+                        style: AppText.caption(
+                          color: Colors.white,
+                        ).copyWith(fontSize: 9, fontWeight: FontWeight.w700),
                       ),
                     ),
                   ],
@@ -93,8 +97,9 @@ class UnderlineTabs extends StatelessWidget {
     }
 
     return Row(
-      mainAxisAlignment:
-          spaceEvenly ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+      mainAxisAlignment: spaceEvenly
+          ? MainAxisAlignment.spaceBetween
+          : MainAxisAlignment.start,
       children: row,
     );
   }

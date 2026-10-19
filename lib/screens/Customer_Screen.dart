@@ -98,30 +98,24 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         ],
                       )
                     : _error != null
-                        ? _buildErrorState(cs)
-                        : filtered.isEmpty
-                            ? _buildEmptyState(cs)
-                            : ListView.separated(
-                                padding: const EdgeInsets.fromLTRB(
-                                  24,
-                                  16,
-                                  24,
-                                  100,
-                                ),
-                                itemCount: filtered.length,
-                                separatorBuilder: (_, __) =>
-                                    const SizedBox(height: 12),
-                                itemBuilder: (context, i) {
-                                  final c = filtered[i];
-                                  return _CustomerRow(
-                                        customer: c,
-                                        onTap: () => _showDetail(context, c),
-                                      )
-                                      .animate()
-                                      .fadeIn(delay: (i * 40).ms)
-                                      .slideX(begin: 0.02);
-                                },
-                              ),
+                    ? _buildErrorState(cs)
+                    : filtered.isEmpty
+                    ? _buildEmptyState(cs)
+                    : ListView.separated(
+                        padding: const EdgeInsets.fromLTRB(24, 8, 24, 100),
+                        itemCount: filtered.length,
+                        separatorBuilder: (_, __) => const SizedBox.shrink(),
+                        itemBuilder: (context, i) {
+                          final c = filtered[i];
+                          return _CustomerRow(
+                                customer: c,
+                                onTap: () => _showDetail(context, c),
+                              )
+                              .animate()
+                              .fadeIn(delay: (i * 40).ms)
+                              .slideX(begin: 0.02);
+                        },
+                      ),
               ),
             ),
           ],
@@ -146,7 +140,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
             children: [
               const MicroLabel('Directory'),
               const SizedBox(height: 2),
-              Text('Customers', style: AppText.screenTitle(size: 28)),
+              Text('Customers', style: AppText.screenTitle(size: 24)),
             ],
           ),
           Row(
@@ -196,17 +190,20 @@ class _CustomerScreenState extends State<CustomerScreen> {
                       ),
                       decoration: BoxDecoration(
                         color: sel
-                            ? cs.primary.withValues(alpha: 0.12)
-                            : context.trackColor,
+                            ? context.primaryTintColor
+                            : context.cardColor,
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(
                         f,
-                        style: AppText.caption(
-                          color: sel ? cs.primary : cs.onSurfaceVariant,
-                        ).copyWith(
-                            fontWeight:
-                                sel ? FontWeight.w700 : FontWeight.w600),
+                        style:
+                            AppText.caption(
+                              color: sel ? cs.primary : context.textSecondary,
+                            ).copyWith(
+                              fontWeight: sel
+                                  ? FontWeight.w700
+                                  : FontWeight.w600,
+                            ),
                       ),
                     ),
                   ),
@@ -266,9 +263,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (_) => _AddCustomerSheet(onSaved: _load),
     );
@@ -279,7 +276,6 @@ class _CustomerScreenState extends State<CustomerScreen> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Colors.transparent,
       builder: (_) => _CustomerDetailSheet(customer: c),
     );
   }
@@ -288,10 +284,10 @@ class _CustomerScreenState extends State<CustomerScreen> {
 // ─── Tier styling ───────────────────────────────────────────────────────────
 
 Color _tierColor(String tier) => switch (tier) {
-      'scale' => const Color(0xFFE6A817),
-      'growth' => const Color(0xFF8E9AAB),
-      _ => const Color(0xFFB87333), // starter
-    };
+  'scale' => const Color(0xFFE6A817),
+  'growth' => const Color(0xFF8E9AAB),
+  _ => const Color(0xFFB87333), // starter
+};
 
 String _tierLabel(String tier) =>
     tier.isEmpty ? 'Starter' : tier[0].toUpperCase() + tier.substring(1);
@@ -307,15 +303,11 @@ class _TierDot extends StatelessWidget {
       height: 14,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.white, width: 2),
+        border: Border.all(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          width: 2,
+        ),
         color: color,
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.4),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
       ),
     );
   }
@@ -333,55 +325,54 @@ class _CustomerRow extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final tc = _tierColor(customer.tier);
 
-    return GlassSurface(
-      borderRadius: BorderRadius.circular(20),
-      opacity: 0.14,
-      blur: 12,
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.hairlineColor)),
+      ),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.symmetric(vertical: 14),
             child: Row(
               children: [
                 Stack(
                   children: [
                     CircleAvatar(
-                      radius: 24,
-                      backgroundColor: tc.withValues(alpha: 0.1),
+                      radius: 22,
+                      backgroundColor: tc.withValues(alpha: 0.14),
                       child: Text(
                         customer.initials,
                         style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           color: tc,
-                          fontSize: 13,
+                          fontSize: 12,
                         ),
                       ),
                     ),
                     Positioned(right: 0, bottom: 0, child: _TierDot(color: tc)),
                   ],
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         customer.name,
-                        style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w800,
-                          fontSize: 15,
-                          color: cs.onSurface,
-                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.cardTitle(size: 15, color: cs.onSurface),
                       ),
+                      const SizedBox(height: 2),
                       Text(
                         customer.email ?? customer.phone ?? 'No contact info',
-                        style: GoogleFonts.plusJakartaSans(
-                          color: cs.onSurfaceVariant,
-                          fontSize: 13,
-                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: AppText.caption(
+                          color: context.textSecondary,
+                        ).copyWith(fontSize: 13),
                       ),
                     ],
                   ),
@@ -391,19 +382,17 @@ class _CustomerRow extends StatelessWidget {
                   children: [
                     Text(
                       money(customer.totalSpent, compact: true),
-                      style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w900,
-                        fontSize: 15,
-                        color: cs.onSurface,
-                      ),
+                      style: AppText.cardTitle(size: 14, color: cs.onSurface)
+                          .copyWith(
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
                       customer.lastSeenLabel,
-                      style: GoogleFonts.plusJakartaSans(
-                        color: cs.onSurfaceVariant,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: AppText.caption(
+                        color: context.textTertiary,
+                      ).copyWith(fontSize: 11),
                     ),
                   ],
                 ),
@@ -494,37 +483,26 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
           ),
           const SizedBox(height: 24),
           Text(
-            'New Customer',
+            'New customer',
             style: GoogleFonts.plusJakartaSans(
-              fontWeight: FontWeight.w800,
-              fontSize: 24,
+              fontWeight: FontWeight.w700,
+              fontSize: 22,
               color: cs.onSurface,
             ),
           ),
           const SizedBox(height: 24),
-          _field(_name, 'Full Name', Icons.person_outline_rounded, cs),
+          _field(_name, 'Full name', Icons.person_outline_rounded, cs),
           const SizedBox(height: 16),
-          _field(_email, 'Email Address', Icons.email_outlined, cs),
+          _field(_email, 'Email address', Icons.email_outlined, cs),
           const SizedBox(height: 16),
-          _field(_phone, 'Phone Number', Icons.phone_outlined, cs),
+          _field(_phone, 'Phone number', Icons.phone_outlined, cs),
           if (_error != null) ...[
             const SizedBox(height: 12),
-            Text(
-              _error!,
-              style: TextStyle(color: cs.error, fontSize: 13),
-            ),
+            Text(_error!, style: TextStyle(color: cs.error, fontSize: 13)),
           ],
           const SizedBox(height: 32),
           FilledButton(
             onPressed: _saving ? null : _save,
-            style: FilledButton.styleFrom(
-              backgroundColor: cs.primary,
-              foregroundColor: cs.onPrimary,
-              minimumSize: const Size(double.infinity, 56),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-            ),
             child: _saving
                 ? const SizedBox(
                     width: 20,
@@ -534,7 +512,7 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
                       color: Colors.white,
                     ),
                   )
-                : const Text('Save Customer'),
+                : const Text('Save customer'),
           ),
         ],
       ),
@@ -554,14 +532,6 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
         labelText: label,
         labelStyle: TextStyle(color: cs.onSurfaceVariant),
         prefixIcon: Icon(icon, size: 20, color: cs.onSurfaceVariant),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: cs.outlineVariant),
-        ),
       ),
     );
   }
@@ -617,7 +587,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
     final c = widget.customer;
 
     return GlassSurface(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
       opacity: 0.14,
       blur: 16,
       child: Column(
@@ -638,13 +608,13 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
               children: [
                 CircleAvatar(
                   radius: 32,
-                  backgroundColor: cs.surfaceContainerHigh,
+                  backgroundColor: context.primaryTintColor,
                   child: Text(
                     c.initials,
                     style: GoogleFonts.plusJakartaSans(
                       fontSize: 20,
-                      fontWeight: FontWeight.w800,
-                      color: cs.onSurface,
+                      fontWeight: FontWeight.w700,
+                      color: cs.primary,
                     ),
                   ),
                 ),
@@ -657,7 +627,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
                         c.name,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 22,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: -0.5,
                           color: cs.onSurface,
                         ),
@@ -696,12 +666,12 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
             labelColor: cs.onSurface,
             unselectedLabelColor: cs.onSurfaceVariant,
             labelStyle: GoogleFonts.plusJakartaSans(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               fontSize: 13,
             ),
             tabs: const [
               Tab(text: 'Transactions'),
-              Tab(text: 'Customer Info'),
+              Tab(text: 'Customer info'),
             ],
           ),
           Expanded(
@@ -726,7 +696,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
           side: BorderSide(color: cs.outlineVariant),
           padding: const EdgeInsets.symmetric(vertical: 14),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
           textStyle: GoogleFonts.plusJakartaSans(
             fontWeight: FontWeight.w700,
@@ -767,22 +737,22 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
     return ListView.separated(
       padding: const EdgeInsets.all(24),
       itemCount: _txns.length,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, __) => const SizedBox.shrink(),
       itemBuilder: (_, i) {
         final tx = _txns[i];
         final isCredit = tx.isInflow;
-        return GlassSurface(
-          borderRadius: BorderRadius.circular(16),
-          opacity: 0.12,
-          blur: 10,
-          padding: const EdgeInsets.all(16),
+        return Container(
+          padding: const EdgeInsets.symmetric(vertical: 14),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: context.hairlineColor)),
+          ),
           child: Row(
             children: [
               Icon(
                 isCredit
                     ? Icons.arrow_downward_rounded
                     : Icons.arrow_upward_rounded,
-                color: isCredit ? Colors.green : Colors.redAccent,
+                color: isCredit ? AppColors.positive : AppColors.negative,
                 size: 20,
               ),
               const SizedBox(width: 12),
@@ -793,7 +763,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
                     Text(
                       '${tx.typeLabel} · ${tx.channelLabel}',
                       style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         fontSize: 14,
                         color: cs.onSurface,
                       ),
@@ -811,7 +781,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
               Text(
                 money(tx.amount),
                 style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   color: cs.onSurface,
                 ),
               ),
@@ -826,20 +796,20 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        _infoRow('Phone Number', c.phone ?? '—', cs),
-        _infoRow('Customer Tier', _tierLabel(c.tier), cs),
-        _infoRow('Total Transactions', '${c.totalTransactions} items', cs),
-        _infoRow('Total Spent', money(c.totalSpent), cs),
+        _infoRow('Phone number', c.phone ?? '—', cs),
+        _infoRow('Customer tier', _tierLabel(c.tier), cs),
+        _infoRow('Total transactions', '${c.totalTransactions} items', cs),
+        _infoRow('Total spent', money(c.totalSpent), cs),
         _infoRow(
-          'Customer Since',
+          'Customer since',
           DateFormat('MMM d, yyyy').format(c.createdAt),
           cs,
         ),
         const SizedBox(height: 24),
         Text(
-          'Internal Notes',
+          'Internal notes',
           style: GoogleFonts.plusJakartaSans(
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
             fontSize: 14,
             color: cs.onSurface,
           ),
@@ -855,9 +825,9 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
               color: cs.onSurfaceVariant.withValues(alpha: 0.5),
             ),
             filled: true,
-            fillColor: cs.surfaceContainerLow,
+            fillColor: context.inputFillColor,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.xs),
               borderSide: BorderSide.none,
             ),
           ),
@@ -895,7 +865,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
             style: GoogleFonts.plusJakartaSans(
               color: cs.onSurface,
               fontSize: 13,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],

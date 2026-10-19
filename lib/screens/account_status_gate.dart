@@ -4,11 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:tulapay/models/merchant.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/services/merchant_repository.dart';
+import 'package:tulapay/themes/app_tokens.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
-/// Waiting-for-review screen shown while `merchant.accountStatus ==
-/// 'pending_kyb'`. Pull-to-refresh re-fetches the merchant row so an admin
-/// approval in the Control Panel is reflected without forcing a re-login.
 class PendingReviewScreen extends StatelessWidget {
   final VoidCallback onRefresh;
   const PendingReviewScreen({super.key, required this.onRefresh});
@@ -28,25 +26,29 @@ class PendingReviewScreen extends StatelessWidget {
             child: ListView(
               padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
               children: [
-                GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
-                  opacity: 0.16,
-                  blur: 18,
+                Container(
                   padding: const EdgeInsets.all(24),
                   child: Column(
                     children: [
-                      CircleAvatar(
-                        radius: 40,
-                        backgroundColor: cs.primary,
-                        child: const Icon(Icons.hourglass_top_rounded,
-                            color: Colors.white, size: 32),
+                      Container(
+                        width: 72,
+                        height: 72,
+                        decoration: BoxDecoration(
+                          color: AppColors.primary,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.hourglass_top_rounded,
+                          color: Colors.white,
+                          size: 28,
+                        ),
                       ),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 20),
                       Text(
                         'Verification in progress',
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
                           color: cs.onSurface,
                         ),
                         textAlign: TextAlign.center,
@@ -55,7 +57,7 @@ class PendingReviewScreen extends StatelessWidget {
                       Text(
                         "We're reviewing your documents",
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 15,
+                          fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color: cs.primary,
                         ),
@@ -67,7 +69,8 @@ class PendingReviewScreen extends StatelessWidget {
                         "approves your submission. Pull down to check again.",
                         textAlign: TextAlign.center,
                         style: GoogleFonts.plusJakartaSans(
-                          color: cs.onSurface.withValues(alpha: 0.66),
+                          fontSize: 13,
+                          color: cs.onSurfaceVariant,
                           height: 1.5,
                         ),
                       ),
@@ -90,18 +93,15 @@ class PendingReviewScreen extends StatelessWidget {
   }
 }
 
-/// Blocked screen shown for `rejected` / `suspended` / `closed` account
-/// status, surfacing the real reason from `merchants.suspended_reason` when
-/// present.
 class AccountBlockedScreen extends StatelessWidget {
   final Merchant merchant;
   const AccountBlockedScreen({super.key, required this.merchant});
 
   String get _title => switch (merchant.accountStatus) {
-        'rejected' => 'Verification rejected',
-        'suspended' => 'Account suspended',
-        _ => 'Account closed',
-      };
+    'rejected' => 'Verification rejected',
+    'suspended' => 'Account suspended',
+    _ => 'Account closed',
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -114,25 +114,29 @@ class AccountBlockedScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(20, 40, 20, 24),
             children: [
-              GlassSurface(
-                borderRadius: BorderRadius.circular(28),
-                opacity: 0.16,
-                blur: 18,
+              Container(
                 padding: const EdgeInsets.all(24),
                 child: Column(
                   children: [
-                    CircleAvatar(
-                      radius: 40,
-                      backgroundColor: cs.error,
-                      child: const Icon(Icons.block_rounded,
-                          color: Colors.white, size: 32),
+                    Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        color: AppColors.negative,
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.block_rounded,
+                        color: Colors.white,
+                        size: 28,
+                      ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 20),
                     Text(
                       _title,
                       style: GoogleFonts.plusJakartaSans(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w700,
                         color: cs.onSurface,
                       ),
                       textAlign: TextAlign.center,
@@ -143,7 +147,8 @@ class AccountBlockedScreen extends StatelessWidget {
                         merchant.suspendedReason!,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.plusJakartaSans(
-                          color: cs.onSurface.withValues(alpha: 0.66),
+                          fontSize: 13,
+                          color: cs.onSurfaceVariant,
                           height: 1.5,
                         ),
                       ),
@@ -185,11 +190,6 @@ class AccountBlockedScreen extends StatelessWidget {
   }
 }
 
-/// Wraps [child] (the normal app shell) and only renders it once the
-/// signed-in merchant's `accountStatus` is `active`. Shows a pending-review
-/// or blocked screen otherwise. Fails open (shows [child]) on a fetch
-/// error — this is a UX signal, not the security boundary; RLS and the
-/// SECURITY DEFINER RPCs are what actually enforce access server-side.
 class AccountStatusGate extends StatefulWidget {
   final Widget child;
   const AccountStatusGate({super.key, required this.child});
@@ -212,8 +212,9 @@ class _AccountStatusGateState extends State<AccountStatusGate> {
   Future<void> _load({bool refresh = false}) async {
     if (mounted) setState(() => _loading = true);
     try {
-      final merchant =
-          await MerchantRepository.instance.myMerchant(refresh: refresh);
+      final merchant = await MerchantRepository.instance.myMerchant(
+        refresh: refresh,
+      );
       if (!mounted) return;
       setState(() {
         _merchant = merchant;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/kyb_documents_screen.dart';
 import 'package:tulapay/models/business_type.dart';
@@ -28,8 +29,7 @@ class BusinessInformationScreen extends StatefulWidget {
       _BusinessInformationScreenState();
 }
 
-class _BusinessInformationScreenState
-    extends State<BusinessInformationScreen> {
+class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _isSubmitting = false;
 
@@ -37,15 +37,21 @@ class _BusinessInformationScreenState
       TextEditingController(text: widget.businessName);
   final TextEditingController _ownerNameController = TextEditingController();
   final TextEditingController _ownerPhoneController = TextEditingController();
-  final TextEditingController _businessPhoneController = TextEditingController();
-  final TextEditingController _businessEmailController = TextEditingController();
-  final TextEditingController _registrationNumberController = TextEditingController();
+  final TextEditingController _businessPhoneController =
+      TextEditingController();
+  final TextEditingController _businessEmailController =
+      TextEditingController();
+  final TextEditingController _registrationNumberController =
+      TextEditingController();
   final TextEditingController _taxIdController = TextEditingController();
   final TextEditingController _streetController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
-  final TextEditingController _estimatedVolumeController = TextEditingController();
+  final TextEditingController _estimatedVolumeController =
+      TextEditingController();
 
-  late String? _selectedBusinessType = businessTypeLabelFor(widget.businessType);
+  late String? _selectedBusinessType = businessTypeLabelFor(
+    widget.businessType,
+  );
   String? _selectedCategory;
 
   // Only a 'registered_business' is expected to have RCCM/tax documents —
@@ -101,7 +107,9 @@ class _BusinessInformationScreenState
         businessType: businessTypeLabels[_selectedBusinessType],
         businessPhone: _businessPhoneController.text.trim(),
         businessEmail: _businessEmailController.text.trim(),
-        estimatedMonthlyVolume: num.tryParse(_estimatedVolumeController.text.trim()),
+        estimatedMonthlyVolume: num.tryParse(
+          _estimatedVolumeController.text.trim(),
+        ),
       );
 
       if (!mounted) return;
@@ -136,7 +144,7 @@ class _BusinessInformationScreenState
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: cs.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -148,7 +156,7 @@ class _BusinessInformationScreenState
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 560),
                 child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
                   opacity: 0.16,
                   blur: 18,
                   padding: const EdgeInsets.all(20),
@@ -158,10 +166,10 @@ class _BusinessInformationScreenState
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Business Information",
+                          "Business information",
                           style: GoogleFonts.plusJakartaSans(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 26,
+                            fontWeight: FontWeight.w700,
                             letterSpacing: -0.8,
                             color: cs.onSurface,
                           ),
@@ -176,7 +184,7 @@ class _BusinessInformationScreenState
                         ),
                         const SizedBox(height: 24),
                         _buildSectionTitle("Representative"),
-                        _buildLabel("Owner / Representative Name"),
+                        _buildLabel("Owner / representative name"),
                         TextFormField(
                           controller: _ownerNameController,
                           textCapitalization: TextCapitalization.words,
@@ -184,11 +192,12 @@ class _BusinessInformationScreenState
                             hintText: "Enter full name",
                             prefixIcon: Icon(Icons.person_outline),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "Owner name is required" : null,
+                          validator: (val) => (val == null || val.isEmpty)
+                              ? "Owner name is required"
+                              : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Owner / Representative Phone"),
+                        _buildLabel("Owner / representative phone"),
                         TextFormField(
                           controller: _ownerPhoneController,
                           keyboardType: TextInputType.phone,
@@ -196,8 +205,9 @@ class _BusinessInformationScreenState
                             hintText: "e.g. +237 6XX XXX XXX",
                             prefixIcon: Icon(Icons.phone_outlined),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "Phone number is required" : null,
+                          validator: (val) => (val == null || val.isEmpty)
+                              ? "Phone number is required"
+                              : null,
                         ),
                         const SizedBox(height: 20),
                         const Divider(),
@@ -211,18 +221,19 @@ class _BusinessInformationScreenState
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Registered Business Name"),
+                        _buildLabel("Registered business name"),
                         TextFormField(
                           controller: _businessNameController,
                           decoration: const InputDecoration(
                             hintText: "Legal business name",
                             prefixIcon: Icon(Icons.business_outlined),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "Business name is required" : null,
+                          validator: (val) => (val == null || val.isEmpty)
+                              ? "Business name is required"
+                              : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Business Type"),
+                        _buildLabel("Business type"),
                         DropdownButtonFormField<String>(
                           initialValue: _selectedBusinessType,
                           decoration: const InputDecoration(
@@ -230,13 +241,20 @@ class _BusinessInformationScreenState
                           ),
                           hint: const Text("Select business type"),
                           items: businessTypeLabels.keys
-                              .map((label) => DropdownMenuItem(value: label, child: Text(label)))
+                              .map(
+                                (label) => DropdownMenuItem(
+                                  value: label,
+                                  child: Text(label),
+                                ),
+                              )
                               .toList(),
-                          onChanged: (val) => setState(() => _selectedBusinessType = val),
-                          validator: (val) => (val == null) ? "Select a business type" : null,
+                          onChanged: (val) =>
+                              setState(() => _selectedBusinessType = val),
+                          validator: (val) =>
+                              (val == null) ? "Select a business type" : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Industry / Sector"),
+                        _buildLabel("Industry / sector"),
                         DropdownButtonFormField<String>(
                           initialValue: _selectedCategory,
                           decoration: const InputDecoration(
@@ -244,13 +262,20 @@ class _BusinessInformationScreenState
                           ),
                           hint: const Text("Select industry"),
                           items: _categories
-                              .map((category) => DropdownMenuItem(value: category, child: Text(category)))
+                              .map(
+                                (category) => DropdownMenuItem(
+                                  value: category,
+                                  child: Text(category),
+                                ),
+                              )
                               .toList(),
-                          onChanged: (val) => setState(() => _selectedCategory = val),
-                          validator: (val) => (val == null) ? "Select an industry" : null,
+                          onChanged: (val) =>
+                              setState(() => _selectedCategory = val),
+                          validator: (val) =>
+                              (val == null) ? "Select an industry" : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Business Phone"),
+                        _buildLabel("Business phone"),
                         TextFormField(
                           controller: _businessPhoneController,
                           keyboardType: TextInputType.phone,
@@ -258,11 +283,12 @@ class _BusinessInformationScreenState
                             hintText: "Dedicated business line, if different",
                             prefixIcon: Icon(Icons.call_outlined),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "Business phone is required" : null,
+                          validator: (val) => (val == null || val.isEmpty)
+                              ? "Business phone is required"
+                              : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Business Email"),
+                        _buildLabel("Business email"),
                         TextFormField(
                           controller: _businessEmailController,
                           keyboardType: TextInputType.emailAddress,
@@ -270,18 +296,23 @@ class _BusinessInformationScreenState
                             hintText: "contact@business.cm",
                             prefixIcon: Icon(Icons.alternate_email_rounded),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "Business email is required" : null,
+                          validator: (val) => (val == null || val.isEmpty)
+                              ? "Business email is required"
+                              : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel(_isRegisteredBusiness
-                            ? "RCCM / Business Registration Number"
-                            : "RCCM / Business Registration Number (if registered)"),
+                        _buildLabel(
+                          _isRegisteredBusiness
+                              ? "RCCM / Business Registration Number"
+                              : "RCCM / Business Registration Number (if registered)",
+                        ),
                         TextFormField(
                           controller: _registrationNumberController,
                           decoration: const InputDecoration(
                             hintText: "RCCM number",
-                            prefixIcon: Icon(Icons.confirmation_number_outlined),
+                            prefixIcon: Icon(
+                              Icons.confirmation_number_outlined,
+                            ),
                           ),
                           validator: (val) {
                             if (!_isRegisteredBusiness) return null;
@@ -291,9 +322,11 @@ class _BusinessInformationScreenState
                           },
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel(_isRegisteredBusiness
-                            ? "NIU (Tax Identification Number)"
-                            : "NIU (Tax Identification Number) (if registered)"),
+                        _buildLabel(
+                          _isRegisteredBusiness
+                              ? "NIU (Tax Identification Number)"
+                              : "NIU (Tax Identification Number) (if registered)",
+                        ),
                         TextFormField(
                           controller: _taxIdController,
                           decoration: const InputDecoration(
@@ -302,11 +335,15 @@ class _BusinessInformationScreenState
                           ),
                           validator: (val) {
                             if (!_isRegisteredBusiness) return null;
-                            return (val == null || val.isEmpty) ? "NIU is required" : null;
+                            return (val == null || val.isEmpty)
+                                ? "NIU is required"
+                                : null;
                           },
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Estimated Monthly Transaction Volume (XAF)"),
+                        _buildLabel(
+                          "Estimated monthly transaction volume (XAF)",
+                        ),
                         TextFormField(
                           controller: _estimatedVolumeController,
                           keyboardType: TextInputType.number,
@@ -325,15 +362,16 @@ class _BusinessInformationScreenState
                           },
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Street Address"),
+                        _buildLabel("Street address"),
                         TextFormField(
                           controller: _streetController,
                           decoration: const InputDecoration(
                             hintText: "e.g. 12 Rue de la Paix",
                             prefixIcon: Icon(Icons.location_on_outlined),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "Street address is required" : null,
+                          validator: (val) => (val == null || val.isEmpty)
+                              ? "Street address is required"
+                              : null,
                         ),
                         const SizedBox(height: 16),
                         _buildLabel("City"),
@@ -344,18 +382,23 @@ class _BusinessInformationScreenState
                             hintText: "e.g. Douala",
                             prefixIcon: Icon(Icons.location_city_outlined),
                           ),
-                          validator: (val) =>
-                              (val == null || val.isEmpty) ? "City is required" : null,
+                          validator: (val) => (val == null || val.isEmpty)
+                              ? "City is required"
+                              : null,
                         ),
                         const SizedBox(height: 20),
                         GlassSurface(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(12),
                           opacity: 0.12,
                           blur: 12,
                           padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
-                              Icon(Icons.info_outline_rounded, size: 20, color: cs.primary),
+                              Icon(
+                                Icons.info_outline_rounded,
+                                size: 20,
+                                color: cs.primary,
+                              ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
@@ -377,7 +420,9 @@ class _BusinessInformationScreenState
                               ? const SizedBox(
                                   width: 20,
                                   height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
                                 )
                               : const Text("Continue to KYB"),
                         ),
@@ -397,12 +442,9 @@ class _BusinessInformationScreenState
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Text(
-        title,
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 18,
-          fontWeight: FontWeight.w800,
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
+        title.toUpperCase(),
+        style: AppText.microLabel(color: context.textTertiary)
+            .copyWith(letterSpacing: 1.6),
       ),
     );
   }
@@ -413,9 +455,9 @@ class _BusinessInformationScreenState
       child: Text(
         text,
         style: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+          color: context.textTertiary,
         ),
       ),
     );

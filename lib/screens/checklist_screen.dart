@@ -66,17 +66,14 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
                 borderRadius: BorderRadius.circular(999),
                 child: LinearProgressIndicator(
                   value: c.progress,
-                  minHeight: 8,
-                  backgroundColor: Theme.of(context)
-                      .colorScheme
-                      .outlineVariant
-                      .withValues(alpha: 0.2),
+                  minHeight: 6,
+                  backgroundColor: context.hairlineColor,
                 ),
               ),
               const SizedBox(height: AppSpacing.lg),
               for (final it in items)
                 Padding(
-                  padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                  padding: EdgeInsets.zero,
                   child: GlassSurface(
                     padding: EdgeInsets.zero,
                     child: ListRowCard(

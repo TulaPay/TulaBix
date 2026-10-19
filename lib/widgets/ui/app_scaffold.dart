@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
-import 'package:tulapay/widgets/ui/icon_chip.dart';
 
 /// Standard sub-page: pale background, a large left-aligned title in the app
-/// bar, an optional back chevron in a white circular button, and optional
+/// bar, a plain back chevron, and optional
 /// trailing actions (icon buttons or dark pills).
 class AppScaffold extends StatelessWidget {
   final String title;
@@ -35,25 +34,22 @@ class AppScaffold extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        titleSpacing: showBack ? 0 : AppSpacing.xl,
-        leadingWidth: 60,
+        titleSpacing: showBack ? 0 : AppSpacing.xxl,
+        leadingWidth: 56,
         leading: showBack
-            ? Padding(
-                padding: const EdgeInsets.only(left: AppSpacing.lg),
-                child: Center(
-                  child: CircleIconButton(
-                    Icons.arrow_back_ios_new_rounded,
-                    onTap: () => Navigator.maybePop(context),
-                  ),
-                ),
+            ? IconButton(
+                icon: const Icon(Icons.chevron_left_rounded, size: 28),
+                onPressed: () => Navigator.maybePop(context),
               )
             : null,
-        title: Text(title, style: AppText.screenTitle(size: 22)),
+        title: Text(title, style: AppText.screenTitle(size: 20)),
         actions: [
-          ...actions.map((a) => Padding(
-                padding: const EdgeInsets.only(right: AppSpacing.sm),
-                child: Center(child: a),
-              )),
+          ...actions.map(
+            (a) => Padding(
+              padding: const EdgeInsets.only(right: AppSpacing.sm),
+              child: Center(child: a),
+            ),
+          ),
           const SizedBox(width: AppSpacing.sm),
         ],
       ),

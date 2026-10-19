@@ -135,7 +135,7 @@ class _TransferScreenState extends State<TransferScreen> {
 
   Color _statusColor(String status, ColorScheme cs) => switch (status) {
         'pending' => AppColors.warning,
-        'completed' => Colors.green,
+        'completed' => AppColors.positive,
         'failed' => cs.error,
         _ => cs.onSurfaceVariant,
       };
@@ -151,20 +151,22 @@ class _TransferScreenState extends State<TransferScreen> {
         elevation: 0,
         centerTitle: false,
         title: Text(_title,
-            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800)),
+            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
       ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
+                Text(
+                  'TRANSFER DETAILS',
+                  style: AppText.microLabel(color: context.textTertiary)
+                      .copyWith(letterSpacing: 1.6),
+                ),
+                const SizedBox(height: 14),
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(24),
-                  opacity: 0.12,
-                  blur: 14,
-                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       _Field(
@@ -172,13 +174,13 @@ class _TransferScreenState extends State<TransferScreen> {
                         hint: _isBank ? 'Merchant payout account' : 'e.g. Main wallet',
                         controller: _sourceController,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _Field(
                         label: _destinationLabel,
                         hint: _isBank ? 'IBAN / account number' : 'e.g. Savings wallet',
                         controller: _destinationController,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _Field(
                         label: 'Amount',
                         hint: '0.00',
@@ -186,7 +188,7 @@ class _TransferScreenState extends State<TransferScreen> {
                         prefix: 'XAF',
                         keyboardType: TextInputType.number,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _Field(
                         label: 'Note',
                         hint: 'Optional memo',
@@ -196,10 +198,10 @@ class _TransferScreenState extends State<TransferScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  height: 56,
+                  height: 52,
                   child: FilledButton(
                     onPressed: _submitting ? null : _handleSubmit,
                     child: _submitting
@@ -215,14 +217,13 @@ class _TransferScreenState extends State<TransferScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
+                const SizedBox(height: 8),
                 Text(
-                  'Recent transfers',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                  ),
+                  'RECENT TRANSFERS',
+                  style: AppText.microLabel(color: context.textTertiary)
+                      .copyWith(letterSpacing: 1.6),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 8),
                 FutureBuilder<List<MerchantTransfer>>(
                   future: _transfersFuture,
                   builder: (context, snap) {
@@ -238,18 +239,20 @@ class _TransferScreenState extends State<TransferScreen> {
                         'No transfers yet.',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
-                          color: cs.onSurfaceVariant,
+                          color: context.textSecondary,
                         ),
                       );
                     }
                     return Column(
                       children: [
                         for (final t in list) ...[
-                          GlassSurface(
-                            borderRadius: BorderRadius.circular(18),
-                            opacity: 0.12,
-                            blur: 10,
-                            padding: const EdgeInsets.all(14),
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                bottom: BorderSide(color: context.hairlineColor),
+                              ),
+                            ),
                             child: Row(
                               children: [
                                 Expanded(
@@ -259,7 +262,7 @@ class _TransferScreenState extends State<TransferScreen> {
                                       Text(
                                         '${t.sourceLabel} → ${t.destinationLabel}',
                                         style: GoogleFonts.plusJakartaSans(
-                                          fontWeight: FontWeight.w800,
+                                          fontWeight: FontWeight.w700,
                                           fontSize: 13,
                                         ),
                                       ),
@@ -279,7 +282,7 @@ class _TransferScreenState extends State<TransferScreen> {
                                     Text(
                                       money(t.amount),
                                       style: GoogleFonts.plusJakartaSans(
-                                        fontWeight: FontWeight.w800,
+                                        fontWeight: FontWeight.w700,
                                         fontSize: 13,
                                       ),
                                     ),
@@ -296,7 +299,6 @@ class _TransferScreenState extends State<TransferScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 10),
                         ],
                       ],
                     );
@@ -330,18 +332,13 @@ class _Field extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label.toUpperCase(),
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 10,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.2,
-            color: cs.onSurfaceVariant.withValues(alpha: 0.55),
-          ),
+          style: AppText.microLabel(color: context.textTertiary)
+              .copyWith(fontSize: 10, letterSpacing: 1.4),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -357,21 +354,7 @@ class _Field extends StatelessWidget {
             hintText: hint,
             hintStyle: GoogleFonts.plusJakartaSans(
               fontSize: 14,
-              color: cs.onSurfaceVariant.withValues(alpha: 0.4),
-            ),
-            filled: true,
-            fillColor: context.cardMutedColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: cs.primary, width: 1.6),
+              color: context.textTertiary,
             ),
           ),
         ),

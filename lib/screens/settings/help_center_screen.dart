@@ -46,17 +46,17 @@ class HelpCenterScreen extends StatelessWidget {
       children: [
         for (final faq in _faqs)
           Padding(
-            padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+            padding: EdgeInsets.zero,
             child: GlassSurface(
+              border: Border(bottom: BorderSide(color: context.hairlineColor)),
               padding: EdgeInsets.zero,
               child: Theme(
                 data: Theme.of(context)
                     .copyWith(dividerColor: Colors.transparent),
                 child: ExpansionTile(
-                  tilePadding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.lg, vertical: 2),
-                  childrenPadding: const EdgeInsets.fromLTRB(
-                      AppSpacing.lg, 0, AppSpacing.lg, AppSpacing.lg),
+                  tilePadding: const EdgeInsets.symmetric(vertical: 2),
+                  childrenPadding:
+                      const EdgeInsets.fromLTRB(0, 0, 0, AppSpacing.lg),
                   title: Text(faq.$1,
                       style: AppText.cardTitle(
                           color: Theme.of(context).colorScheme.onSurface)),
@@ -74,7 +74,7 @@ class HelpCenterScreen extends StatelessWidget {
               ),
             ),
           ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.xl),
         GlassInfoCard(
           icon: Icons.chat_bubble_outline_rounded,
           title: 'Live chat',
@@ -82,7 +82,6 @@ class HelpCenterScreen extends StatelessWidget {
           onTap: () => AppFeedback.toast(
               context, 'Live chat opens during business hours'),
         ),
-        const SizedBox(height: AppSpacing.sm),
         GlassInfoCard(
           icon: Icons.mail_outline_rounded,
           title: 'Email support',

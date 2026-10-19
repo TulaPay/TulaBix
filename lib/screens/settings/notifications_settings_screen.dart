@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/models/merchant.dart';
 import 'package:tulapay/services/merchant_repository.dart';
@@ -72,17 +73,15 @@ class _NotificationsSettingsScreenState
         elevation: 0,
         title: Text(
           "Notifications",
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800),
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
       ),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
               children: [
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
-                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -90,7 +89,7 @@ class _NotificationsSettingsScreenState
                         'Notification preferences',
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 20,
-                          fontWeight: FontWeight.w800,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: -0.4,
                         ),
                       ),
@@ -107,14 +106,13 @@ class _NotificationsSettingsScreenState
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
                   child: Column(
                     children: [
                       _buildSwitch(
                         context,
-                        "Email Notifications",
+                        "Email notifications",
                         "Settlement updates and reports",
                         _email,
                         (v) {
@@ -125,7 +123,7 @@ class _NotificationsSettingsScreenState
                       const Divider(height: 1),
                       _buildSwitch(
                         context,
-                        "Push Notifications",
+                        "Push notifications",
                         "Real-time payment and account alerts",
                         _push,
                         (v) async {
@@ -143,7 +141,7 @@ class _NotificationsSettingsScreenState
                       const Divider(height: 1),
                       _buildSwitch(
                         context,
-                        "SMS Notifications",
+                        "SMS notifications",
                         "Critical fallback alerts",
                         _sms,
                         (v) {
@@ -179,13 +177,13 @@ class _NotificationsSettingsScreenState
         subtitle,
         style: GoogleFonts.plusJakartaSans(
           fontSize: 12,
-          color: cs.onSurfaceVariant,
+          color: context.textSecondary,
         ),
       ),
       value: value,
       onChanged: onChanged,
       activeThumbColor: cs.primary,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      contentPadding: const EdgeInsets.symmetric(vertical: 4),
     );
   }
 }

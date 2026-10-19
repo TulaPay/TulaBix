@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/models/engagement.dart';
 import 'package:tulapay/services/merchant_repository.dart';
@@ -47,7 +48,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
             decoration: BoxDecoration(
               color: Theme.of(context).scaffoldBackgroundColor,
               borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(28)),
+                  const BorderRadius.vertical(top: Radius.circular(12)),
             ),
             padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
             child: Column(
@@ -56,7 +57,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
               children: [
                 Text(goal == null ? 'New goal' : 'Edit goal',
                     style: GoogleFonts.plusJakartaSans(
-                        fontSize: 18, fontWeight: FontWeight.w800)),
+                        fontSize: 18, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 14),
                 TextField(
                   controller: titleCtrl,
@@ -150,7 +151,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text("Growth Goals",
-            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800)),
+            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _editGoal(),
@@ -164,28 +165,26 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
           }
           final goals = snap.data ?? const [];
           return ListView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 96),
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 96),
             children: [
               GlassSurface(
-                borderRadius: BorderRadius.circular(28),
-                padding: const EdgeInsets.all(20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Track merchant growth',
                         style: GoogleFonts.plusJakartaSans(
-                            fontSize: 20, fontWeight: FontWeight.w800)),
+                            fontSize: 20, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 6),
                     Text(
                       'Set targets for revenue, customers, and repeat orders '
                       'and watch progress against them.',
                       style: GoogleFonts.plusJakartaSans(
-                          fontSize: 13, color: cs.onSurfaceVariant),
+                          fontSize: 14, color: context.textSecondary),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
               if (goals.isEmpty)
                 Padding(
                   padding: const EdgeInsets.only(top: 40),
@@ -195,10 +194,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                             color: cs.onSurfaceVariant)),
                   ),
                 ),
-              for (final g in goals) ...[
-                _goalCard(context, g),
-                const SizedBox(height: 12),
-              ],
+              for (final g in goals) _goalCard(context, g),
             ],
           );
         },
@@ -211,9 +207,11 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
     String fmt(num v) => g.isMonetary ? money(v) : amountOnly(v);
     return GestureDetector(
       onTap: () => _editGoal(g),
-      child: GlassSurface(
-        borderRadius: BorderRadius.circular(24),
-        padding: const EdgeInsets.all(16),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: context.hairlineColor)),
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -222,11 +220,11 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                 Expanded(
                   child: Text(g.title,
                       style: GoogleFonts.plusJakartaSans(
-                          fontWeight: FontWeight.w800, fontSize: 14)),
+                          fontWeight: FontWeight.w700, fontSize: 15)),
                 ),
                 Text('${g.progressPercent}%',
                     style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w800, color: cs.primary)),
+                        fontWeight: FontWeight.w700, color: cs.primary)),
               ],
             ),
             const SizedBox(height: 10),
@@ -234,15 +232,15 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
               borderRadius: BorderRadius.circular(999),
               child: LinearProgressIndicator(
                 value: g.progress,
-                minHeight: 8,
-                backgroundColor: cs.outlineVariant.withValues(alpha: 0.2),
+                minHeight: 6,
+                backgroundColor: context.hairlineColor,
                 valueColor: AlwaysStoppedAnimation<Color>(cs.primary),
               ),
             ),
             const SizedBox(height: 6),
             Text('${fmt(g.currentAmount)} of ${fmt(g.targetAmount)}',
                 style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12, color: cs.onSurfaceVariant)),
+                    fontSize: 12, color: context.textSecondary)),
           ],
         ),
       ),

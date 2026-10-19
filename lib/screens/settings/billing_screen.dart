@@ -61,6 +61,8 @@ class _BillingScreenState extends State<BillingScreen> {
               )
             else ...[
               GlassSurface(
+                borderRadius: AppRadius.smAll,
+                border: Border.all(color: context.hairlineColor),
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Row(
                   children: [
@@ -91,17 +93,21 @@ class _BillingScreenState extends State<BillingScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 28),
               const MicroLabel('Published fees'),
               const SizedBox(height: 8),
               GlassSurface(
-                padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
                 child: Column(
                   children: [
                     for (final f in data?.feeRates ?? const <FeeRate>[])
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: AppSpacing.lg, vertical: AppSpacing.sm),
+                      Container(
+                        padding:
+                            const EdgeInsets.symmetric(vertical: AppSpacing.md),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(color: context.hairlineColor),
+                          ),
+                        ),
                         child: Row(
                           children: [
                             Expanded(

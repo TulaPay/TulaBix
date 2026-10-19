@@ -6,7 +6,6 @@ import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
-import 'package:tulapay/widgets/glass_page_shell.dart';
 import 'package:tulapay/widgets/pin_prompt.dart';
 
 /// Direct mobile-money collection — the merchant enters the CUSTOMER's own
@@ -78,7 +77,6 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -87,28 +85,29 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
         elevation: 0,
         centerTitle: false,
         title: Text('Collect Payment',
-            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800)),
+            style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
       ),
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                GlassInfoCard(
-                  icon: Icons.info_outline_rounded,
+                const InfoNote(
                   title: 'MTN MoMo only',
-                  subtitle: 'This sends a payment prompt straight to an MTN '
+                  message: 'This sends a payment prompt straight to an MTN '
                       'MoMo number. For Orange Money or other methods, use '
                       'a Payment Link or your QR Payment Page instead.',
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 24),
+                Text(
+                  'PAYMENT DETAILS',
+                  style: AppText.microLabel(color: context.textTertiary)
+                      .copyWith(letterSpacing: 1.6),
+                ),
+                const SizedBox(height: 14),
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(24),
-                  opacity: 0.12,
-                  blur: 14,
-                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       _Field(
@@ -117,7 +116,7 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _Field(
                         label: 'Amount',
                         hint: '0.00',
@@ -125,7 +124,7 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
                         prefix: 'XAF',
                         keyboardType: TextInputType.number,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _Field(
                         label: 'Description',
                         hint: 'Optional — what is this for?',
@@ -135,10 +134,10 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  height: 56,
+                  height: 52,
                   child: FilledButton(
                     onPressed: _submitting ? null : _handleSubmit,
                     child: _submitting
@@ -159,7 +158,8 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
                   "You'll see the transaction update in Activity once they respond.",
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
-                    color: cs.onSurfaceVariant,
+                    color: context.textSecondary,
+                    height: 1.5,
                   ),
                 ),
               ]),
@@ -190,18 +190,13 @@ class _Field extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label.toUpperCase(),
-          style: GoogleFonts.plusJakartaSans(
-            fontSize: 10,
-            fontWeight: FontWeight.w900,
-            letterSpacing: 1.2,
-            color: cs.onSurfaceVariant.withValues(alpha: 0.55),
-          ),
+          style: AppText.microLabel(color: context.textTertiary)
+              .copyWith(fontSize: 10, letterSpacing: 1.4),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -217,21 +212,7 @@ class _Field extends StatelessWidget {
             hintText: hint,
             hintStyle: GoogleFonts.plusJakartaSans(
               fontSize: 14,
-              color: cs.onSurfaceVariant.withValues(alpha: 0.4),
-            ),
-            filled: true,
-            fillColor: context.cardMutedColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: cs.primary, width: 1.6),
+              color: context.textTertiary,
             ),
           ),
         ),

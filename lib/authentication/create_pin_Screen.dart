@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/kyc_onboarding.dart';
@@ -106,11 +107,10 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       builder: (context) {
         final cs = Theme.of(context).colorScheme;
         return AlertDialog(
-          backgroundColor: Colors.transparent,
           elevation: 0,
           contentPadding: EdgeInsets.zero,
           content: GlassSurface(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(12),
             opacity: 0.18,
             blur: 18,
             padding: const EdgeInsets.all(20),
@@ -122,7 +122,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                 Text(
                   "PIN Set Successfully",
                   style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     fontSize: 18,
                   ),
                 ),
@@ -168,7 +168,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: cs.onSurface),
           onPressed: () {
             if (_isConfirming) {
               setState(() {
@@ -189,7 +189,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 520),
                 child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
                   opacity: 0.16,
                   blur: 18,
                   padding: const EdgeInsets.all(20),
@@ -197,20 +197,24 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
-                        width: 72,
-                        height: 72,
+                        width: 60,
+                        height: 60,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: cs.primary.withValues(alpha: 0.16),
+                          borderRadius: BorderRadius.circular(12),
+                          color: context.primaryTintColor,
                         ),
-                        child: Icon(Icons.pin_rounded, color: cs.primary, size: 34),
+                        child: Icon(
+                          Icons.lock_outline_rounded,
+                          color: cs.primary,
+                          size: 26,
+                        ),
                       ),
                       const SizedBox(height: 24),
                       Text(
                         _isConfirming ? "Confirm your PIN" : "Create a PIN",
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: -0.6,
                           color: cs.onSurface,
                         ),
@@ -233,7 +237,10 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                       const SizedBox(height: 40),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(6, (index) => _buildIndicator(index)),
+                        children: List.generate(
+                          6,
+                          (index) => _buildIndicator(index),
+                        ),
                       ),
                       const SizedBox(height: 24),
                       if (_isSubmitting)
@@ -251,7 +258,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                           child: Text(
                             _errorMessage,
                             style: const TextStyle(
-                              color: Colors.red,
+                              color: AppColors.negative,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -270,7 +277,9 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
   }
 
   Widget _buildIndicator(int index) {
-    final bool isFilled = _isConfirming ? index < _confirmPin.length : index < _pin.length;
+    final bool isFilled = _isConfirming
+        ? index < _confirmPin.length
+        : index < _pin.length;
     final cs = Theme.of(context).colorScheme;
 
     return AnimatedContainer(
@@ -280,9 +289,9 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       height: 16,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: isFilled ? cs.primary : cs.outline.withValues(alpha: 0.2),
+        color: isFilled ? cs.primary : Colors.transparent,
         border: Border.all(
-          color: isFilled ? cs.primary : cs.outline.withValues(alpha: 0.1),
+          color: isFilled ? cs.primary : context.hairlineColor,
           width: 1,
         ),
       ),
@@ -301,7 +310,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const SizedBox(width: 80),
+            const SizedBox(width: 74),
             _buildKeyButton("0", cs),
             _buildBackspaceButton(cs),
           ],
@@ -320,20 +329,20 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
   Widget _buildKeyButton(String val, ColorScheme cs) {
     return InkWell(
       onTap: () => _onKeyTap(val),
-      borderRadius: BorderRadius.circular(40),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       child: Container(
-        width: 80,
-        height: 80,
+        width: 74,
+        height: 62,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: cs.surface.withValues(alpha: 0.35),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: cs.outline.withValues(alpha: 0.12)),
+          color: context.inputFillColor,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          border: Border.all(color: context.hairlineColor),
         ),
         child: Text(
           val,
           style: GoogleFonts.plusJakartaSans(
-            fontSize: 30,
+            fontSize: 22,
             fontWeight: FontWeight.w700,
             color: cs.onSurface,
           ),
@@ -345,21 +354,17 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
   Widget _buildBackspaceButton(ColorScheme cs) {
     return InkWell(
       onTap: _onBackspace,
-      borderRadius: BorderRadius.circular(40),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       child: Container(
-        width: 80,
-        height: 80,
+        width: 74,
+        height: 62,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: cs.surface.withValues(alpha: 0.35),
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: cs.outline.withValues(alpha: 0.12)),
+          color: context.inputFillColor,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          border: Border.all(color: context.hairlineColor),
         ),
-        child: Icon(
-          Icons.backspace_outlined,
-          size: 28,
-          color: cs.onSurface,
-        ),
+        child: Icon(Icons.backspace_outlined, size: 20, color: cs.onSurface),
       ),
     );
   }

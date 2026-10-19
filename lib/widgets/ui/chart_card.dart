@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 
-/// White card wrapper for a chart: a title, an optional big value, an optional
+/// Hairline-framed wrapper for a chart: a title, an optional big value, an optional
 /// trailing widget (legend toggle, range pill), then the chart body.
 class ChartCard extends StatelessWidget {
   final String title;
@@ -17,13 +17,15 @@ class ChartCard extends StatelessWidget {
     this.value,
     this.trailing,
     required this.child,
-    this.padding = const EdgeInsets.all(AppSpacing.lg),
+    this.padding = const EdgeInsets.all(18),
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return GlassSurface(
+      borderRadius: AppRadius.smAll,
+      border: Border.all(color: context.hairlineColor),
       padding: padding,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -34,12 +36,17 @@ class ChartCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(title, style: AppText.cardTitle(color: cs.onSurface)),
+                    Text(
+                      title.toUpperCase(),
+                      style: AppText.microLabel(
+                        color: context.textTertiary,
+                      ).copyWith(letterSpacing: 1.6),
+                    ),
                     if (value != null) ...[
                       const SizedBox(height: 4),
                       Text(
                         value!,
-                        style: AppText.hero(size: 26, color: cs.onSurface),
+                        style: AppText.cardTitle(size: 20, color: cs.onSurface),
                       ),
                     ],
                   ],

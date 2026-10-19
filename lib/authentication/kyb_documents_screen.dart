@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -67,7 +68,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
         final cs = Theme.of(context).colorScheme;
         return SafeArea(
           child: GlassSurface(
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(12),
             opacity: 0.18,
             blur: 18,
             padding: const EdgeInsets.all(12),
@@ -81,25 +82,34 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                     final picked = await ImagePicker().pickImage(
                       source: ImageSource.camera,
                       imageQuality: 85,
-                      preferredCameraDevice:
-                          front ? CameraDevice.front : CameraDevice.rear,
+                      preferredCameraDevice: front
+                          ? CameraDevice.front
+                          : CameraDevice.rear,
                     );
                     if (context.mounted) Navigator.pop(context, picked);
                   },
                 ),
                 if (!front) ...[
                   ListTile(
-                    leading: Icon(Icons.photo_library_outlined, color: cs.primary),
+                    leading: Icon(
+                      Icons.photo_library_outlined,
+                      color: cs.primary,
+                    ),
                     title: const Text("Choose from gallery"),
                     onTap: () async {
-                      final picked = await ImagePicker()
-                          .pickImage(source: ImageSource.gallery, imageQuality: 85);
+                      final picked = await ImagePicker().pickImage(
+                        source: ImageSource.gallery,
+                        imageQuality: 85,
+                      );
                       if (context.mounted) Navigator.pop(context, picked);
                     },
                   ),
                   if (allowFile)
                     ListTile(
-                      leading: Icon(Icons.upload_file_outlined, color: cs.primary),
+                      leading: Icon(
+                        Icons.upload_file_outlined,
+                        color: cs.primary,
+                      ),
                       title: const Text("Upload a file (PDF or image)"),
                       onTap: () async {
                         final result = await FilePicker.pickFiles(
@@ -123,16 +133,19 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
     );
   }
 
-  bool get _requiresRegistrationDocs => widget.businessType == 'registered_business';
+  bool get _requiresRegistrationDocs =>
+      widget.businessType == 'registered_business';
 
   bool get _canSubmit =>
       _idDocType != null &&
       _idFile != null &&
       (!_requiresRegistrationDocs || (_rccmFile != null && _taxFile != null)) &&
       _selfieFile != null &&
-      _owners.every((o) =>
-          o.nameController.text.trim().isNotEmpty &&
-          num.tryParse(o.percentController.text.trim()) != null);
+      _owners.every(
+        (o) =>
+            o.nameController.text.trim().isNotEmpty &&
+            num.tryParse(o.percentController.text.trim()) != null,
+      );
 
   Future<void> _handleSubmit() async {
     if (!_canSubmit) return;
@@ -183,7 +196,8 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => VerificationInProgressPage(merchantId: widget.merchantId),
+          builder: (_) =>
+              VerificationInProgressPage(merchantId: widget.merchantId),
         ),
       );
     } catch (e) {
@@ -208,7 +222,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: cs.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: cs.onSurface),
           onPressed: () => Navigator.pop(context),
         ),
       ),
@@ -220,7 +234,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
               child: ConstrainedBox(
                 constraints: const BoxConstraints(maxWidth: 560),
                 child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
+                  borderRadius: BorderRadius.circular(12),
                   opacity: 0.16,
                   blur: 18,
                   padding: const EdgeInsets.all(20),
@@ -228,10 +242,10 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "KYB Verification (Level 1)",
+                        "KYB verification — Level 1",
                         style: GoogleFonts.plusJakartaSans(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
                           letterSpacing: -0.6,
                           color: cs.onSurface,
                         ),
@@ -247,15 +261,29 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       const SizedBox(height: 24),
 
                       _buildSectionTitle("Identity document"),
-                      _buildDocTypeOption('national_id', "National ID Card (CNI)", Icons.badge_outlined),
+                      _buildDocTypeOption(
+                        'national_id',
+                        "National ID Card (CNI)",
+                        Icons.badge_outlined,
+                      ),
                       const SizedBox(height: 10),
-                      _buildDocTypeOption('drivers_license', "Driver's License", Icons.drive_eta_outlined),
+                      _buildDocTypeOption(
+                        'drivers_license',
+                        "Driver's License",
+                        Icons.drive_eta_outlined,
+                      ),
                       const SizedBox(height: 10),
-                      _buildDocTypeOption('passport', "International Passport", Icons.public_outlined),
+                      _buildDocTypeOption(
+                        'passport',
+                        "International Passport",
+                        Icons.public_outlined,
+                      ),
                       if (_idDocType != null) ...[
                         const SizedBox(height: 12),
                         _buildUploadTile(
-                          label: _idFile != null ? "ID document captured — tap to retake" : "Take a photo or upload your ID",
+                          label: _idFile != null
+                              ? "ID document captured — tap to retake"
+                              : "Take a photo or upload your ID",
                           done: _idFile != null,
                           onTap: () async {
                             final file = await _pickDocument();
@@ -268,7 +296,9 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       if (_requiresRegistrationDocs) ...[
                         _buildSectionTitle("RCCM / Business Registration"),
                         _buildUploadTile(
-                          label: _rccmFile != null ? "RCCM document uploaded — tap to replace" : "Upload your RCCM document",
+                          label: _rccmFile != null
+                              ? "RCCM document uploaded — tap to replace"
+                              : "Upload your RCCM document",
                           done: _rccmFile != null,
                           onTap: () async {
                             final file = await _pickDocument();
@@ -279,7 +309,9 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
 
                         _buildSectionTitle("Tax Identification (NIU)"),
                         _buildUploadTile(
-                          label: _taxFile != null ? "Tax document uploaded — tap to replace" : "Upload your tax document",
+                          label: _taxFile != null
+                              ? "Tax document uploaded — tap to replace"
+                              : "Upload your tax document",
                           done: _taxFile != null,
                           onTap: () async {
                             final file = await _pickDocument();
@@ -289,18 +321,25 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                         const SizedBox(height: 20),
                       ] else ...[
                         GlassSurface(
-                          borderRadius: BorderRadius.circular(16),
-                          opacity: 0.1,
-                          blur: 10,
+                          borderRadius: BorderRadius.circular(AppRadius.xs),
+                          tint: context.primaryTintColor,
                           padding: const EdgeInsets.all(14),
                           child: Row(
                             children: [
-                              Icon(Icons.info_outline_rounded, size: 20, color: cs.primary),
+                              Icon(
+                                Icons.info_outline_rounded,
+                                size: 20,
+                                color: cs.primary,
+                              ),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
                                   "RCCM and tax documents aren't required for your business type.",
-                                  style: TextStyle(fontSize: 12, color: cs.onSurfaceVariant, height: 1.4),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: cs.onSurfaceVariant,
+                                    height: 1.4,
+                                  ),
                                 ),
                               ),
                             ],
@@ -312,14 +351,22 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       _buildSectionTitle("Selfie"),
                       Text(
                         "A clear photo of the representative's face, matched against the ID above.",
-                        style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: cs.onSurfaceVariant,
+                        ),
                       ),
                       const SizedBox(height: 10),
                       _buildUploadTile(
-                        label: _selfieFile != null ? "Selfie captured — tap to retake" : "Take a selfie",
+                        label: _selfieFile != null
+                            ? "Selfie captured — tap to retake"
+                            : "Take a selfie",
                         done: _selfieFile != null,
                         onTap: () async {
-                          final file = await _pickDocument(allowFile: false, front: true);
+                          final file = await _pickDocument(
+                            allowFile: false,
+                            front: true,
+                          );
                           if (file != null) setState(() => _selfieFile = file);
                         },
                       ),
@@ -330,7 +377,11 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       _buildSectionTitle("Beneficial owners"),
                       Text(
                         "Anyone who owns or controls 25% or more of the business. Leave empty for a sole proprietorship — that collapses into the representative above.",
-                        style: TextStyle(fontSize: 13, color: cs.onSurfaceVariant, height: 1.4),
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: cs.onSurfaceVariant,
+                          height: 1.4,
+                        ),
                       ),
                       const SizedBox(height: 12),
                       for (int i = 0; i < _owners.length; i++) ...[
@@ -338,19 +389,25 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                         const SizedBox(height: 12),
                       ],
                       OutlinedButton.icon(
-                        onPressed: () => setState(() => _owners.add(_BeneficialOwnerDraft())),
+                        onPressed: () => setState(
+                          () => _owners.add(_BeneficialOwnerDraft()),
+                        ),
                         icon: const Icon(Icons.person_add_alt_1_rounded),
                         label: const Text("Add beneficial owner"),
                       ),
                       const SizedBox(height: 24),
 
                       ElevatedButton(
-                        onPressed: (_isSubmitting || !_canSubmit) ? null : _handleSubmit,
+                        onPressed: (_isSubmitting || !_canSubmit)
+                            ? null
+                            : _handleSubmit,
                         child: _isSubmitting
                             ? const SizedBox(
                                 width: 20,
                                 height: 20,
-                                child: CircularProgressIndicator(strokeWidth: 2),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               )
                             : const Text("Submit for review"),
                       ),
@@ -369,7 +426,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
     final owner = _owners[index];
     final cs = Theme.of(context).colorScheme;
     return GlassSurface(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(12),
       opacity: 0.12,
       blur: 12,
       padding: const EdgeInsets.all(14),
@@ -381,11 +438,18 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
               Expanded(
                 child: Text(
                   "Owner ${index + 1}",
-                  style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800, color: cs.onSurface),
+                  style: GoogleFonts.plusJakartaSans(
+                    fontWeight: FontWeight.w700,
+                    color: cs.onSurface,
+                  ),
                 ),
               ),
               IconButton(
-                icon: Icon(Icons.close_rounded, color: cs.onSurfaceVariant, size: 20),
+                icon: Icon(
+                  Icons.close_rounded,
+                  color: cs.onSurfaceVariant,
+                  size: 20,
+                ),
                 onPressed: () => setState(() {
                   owner.dispose();
                   _owners.removeAt(index);
@@ -414,7 +478,9 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
           ),
           const SizedBox(height: 10),
           _buildUploadTile(
-            label: owner.file != null ? "ID document added — tap to replace" : "Upload their ID document (optional)",
+            label: owner.file != null
+                ? "ID document added — tap to replace"
+                : "Upload their ID document (optional)",
             done: owner.file != null,
             onTap: () async {
               final file = await _pickDocument();
@@ -430,12 +496,10 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Text(
-        title,
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w800,
-          color: Theme.of(context).colorScheme.onSurface,
-        ),
+        title.toUpperCase(),
+        style: AppText.microLabel(
+          color: context.textTertiary,
+        ).copyWith(letterSpacing: 1.6),
       ),
     );
   }
@@ -448,29 +512,36 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
         _idDocType = id;
         _idFile = null;
       }),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       child: GlassSurface(
-        borderRadius: BorderRadius.circular(16),
-        opacity: isSelected ? 0.18 : 0.12,
-        blur: 12,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         border: Border.all(
-          color: isSelected ? cs.primary : cs.outline.withValues(alpha: 0.16),
-          width: isSelected ? 2 : 1,
+          color: isSelected ? cs.primary : context.hairlineColor,
+          width: isSelected ? 1.5 : 1,
         ),
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            Icon(icon, color: isSelected ? cs.primary : cs.onSurfaceVariant, size: 22),
+            Icon(
+              icon,
+              color: isSelected ? cs.primary : cs.onSurfaceVariant,
+              size: 22,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 title,
-                style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, color: cs.onSurface),
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
               ),
             ),
             Icon(
-              isSelected ? Icons.check_circle_rounded : Icons.radio_button_off,
-              color: isSelected ? cs.primary : cs.outline.withValues(alpha: 0.35),
+              isSelected
+                  ? Icons.check_circle_rounded
+                  : Icons.radio_button_unchecked,
+              color: isSelected ? cs.primary : context.textTertiary,
             ),
           ],
         ),
@@ -478,28 +549,35 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
     );
   }
 
-  Widget _buildUploadTile({required String label, required bool done, required VoidCallback onTap}) {
+  Widget _buildUploadTile({
+    required String label,
+    required bool done,
+    required VoidCallback onTap,
+  }) {
     final cs = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       child: GlassSurface(
-        borderRadius: BorderRadius.circular(16),
-        opacity: 0.12,
-        blur: 12,
-        border: Border.all(
-          color: done ? cs.primary : cs.outline.withValues(alpha: 0.16),
-          width: done ? 2 : 1,
-        ),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        tint: done ? context.primaryTintColor : null,
+        border: done ? null : Border.all(color: context.hairlineColor),
         padding: const EdgeInsets.all(14),
         child: Row(
           children: [
-            Icon(done ? Icons.check_circle_rounded : Icons.camera_alt_outlined, color: cs.primary),
+            Icon(
+              done ? Icons.upload_rounded : Icons.camera_alt_outlined,
+              color: done ? cs.primary : context.textSecondary,
+              size: 20,
+            ),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700, color: cs.onSurface),
+                style: GoogleFonts.plusJakartaSans(
+                  fontWeight: FontWeight.w700,
+                  color: cs.onSurface,
+                ),
               ),
             ),
           ],

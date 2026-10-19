@@ -4,18 +4,16 @@ import 'package:tulapay/themes/app_tokens.dart';
 
 export 'package:tulapay/themes/app_tokens.dart';
 
-/// App theme rebuilt around the reference design language:
-/// pale page background, pure-white cards, generous radius, one soft shadow,
-/// Plus Jakarta Sans wired in globally, and the blue brand accent kept intact.
+/// Corporate Redesign Theme Specification.
+/// Warm pale Light mode, Deep Corporate Navy Dark mode (`#0B1020`), `#262D49` hairlines,
+/// `#2F5AF2` Corporate Blue accent, Plus Jakarta Sans global typography.
 class AppTheme {
   AppTheme._();
 
-  // ── Shared button geometry ───────────────────────────────────────────────
-  static final RoundedRectangleBorder _btnShape =
-      RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md));
+  static final RoundedRectangleBorder _btnShape = RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(AppRadius.sm),
+  );
 
-  /// Near-black (light) / near-white (dark) pill button used for toolbar
-  /// actions in the references (Skip / Export / Share).
   static ButtonStyle darkPillStyle(BuildContext context) {
     final ink = context.inkPillColor;
     return TextButton.styleFrom(
@@ -32,97 +30,96 @@ class AppTheme {
     );
   }
 
-  // ── Light ────────────────────────────────────────────────────────────────
+  // ── Light Theme ──────────────────────────────────────────────────────────
   static ThemeData get lightTheme => _build(
-        brightness: Brightness.light,
-        scheme: const ColorScheme(
-          brightness: Brightness.light,
-          primary: AppColors.primary,
-          onPrimary: Colors.white,
-          primaryContainer: AppColors.primaryTint,
-          onPrimaryContainer: Color(0xFF00009C),
-          secondary: AppColors.secondary,
-          onSecondary: Colors.white,
-          secondaryContainer: Color(0xFFE1E8FF),
-          onSecondaryContainer: Color(0xFF15245C),
-          tertiary: AppColors.tertiary,
-          onTertiary: Colors.white,
-          tertiaryContainer: Color(0xFFFFDAD6),
-          onTertiaryContainer: Color(0xFF410002),
-          error: Color(0xFFBA1A1A),
-          onError: Colors.white,
-          errorContainer: Color(0xFFFFDAD6),
-          onErrorContainer: Color(0xFF410002),
-          surface: AppColors.cardLight,
-          onSurface: AppColors.textPrimaryLight,
-          onSurfaceVariant: AppColors.textSecondaryLight,
-          surfaceContainerLowest: Colors.white,
-          surfaceContainerLow: Color(0xFFF7F9FF),
-          surfaceContainer: AppColors.bgLight,
-          surfaceContainerHigh: Color(0xFFE9EEFC),
-          surfaceContainerHighest: Color(0xFFE2E8F7),
-          surfaceDim: Color(0xFFE0E4F0),
-          surfaceBright: Colors.white,
-          outline: Color(0xFFC3C9D9),
-          outlineVariant: AppColors.hairlineLight,
-          shadow: Colors.black,
-          scrim: Colors.black,
-          inverseSurface: AppColors.textPrimaryLight,
-          onInverseSurface: Color(0xFFF2F3FB),
-          inversePrimary: Color(0xFFBEC2FF),
-        ),
-        scaffoldBg: AppColors.bgLight,
-        card: AppColors.cardLight,
-        track: AppColors.trackLight,
-        hairline: AppColors.hairlineLight,
-      );
+    brightness: Brightness.light,
+    scheme: const ColorScheme(
+      brightness: Brightness.light,
+      primary: AppColors.primary,
+      onPrimary: Colors.white,
+      primaryContainer: AppColors.primaryTint,
+      onPrimaryContainer: Color(0xFF1E3A8A),
+      secondary: AppColors.secondary,
+      onSecondary: Colors.white,
+      secondaryContainer: Color(0xFFE4E9F9),
+      onSecondaryContainer: Color(0xFF10162B),
+      tertiary: AppColors.tertiary,
+      onTertiary: Colors.white,
+      tertiaryContainer: Color(0xFFFFDAD6),
+      onTertiaryContainer: Color(0xFF410002),
+      error: AppColors.negative,
+      onError: Colors.white,
+      errorContainer: Color(0xFFFFDAD6),
+      onErrorContainer: Color(0xFF410002),
+      surface: AppColors.bgLight,
+      onSurface: AppColors.textPrimaryLight,
+      onSurfaceVariant: AppColors.textSecondaryLight,
+      surfaceContainerLowest: Colors.white,
+      surfaceContainerLow: Color(0xFFF3F5FA),
+      surfaceContainer: AppColors.bgLight,
+      surfaceContainerHigh: Color(0xFFE4E9F9),
+      surfaceContainerHighest: Color(0xFFDCE1EA),
+      surfaceDim: AppColors.bgLight,
+      surfaceBright: Colors.white,
+      outline: Color(0xFFB8C0D4),
+      outlineVariant: AppColors.hairlineLight,
+      shadow: Colors.black,
+      scrim: Colors.black,
+      inverseSurface: AppColors.textPrimaryLight,
+      onInverseSurface: Color(0xFFF3F5FA),
+      inversePrimary: AppColors.secondary,
+    ),
+    scaffoldBg: AppColors.bgLight,
+    card: AppColors.cardLight,
+    track: AppColors.trackLight,
+    hairline: AppColors.hairlineLight,
+  );
 
-  // ── Dark ─────────────────────────────────────────────────────────────────
+  // ── Dark Theme ───────────────────────────────────────────────────────────
   static ThemeData get darkTheme => _build(
-        brightness: Brightness.dark,
-        scheme: const ColorScheme(
-          brightness: Brightness.dark,
-          primary: AppColors.secondary,
-          onPrimary: AppColors.bgDark,
-          primaryContainer: Color(0xFF1E2A63),
-          onPrimaryContainer: Color(0xFFDDE3FF),
-          secondary: AppColors.primaryDarkAccent,
-          onSecondary: AppColors.bgDark,
-          secondaryContainer: Color(0xFF23305F),
-          onSecondaryContainer: Color(0xFFDDE3FF),
-          tertiary: AppColors.tertiary,
-          onTertiary: Colors.white,
-          tertiaryContainer: Color(0xFF93000A),
-          onTertiaryContainer: Color(0xFFFFDAD6),
-          error: Color(0xFFFFB4AB),
-          onError: Color(0xFF690005),
-          errorContainer: Color(0xFF93000A),
-          onErrorContainer: Color(0xFFFFDAD6),
-          surface: AppColors.cardDark,
-          onSurface: AppColors.textPrimaryDark,
-          onSurfaceVariant: AppColors.textSecondaryDark,
-          surfaceContainerLowest: Color(0xFF0B0F26),
-          surfaceContainerLow: Color(0xFF12183A),
-          surfaceContainer: Color(0xFF161C42),
-          surfaceContainerHigh: Color(0xFF1E254E),
-          surfaceContainerHighest: Color(0xFF27305C),
-          surfaceDim: AppColors.bgDark,
-          surfaceBright: Color(0xFF2A3157),
-          outline: Color(0xFF4A5480),
-          outlineVariant: AppColors.hairlineDark,
-          shadow: Colors.black,
-          scrim: Colors.black,
-          inverseSurface: Color(0xFFE2E8F7),
-          onInverseSurface: AppColors.cardDark,
-          inversePrimary: AppColors.primary,
-        ),
-        scaffoldBg: AppColors.bgDark,
-        card: AppColors.cardDark,
-        track: AppColors.trackDark,
-        hairline: AppColors.hairlineDark,
-      );
+    brightness: Brightness.dark,
+    scheme: const ColorScheme(
+      brightness: Brightness.dark,
+      primary: AppColors.primaryDarkAccent,
+      onPrimary: AppColors.bgDark,
+      primaryContainer: Color(0xFF1B2142),
+      onPrimaryContainer: Color(0xFFE4E9F9),
+      secondary: AppColors.secondary,
+      onSecondary: Colors.white,
+      secondaryContainer: Color(0xFF1B2142),
+      onSecondaryContainer: Color(0xFFE4E9F9),
+      tertiary: AppColors.tertiary,
+      onTertiary: Colors.white,
+      tertiaryContainer: Color(0xFF5C2B2E),
+      onTertiaryContainer: Color(0xFFFF8A80),
+      error: AppColors.negative,
+      onError: Colors.white,
+      errorContainer: Color(0xFF5C2B2E),
+      onErrorContainer: Color(0xFFFF8A80),
+      surface: AppColors.bgDark,
+      onSurface: AppColors.textPrimaryDark,
+      onSurfaceVariant: AppColors.textSecondaryDark,
+      surfaceContainerLowest: Color(0xFF0B0F26),
+      surfaceContainerLow: Color(0xFF141A33),
+      surfaceContainer: AppColors.bgDark,
+      surfaceContainerHigh: Color(0xFF1B2142),
+      surfaceContainerHighest: Color(0xFF262D49),
+      surfaceDim: AppColors.bgDark,
+      surfaceBright: Color(0xFF1B2142),
+      outline: Color(0xFF4A5480),
+      outlineVariant: AppColors.hairlineDark,
+      shadow: Colors.black,
+      scrim: Colors.black,
+      inverseSurface: Color(0xFFE4E9F9),
+      onInverseSurface: AppColors.cardDark,
+      inversePrimary: AppColors.primaryShade,
+    ),
+    scaffoldBg: AppColors.bgDark,
+    card: AppColors.cardDark,
+    track: AppColors.trackDark,
+    hairline: AppColors.hairlineDark,
+  );
 
-  // ── Builder shared by both brightnesses ──────────────────────────────────
   static ThemeData _build({
     required Brightness brightness,
     required ColorScheme scheme,
@@ -135,10 +132,7 @@ class AppTheme {
       brightness == Brightness.dark
           ? ThemeData.dark().textTheme
           : ThemeData.light().textTheme,
-    ).apply(
-      bodyColor: scheme.onSurface,
-      displayColor: scheme.onSurface,
-    );
+    ).apply(bodyColor: scheme.onSurface, displayColor: scheme.onSurface);
 
     return ThemeData(
       useMaterial3: true,
@@ -170,7 +164,7 @@ class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: false,
-        titleTextStyle: AppText.screenTitle(size: 22, color: scheme.onSurface),
+        titleTextStyle: AppText.screenTitle(size: 20, color: scheme.onSurface),
         iconTheme: IconThemeData(color: scheme.onSurface, size: 24),
       ),
 
@@ -180,7 +174,8 @@ class AppTheme {
         margin: EdgeInsets.zero,
         surfaceTintColor: Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.xl),
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          side: BorderSide(color: hairline, width: 1),
         ),
       ),
 
@@ -212,7 +207,7 @@ class AppTheme {
       outlinedButtonTheme: OutlinedButtonThemeData(
         style: OutlinedButton.styleFrom(
           foregroundColor: scheme.primary,
-          side: BorderSide(color: scheme.primary, width: 1.5),
+          side: BorderSide(color: scheme.primary, width: 1),
           minimumSize: const Size.fromHeight(52),
           textStyle: AppText.pillLabel(),
           shape: _btnShape,
@@ -231,7 +226,7 @@ class AppTheme {
         style: ButtonStyle(
           backgroundColor: WidgetStateProperty.resolveWith(
             (s) => s.contains(WidgetState.selected)
-                ? card
+                ? (brightness == Brightness.light ? Colors.white : card)
                 : Colors.transparent,
           ),
           foregroundColor: WidgetStateProperty.resolveWith(
@@ -252,8 +247,8 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: brightness == Brightness.dark
-            ? scheme.surfaceContainerLow
-            : AppColors.cardMutedLight,
+            ? AppColors.cardDark
+            : const Color(0xFFF1F3F8),
         contentPadding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.lg,
           vertical: AppSpacing.lg,
@@ -262,26 +257,28 @@ class AppTheme {
         labelStyle: AppText.body(color: scheme.onSurfaceVariant),
         floatingLabelStyle: AppText.caption(color: scheme.primary),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: hairline),
+          borderRadius: BorderRadius.circular(AppRadius.xs),
+          borderSide: BorderSide.none,
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: hairline),
+          borderRadius: BorderRadius.circular(AppRadius.xs),
+          borderSide: BorderSide.none,
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          borderSide: BorderSide(color: scheme.primary, width: 2),
+          borderRadius: BorderRadius.circular(AppRadius.xs),
+          borderSide: const BorderSide(color: AppColors.secondary, width: 1.5),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderRadius: BorderRadius.circular(AppRadius.xs),
           borderSide: BorderSide(color: scheme.error),
         ),
       ),
 
       chipTheme: ChipThemeData(
         backgroundColor: track,
-        selectedColor: scheme.primary.withValues(alpha: 0.12),
+        selectedColor: brightness == Brightness.dark
+            ? AppColors.trackDark
+            : AppColors.primaryTint,
         side: BorderSide.none,
         labelStyle: AppText.caption(color: scheme.onSurfaceVariant),
         shape: const RoundedRectangleBorder(borderRadius: AppRadius.pillAll),
@@ -296,25 +293,21 @@ class AppTheme {
           (s) => s.contains(WidgetState.selected) ? Colors.white : null,
         ),
         trackColor: WidgetStateProperty.resolveWith(
-          (s) => s.contains(WidgetState.selected)
-              ? scheme.primary
-              : track,
+          (s) => s.contains(WidgetState.selected) ? scheme.primary : track,
         ),
         trackOutlineColor: const WidgetStatePropertyAll(Colors.transparent),
       ),
 
-      dividerTheme: DividerThemeData(
-        color: hairline,
-        thickness: 1,
-        space: 1,
-      ),
+      dividerTheme: DividerThemeData(color: hairline, thickness: 1, space: 1),
 
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: card,
         surfaceTintColor: Colors.transparent,
         modalBackgroundColor: card,
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xxl)),
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(AppRadius.xxl),
+          ),
         ),
       ),
 
@@ -333,7 +326,7 @@ class AppTheme {
         backgroundColor: scheme.inverseSurface,
         contentTextStyle: AppText.body(color: scheme.onInverseSurface),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
       ),
 
@@ -350,9 +343,7 @@ class AppTheme {
       drawerTheme: DrawerThemeData(
         backgroundColor: card,
         surfaceTintColor: Colors.transparent,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.horizontal(right: Radius.circular(AppRadius.xxl)),
-        ),
+        shape: const RoundedRectangleBorder(),
       ),
 
       listTileTheme: ListTileThemeData(

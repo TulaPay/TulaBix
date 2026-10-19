@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
-import 'package:tulapay/widgets/glass_effects.dart';
-import 'package:tulapay/widgets/ui/icon_chip.dart';
 
-/// Standard "list of info rows + primary action" page. API unchanged; visuals
-/// now follow the reference language — a big left-aligned title, a caption, and
-/// a stack of hairline-bordered rows.
 class GlassPageShell extends StatelessWidget {
   final String title;
   final String subtitle;
@@ -26,7 +21,6 @@ class GlassPageShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -37,35 +31,19 @@ class GlassPageShell extends StatelessWidget {
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl,
-                AppSpacing.sm,
-                AppSpacing.xl,
+                AppSpacing.xxl,
+                AppSpacing.xs,
+                AppSpacing.xxl,
                 AppSpacing.xl,
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  IconChip(icon, color: cs.primary, size: 52, iconSize: 24),
-                  const SizedBox(width: AppSpacing.lg),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(title, style: AppText.screenTitle(size: 24)),
-                        const SizedBox(height: 6),
-                        Text(
-                          subtitle,
-                          style: AppText.body(color: cs.onSurfaceVariant),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+              child: Text(
+                subtitle,
+                style: AppText.body(color: context.textSecondary),
               ),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 ...children,
@@ -82,7 +60,6 @@ class GlassPageShell extends StatelessWidget {
   }
 }
 
-/// Icon-chip + title + subtitle row used inside [GlassPageShell].
 class GlassInfoCard extends StatelessWidget {
   final IconData icon;
   final String title;
@@ -104,41 +81,48 @@ class GlassInfoCard extends StatelessWidget {
     final cs = Theme.of(context).colorScheme;
     final color = accent ?? cs.primary;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: GlassSurface(
-        padding: EdgeInsets.zero,
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(AppRadius.xl),
-            child: Padding(
-              padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Row(
-                children: [
-                  IconChip(icon, color: color, size: 46, iconSize: 22),
-                  const SizedBox(width: AppSpacing.md),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(title, style: AppText.cardTitle(color: cs.onSurface)),
-                        const SizedBox(height: 3),
-                        Text(
-                          subtitle,
-                          style: AppText.caption(color: cs.onSurfaceVariant),
-                        ),
-                      ],
-                    ),
-                  ),
-                  if (onTap != null)
-                    Icon(Icons.chevron_right_rounded,
-                        size: 20,
-                        color: cs.onSurfaceVariant.withValues(alpha: 0.5)),
-                ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.hairlineColor)),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+          child: Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: context.isDark
+                      ? AppColors.trackDark
+                      : AppColors.primaryTint,
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
+                ),
+                child: Icon(icon, color: color, size: 18),
               ),
-            ),
+              const SizedBox(width: AppSpacing.md),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: AppText.cardTitle(color: cs.onSurface)),
+                    const SizedBox(height: 2),
+                    Text(
+                      subtitle,
+                      style: AppText.caption(color: cs.onSurfaceVariant),
+                    ),
+                  ],
+                ),
+              ),
+              if (onTap != null)
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: context.textTertiary,
+                ),
+            ],
           ),
         ),
       ),

@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
-import 'package:tulapay/widgets/ui/pill_button.dart';
 
-/// Bold section title with an optional trailing ghost-pill action —
-/// replaces the per-screen `_SectionHeader` helpers.
+/// ALL-CAPS micro-label section title with an optional trailing plain-text
+/// action link ('See all') — replaces the per-screen `_SectionHeader` helpers.
 class SectionHeader extends StatelessWidget {
   final String title;
   final String? actionLabel;
@@ -29,12 +28,22 @@ class SectionHeader extends StatelessWidget {
         children: [
           Flexible(
             child: Text(
-              title,
-              style: AppText.sectionTitle(color: cs.onSurface),
+              title.toUpperCase(),
+              style: AppText.microLabel(
+                color: context.textTertiary,
+              ).copyWith(letterSpacing: 1.6),
             ),
           ),
           if (actionLabel != null)
-            PillButton.ghost(actionLabel!, dense: true, onTap: onAction),
+            GestureDetector(
+              onTap: onAction,
+              child: Text(
+                actionLabel!,
+                style: AppText.caption(
+                  color: cs.secondary,
+                ).copyWith(fontWeight: FontWeight.w700),
+              ),
+            ),
         ],
       ),
     );
@@ -53,8 +62,8 @@ class MicroLabel extends StatelessWidget {
     return Text(
       text.toUpperCase(),
       style: AppText.microLabel(
-        color: color ?? Theme.of(context).colorScheme.onSurfaceVariant,
-      ),
+        color: color ?? context.textTertiary,
+      ).copyWith(letterSpacing: 1.6),
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/OTP_Verification_Screen.dart';
@@ -66,10 +67,9 @@ class _SignUpState extends State<SignUp> {
   void _showCountryPicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (context) {
         final cs = Theme.of(context).colorScheme;
@@ -77,7 +77,7 @@ class _SignUpState extends State<SignUp> {
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: GlassSurface(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(12),
             opacity: 0.18,
             blur: 18,
             padding: const EdgeInsets.all(16),
@@ -97,7 +97,7 @@ class _SignUpState extends State<SignUp> {
                   "Select Country",
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -124,7 +124,7 @@ class _SignUpState extends State<SignUp> {
                         trailing: Text(
                           country.code,
                           style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         onTap: () {
@@ -220,7 +220,7 @@ class _SignUpState extends State<SignUp> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: colorScheme.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
@@ -237,7 +237,7 @@ class _SignUpState extends State<SignUp> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       GlassSurface(
-                        borderRadius: BorderRadius.circular(28),
+                        borderRadius: BorderRadius.circular(12),
                         opacity: 0.16,
                         blur: 18,
                         padding: const EdgeInsets.all(20),
@@ -245,11 +245,11 @@ class _SignUpState extends State<SignUp> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              width: 64,
-                              height: 64,
+                              width: 56,
+                              height: 56,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20),
-                                color: colorScheme.primary.withValues(alpha: 0.16),
+                                borderRadius: BorderRadius.circular(12),
+                                color: context.primaryTintColor,
                               ),
                               child: Icon(
                                 Icons.person_add_alt_1_rounded,
@@ -261,8 +261,8 @@ class _SignUpState extends State<SignUp> {
                             Text(
                               "Join TulaPay",
                               style: GoogleFonts.plusJakartaSans(
-                                fontSize: 32,
-                                fontWeight: FontWeight.w800,
+                                fontSize: 26,
+                                fontWeight: FontWeight.w700,
                                 letterSpacing: -0.8,
                                 color: colorScheme.onSurface,
                               ),
@@ -271,13 +271,15 @@ class _SignUpState extends State<SignUp> {
                             Text(
                               "Create your account to start managing payments in one liquid workspace.",
                               style: theme.textTheme.bodyLarge?.copyWith(
-                                color: colorScheme.onSurface.withValues(alpha: 0.66),
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.66,
+                                ),
                                 height: 1.4,
                               ),
                             ),
                             const SizedBox(height: 24),
 
-                            _buildLabel("Full Name"),
+                            _buildLabel("Full name"),
                             TextFormField(
                               controller: _nameController,
                               textCapitalization: TextCapitalization.words,
@@ -294,7 +296,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Business Name"),
+                            _buildLabel("Business name"),
                             TextFormField(
                               controller: _businessNameController,
                               textCapitalization: TextCapitalization.words,
@@ -311,7 +313,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Phone Number"),
+                            _buildLabel("Phone number"),
                             TextFormField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
@@ -347,7 +349,7 @@ class _SignUpState extends State<SignUp> {
                                         Container(
                                           height: 24,
                                           width: 1,
-                                          color: colorScheme.outline.withValues(alpha: 0.24),
+                                          color: context.hairlineColor,
                                         ),
                                       ],
                                     ),
@@ -366,7 +368,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Email Address"),
+                            _buildLabel("Email address"),
                             TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
@@ -426,7 +428,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Business Type"),
+                            _buildLabel("Business type"),
                             DropdownButtonFormField<String>(
                               initialValue: _selectedBusinessType,
                               decoration: const InputDecoration(
@@ -434,10 +436,12 @@ class _SignUpState extends State<SignUp> {
                               ),
                               hint: const Text("Select business type"),
                               items: businessTypeLabels.keys
-                                  .map((label) => DropdownMenuItem(
-                                        value: label,
-                                        child: Text(label),
-                                      ))
+                                  .map(
+                                    (label) => DropdownMenuItem(
+                                      value: label,
+                                      child: Text(label),
+                                    ),
+                                  )
                                   .toList(),
                               onChanged: (value) =>
                                   setState(() => _selectedBusinessType = value),
@@ -481,7 +485,9 @@ class _SignUpState extends State<SignUp> {
                                                   .withValues(alpha: 0.72),
                                             ),
                                         children: [
-                                          const TextSpan(text: "I agree to the "),
+                                          const TextSpan(
+                                            text: "I agree to the ",
+                                          ),
                                           TextSpan(
                                             text: "Terms of Service",
                                             style: TextStyle(
@@ -512,7 +518,9 @@ class _SignUpState extends State<SignUp> {
                                   ? const SizedBox(
                                       width: 20,
                                       height: 20,
-                                      child: CircularProgressIndicator(strokeWidth: 2),
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
                                     )
                                   : const Text("Create Account"),
                             ),
@@ -570,9 +578,9 @@ class _SignUpState extends State<SignUp> {
       child: Text(
         text,
         style: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
+          color: context.textTertiary,
         ),
       ),
     );

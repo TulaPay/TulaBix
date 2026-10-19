@@ -86,9 +86,9 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (_) => const _CashReceiptHistorySheet(),
     );
@@ -106,7 +106,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
         centerTitle: false,
         title: Text(
           "Cash Receipt",
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800),
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -122,57 +122,38 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
-              child: GlassSurface(
-                borderRadius: BorderRadius.circular(30),
-                opacity: 0.14,
-                blur: 16,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Record a cash sale',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: -0.5,
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      'Create a clean receipt with a clear amount and item description.',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 13,
-                        color: cs.onSurfaceVariant,
-                        height: 1.4,
-                      ),
-                    ),
-                  ],
-                ),
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Record a cash sale',
+                    style: AppText.screenTitle(size: 20, color: cs.onSurface),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Create a clean receipt with a clear amount and item description.',
+                    style: AppText.body(size: 14, color: context.textSecondary),
+                  ),
+                ],
               ),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
-                  opacity: 0.14,
-                  blur: 16,
-                  padding: const EdgeInsets.all(18),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
+                  tint: context.primaryTintColor,
+                  padding: const EdgeInsets.all(20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Total sale amount',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.4,
-                          color: cs.onSurfaceVariant.withValues(alpha: 0.55),
-                        ),
+                        'TOTAL SALE AMOUNT',
+                        style: AppText.microLabel(color: cs.primary)
+                            .copyWith(letterSpacing: 1.6),
                       ),
                       const SizedBox(height: 8),
                       Row(
@@ -181,9 +162,9 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                           Text(
                             'XAF',
                             style: GoogleFonts.plusJakartaSans(
-                              color: cs.onSurfaceVariant,
+                              color: context.textSecondary,
                               fontSize: 15,
-                              fontWeight: FontWeight.w800,
+                              fontWeight: FontWeight.w700,
                             ),
                           ),
                           const SizedBox(width: 10),
@@ -193,19 +174,21 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                               keyboardType: TextInputType.number,
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 36,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                                 letterSpacing: -1.2,
                               ),
                               decoration: InputDecoration(
                                 hintText: '0',
+                                filled: false,
                                 hintStyle: GoogleFonts.plusJakartaSans(
-                                  color: cs.onSurfaceVariant.withValues(
-                                    alpha: 0.3,
-                                  ),
+                                  color: context.textTertiary,
                                   fontSize: 36,
-                                  fontWeight: FontWeight.w800,
+                                  fontWeight: FontWeight.w700,
                                 ),
                                 border: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.zero,
                               ),
                             ),
                           ),
@@ -214,14 +197,11 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 28),
                 Text(
-                  'Category',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                  ),
+                  'CATEGORY',
+                  style: AppText.microLabel(color: context.textTertiary)
+                      .copyWith(letterSpacing: 1.6),
                 ),
                 const SizedBox(height: 12),
                 SizedBox(
@@ -233,7 +213,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     itemBuilder: (context, index) {
                       final cat = _categories[index];
                       final isSelected = _selectedCategory == cat['name'];
-                      final accent = isSelected ? cs.primary : cs.secondary;
+                      final accent = cs.primary;
 
                       return Material(
                         color: Colors.transparent,
@@ -241,17 +221,17 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                           onTap: () {
                             setState(() => _selectedCategory = cat['name']);
                           },
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
                           child: GlassSurface(
-                            borderRadius: BorderRadius.circular(20),
-                            opacity: isSelected ? 0.18 : 0.10,
-                            blur: 12,
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
                             padding: const EdgeInsets.symmetric(
                               horizontal: 12,
                               vertical: 12,
                             ),
                             border: Border.all(
-                              color: accent.withValues(alpha: 0.16),
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.primary
+                                  : context.hairlineColor,
                             ),
                             child: SizedBox(
                               width: 72,
@@ -262,8 +242,9 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                                     height: 38,
                                     width: 38,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(14),
-                                      color: accent.withValues(alpha: 0.16),
+                                      borderRadius:
+                                          BorderRadius.circular(AppRadius.sm),
+                                      color: context.primaryTintColor,
                                     ),
                                     child: Icon(
                                       cat['icon'],
@@ -280,7 +261,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                                     style: GoogleFonts.plusJakartaSans(
                                       color: isSelected
                                           ? cs.onSurface
-                                          : cs.onSurfaceVariant,
+                                          : context.textSecondary,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 10,
                                     ),
@@ -294,21 +275,14 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     },
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 28),
                 Text(
-                  'Receipt details',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                  ),
+                  'RECEIPT DETAILS',
+                  style: AppText.microLabel(color: context.textTertiary)
+                      .copyWith(letterSpacing: 1.6),
                 ),
                 const SizedBox(height: 12),
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
-                  opacity: 0.12,
-                  blur: 14,
-                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       _FieldRow(
@@ -317,14 +291,14 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                         controller: _itemController,
                         icon: Icons.shopping_bag_outlined,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _FieldRow(
                         label: 'Customer name',
                         hint: 'Optional',
                         controller: _customerController,
                         icon: Icons.person_outline_rounded,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _FieldRow(
                         label: 'Note',
                         hint: 'Add a short receipt note',
@@ -335,23 +309,17 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 28),
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(24),
-                  opacity: 0.12,
-                  blur: 12,
-                  padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Receipt summary',
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        'SUMMARY',
+                        style: AppText.microLabel(color: context.textTertiary)
+                            .copyWith(letterSpacing: 1.6),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 12),
                       _SummaryRow(label: 'Category', value: _selectedCategory),
                       _SummaryRow(label: 'Payment mode', value: 'Cash'),
                       _SummaryRow(
@@ -362,10 +330,10 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: 20),
                 SizedBox(
                   width: double.infinity,
-                  height: 58,
+                  height: 52,
                   child: FilledButton.icon(
                     onPressed: _submitting ? null : _handleGenerate,
                     icon: _submitting
@@ -381,7 +349,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     label: Text(
                       _submitting ? 'Recording…' : 'Generate receipt',
                       style: GoogleFonts.plusJakartaSans(
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         fontSize: 15,
                       ),
                     ),
@@ -414,22 +382,15 @@ class _FieldRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           children: [
-            Icon(icon, size: 16, color: cs.primary.withValues(alpha: 0.75)),
-            const SizedBox(width: 8),
-            Text(
+                        Text(
               label.toUpperCase(),
-              style: GoogleFonts.plusJakartaSans(
-                fontSize: 10,
-                fontWeight: FontWeight.w900,
-                letterSpacing: 1.2,
-                color: cs.onSurfaceVariant.withValues(alpha: 0.55),
-              ),
+              style: AppText.microLabel(color: context.textTertiary)
+                  .copyWith(fontSize: 10, letterSpacing: 1.4),
             ),
           ],
         ),
@@ -445,21 +406,7 @@ class _FieldRow extends StatelessWidget {
             hintText: hint,
             hintStyle: GoogleFonts.plusJakartaSans(
               fontSize: 14,
-              color: cs.onSurfaceVariant.withValues(alpha: 0.35),
-            ),
-            filled: true,
-            fillColor: context.cardMutedColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: cs.primary, width: 1.6),
+              color: context.textTertiary,
             ),
           ),
         ),
@@ -508,7 +455,7 @@ class _CashReceiptHistorySheetState extends State<_CashReceiptHistorySheet> {
           Text(
             'Recent cash receipts',
             style: GoogleFonts.plusJakartaSans(
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               fontSize: 18,
               color: cs.onSurface,
             ),
@@ -543,14 +490,16 @@ class _CashReceiptHistorySheetState extends State<_CashReceiptHistorySheet> {
                 return ListView.separated(
                   shrinkWrap: true,
                   itemCount: receipts.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 10),
+                  separatorBuilder: (_, __) => const SizedBox.shrink(),
                   itemBuilder: (context, i) {
                     final r = receipts[i];
-                    return GlassSurface(
-                      borderRadius: BorderRadius.circular(16),
-                      opacity: 0.12,
-                      blur: 10,
-                      padding: const EdgeInsets.all(14),
+                    return Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(color: context.hairlineColor),
+                        ),
+                      ),
                       child: Row(
                         children: [
                           Expanded(
@@ -560,7 +509,7 @@ class _CashReceiptHistorySheetState extends State<_CashReceiptHistorySheet> {
                                 Text(
                                   r.category,
                                   style: GoogleFonts.plusJakartaSans(
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w700,
                                     fontSize: 14,
                                     color: cs.onSurface,
                                   ),
@@ -578,7 +527,7 @@ class _CashReceiptHistorySheetState extends State<_CashReceiptHistorySheet> {
                           Text(
                             money(r.amount),
                             style: GoogleFonts.plusJakartaSans(
-                              fontWeight: FontWeight.w900,
+                              fontWeight: FontWeight.w700,
                               color: cs.onSurface,
                             ),
                           ),
@@ -618,8 +567,8 @@ class _SummaryRow extends StatelessWidget {
           Text(
             label,
             style: GoogleFonts.plusJakartaSans(
-              fontSize: 12,
-              color: cs.onSurfaceVariant,
+              fontSize: 13,
+              color: context.textSecondary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -628,7 +577,7 @@ class _SummaryRow extends StatelessWidget {
             style: GoogleFonts.plusJakartaSans(
               fontSize: 12,
               color: valueColor ?? cs.onSurface,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
             ),
           ),
         ],

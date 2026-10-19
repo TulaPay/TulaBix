@@ -160,8 +160,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Analytics', style: AppText.screenTitle(size: 28)),
-        toolbarHeight: 72,
+        title: Text('Analytics', style: AppText.screenTitle(size: 24)),
+        toolbarHeight: 64,
         elevation: 0,
         actions: [
           Padding(
@@ -212,22 +212,16 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Widget _content(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
     final data = _computeData(_selectedMonth, _txns, _expenses, _budgets);
 
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.fromLTRB(24, 8, 24, 32),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              _headerTitle,
-              style: textTheme.titleMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
-            ),
+            _eyebrow(context, _headerTitle),
             const SizedBox(height: 8),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -238,9 +232,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                   children: [
                     Text(
                       _headerAmount(data),
-                      style: textTheme.headlineLarge?.copyWith(
-                        fontWeight: FontWeight.bold,
-                        color: colorScheme.onSurface,
+                      style: AppText.hero(size: 32, color: colorScheme.onSurface)
+                          .copyWith(
+                        letterSpacing: -1,
+                        fontFeatures: const [FontFeature.tabularFigures()],
                       ),
                     ),
                     const SizedBox(width: 8),
@@ -250,8 +245,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                         _headerPercentage(data),
                         style: TextStyle(
                           color: _headerPercentageColor(theme, data),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 13,
                         ),
                       ),
                     ),
@@ -260,10 +255,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 DropdownButton<_MonthOption>(
                   value: _selectedMonth,
                   icon: const Icon(Icons.keyboard_arrow_down),
-                  elevation: 16,
+                  elevation: 0,
                   style: TextStyle(color: colorScheme.onSurface),
                   underline: const SizedBox(),
-                  dropdownColor: colorScheme.surface,
+                  dropdownColor: context.cardColor,
                   onChanged: (v) {
                     if (v != null) {
                       setState(() {
@@ -282,33 +277,27 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             ),
             const SizedBox(height: 24),
 
-            Container(
-              padding: const EdgeInsets.all(4),
+            DecoratedBox(
               decoration: BoxDecoration(
-                color: context.trackColor,
-                borderRadius: BorderRadius.circular(AppRadius.md),
+                border: Border(
+                  bottom: BorderSide(color: context.hairlineColor),
+                ),
               ),
               child: TabBar(
                 controller: _tabController,
+                isScrollable: true,
+                tabAlignment: TabAlignment.start,
+                padding: EdgeInsets.zero,
+                labelPadding: const EdgeInsets.only(right: 24),
                 labelColor: colorScheme.onSurface,
-                unselectedLabelColor: colorScheme.onSurfaceVariant,
-                labelStyle: AppText.pillLabel().copyWith(fontSize: 13),
+                unselectedLabelColor: context.textTertiary,
+                labelStyle: AppText.pillLabel().copyWith(fontSize: 14),
                 unselectedLabelStyle:
-                    AppText.pillLabel().copyWith(fontSize: 13),
+                    AppText.pillLabel().copyWith(fontSize: 14),
                 dividerColor: Colors.transparent,
-                indicatorSize: TabBarIndicatorSize.tab,
-                splashBorderRadius: BorderRadius.circular(AppRadius.sm),
-                indicator: BoxDecoration(
-                  color: context.cardColor,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                  boxShadow: [
-                    BoxShadow(
-                      color: colorScheme.shadow.withValues(alpha: 0.08),
-                      blurRadius: 10,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
+                indicatorSize: TabBarIndicatorSize.label,
+                indicatorColor: colorScheme.primary,
+                indicatorWeight: 2,
                 tabs: const [
                   Tab(text: 'Income'),
                   Tab(text: 'Expenses'),
@@ -326,9 +315,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   }
 
   String get _headerTitle => switch (_tabController.index) {
-        0 => 'Total Revenue',
-        1 => 'Total Expenses',
-        _ => 'Total Budget',
+        0 => 'TOTAL REVENUE',
+        1 => 'TOTAL EXPENSES',
+        _ => 'TOTAL BUDGET',
       };
 
   String _headerAmount(_AnalyticsData d) => switch (_tabController.index) {
@@ -346,9 +335,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Color _headerPercentageColor(ThemeData theme, _AnalyticsData d) {
     if (_tabController.index == 0) {
       return d.incomeDeltaPct >= 0
-          ? (theme.brightness == Brightness.dark
-              ? Colors.greenAccent
-              : Colors.green)
+          ? AppColors.positive
           : theme.colorScheme.error;
     }
     if (_tabController.index == 1) return theme.colorScheme.error;
@@ -679,7 +666,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         color: colors[i],
         value: sections[i],
         title: '',
-        radius: 40,
+        radius: 14,
       );
     });
 
@@ -700,7 +687,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                   ),
                   borderData: FlBorderData(show: false),
                   sectionsSpace: 0,
-                  centerSpaceRadius: 40,
+                  centerSpaceRadius: 38,
                   sections: pieSections,
                 ),
               ),
@@ -708,26 +695,17 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           ),
           const SizedBox(width: 16),
           Expanded(
-            flex: 1,
+            flex: 2,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (var row = 0; row < 3; row++) ...[
-                  if (row > 0) const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      for (final idx in [row * 2, row * 2 + 1])
-                        if (idx < legendTitles.length)
-                          Expanded(
-                            child: _buildLegendItem(
-                              context,
-                              legendTitles[idx],
-                              legendAmounts[idx],
-                              colors[idx],
-                            ),
-                          ),
-                    ],
+                for (var i = 0; i < legendTitles.length && i < 6; i++) ...[
+                  if (i > 0) const SizedBox(height: 10),
+                  _buildLegendItem(
+                    context,
+                    legendTitles[i],
+                    legendAmounts[i],
+                    colors[i],
                   ),
                 ],
               ],
@@ -751,45 +729,73 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     final amountColor = isBudget
         ? colorScheme.onSurface
         : (isPositive
-              ? (Theme.of(context).brightness == Brightness.dark
-                    ? Colors.greenAccent
-                    : Colors.green)
+              ? AppColors.positive
               : colorScheme.error);
 
-    return _buildChartCard(
-          context,
-          title: title,
+    return Padding(
+          padding: const EdgeInsets.only(top: 8),
           child: Column(
-            children: List.generate(
-              items.length,
-              (index) => ListTile(
-                contentPadding: EdgeInsets.zero,
-                leading: CircleAvatar(
-                  backgroundColor: colorScheme.surfaceContainerHighest,
-                  child: Icon(
-                    isBudget
-                        ? Icons.receipt_long
-                        : (isPositive ? Icons.person : Icons.shopping_bag),
-                    color: colorScheme.onSurfaceVariant,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _eyebrow(context, title.toUpperCase()),
+              const SizedBox(height: 4),
+              for (var index = 0; index < items.length; index++)
+                DecoratedBox(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: context.hairlineColor),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 18,
+                          backgroundColor: context.primaryTintColor,
+                          child: Icon(
+                            isBudget
+                                ? Icons.receipt_long
+                                : (isPositive
+                                    ? Icons.person_outline_rounded
+                                    : Icons.shopping_bag_outlined),
+                            size: 18,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                items[index],
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: AppText.cardTitle(
+                                    size: 14, color: colorScheme.onSurface),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                dates[index],
+                                style: AppText.caption(
+                                    color: context.textSecondary),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
+                          amounts[index],
+                          style: AppText.cardTitle(size: 14, color: amountColor)
+                              .copyWith(
+                            fontFeatures: const [FontFeature.tabularFigures()],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                title: Text(
-                  items[index],
-                  style: TextStyle(color: colorScheme.onSurface),
-                ),
-                subtitle: Text(
-                  dates[index],
-                  style: TextStyle(color: colorScheme.onSurfaceVariant),
-                ),
-                trailing: Text(
-                  amounts[index],
-                  style: TextStyle(
-                    color: amountColor,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
+            ],
           ),
         )
         .animate()
@@ -804,37 +810,28 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     Color color,
   ) {
     final colorScheme = Theme.of(context).colorScheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 8,
-              height: 8,
-              decoration: BoxDecoration(shape: BoxShape.circle, color: color),
-            ),
-            const SizedBox(width: 4),
-            Text(
-              title,
-              style: TextStyle(
-                fontSize: 12,
-                color: colorScheme.onSurfaceVariant,
-              ),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ],
+        Container(
+          width: 8,
+          height: 8,
+          decoration: BoxDecoration(shape: BoxShape.circle, color: color),
         ),
-        const SizedBox(height: 2),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            title,
+            style: AppText.caption(color: context.textSecondary),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        const SizedBox(width: 8),
         Text(
           amount,
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: colorScheme.onSurface,
+          style: AppText.caption(color: colorScheme.onSurface).copyWith(
+            fontWeight: FontWeight.w700,
+            fontFeatures: const [FontFeature.tabularFigures()],
           ),
-          overflow: TextOverflow.ellipsis,
         ),
       ],
     );
@@ -847,8 +844,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         BarChartRodData(
           toY: y,
           color: barColor,
-          width: 14,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+          width: 28,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
         ),
       ],
     );
@@ -861,39 +858,35 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     required Widget child,
   }) {
     final theme = Theme.of(context);
+    // Style guide flag 03: charts get a hairline frame (≤8px radius), not a card.
     return GlassSurface(
-      borderRadius: BorderRadius.circular(24),
-      opacity: 0.14,
-      blur: 14,
-      padding: const EdgeInsets.all(16),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
+      border: Border.all(color: context.hairlineColor),
+      padding: const EdgeInsets.all(18),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: theme.colorScheme.onSurface,
-            ),
-          ),
+          _eyebrow(context, title.toUpperCase()),
           if (subtitle != null) ...[
-            const SizedBox(height: 4),
+            const SizedBox(height: 6),
             Text(
               subtitle,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: theme.colorScheme.onSurface,
-              ),
+              style: AppText.cardTitle(size: 20, color: theme.colorScheme.onSurface)
+                  .copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
             ),
           ],
-          const SizedBox(height: 24),
+          const SizedBox(height: 20),
           child,
         ],
       ),
     );
   }
+
+  Widget _eyebrow(BuildContext context, String text) => Text(
+        text,
+        style: AppText.microLabel(color: context.textTertiary)
+            .copyWith(letterSpacing: 1.6),
+      );
 }
 
 // ─── Real data computation ───────────────────────────────────────────────────

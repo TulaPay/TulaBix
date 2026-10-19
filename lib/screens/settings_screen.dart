@@ -48,9 +48,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _push(Widget screen) => Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => screen),
-      ).then((_) => _load());
+    context,
+    MaterialPageRoute(builder: (_) => screen),
+  ).then((_) => _load());
 
   Future<void> _signOut() async {
     setState(() => _signingOut = true);
@@ -82,13 +82,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.xxl, AppSpacing.xl, AppSpacing.sm),
+              AppSpacing.xxl,
+              AppSpacing.xxl,
+              AppSpacing.xxl,
+              AppSpacing.sm,
+            ),
             sliver: SliverToBoxAdapter(
-              child: Text('Settings', style: AppText.screenTitle(size: 32)),
+              child: Text('Settings', style: AppText.screenTitle(size: 30)),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xxl),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: AppSpacing.lg),
@@ -106,19 +110,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: 'Account Information',
                     subtitle: 'Business identity and verification',
                     badge: _merchant?.isVerified == true ? 'Verified' : null,
-                    badgeColor: const Color(0xFF10B981),
+                    badgeColor: AppColors.positive,
                     onTap: () => _push(const AccountScreen()),
                   ),
                   _row(
                     icon: Icons.shield_rounded,
-                    color: const Color(0xFFF59E0B),
+                    color: cs.primary,
                     title: 'Privacy & Security',
                     subtitle: 'Password, app lock, and PIN',
                     onTap: () => _push(const SecurityScreen()),
                   ),
                   _row(
                     icon: Icons.account_balance_wallet_rounded,
-                    color: const Color(0xFF8B5CF6),
+                    color: cs.primary,
                     title: 'Payment Methods',
                     subtitle: 'Settlement account and fees',
                     onTap: () => _push(const BillingScreen()),
@@ -131,22 +135,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _group([
                   _row(
                     icon: Icons.notifications_active_rounded,
-                    color: cs.tertiary,
+                    color: cs.primary,
                     title: 'Notifications',
                     subtitle: 'Alerts and notification channels',
                     onTap: () => _push(const NotificationsSettingsScreen()),
                   ),
                   _row(
                     icon: Icons.language_rounded,
-                    color: const Color(0xFF14B8A6),
+                    color: cs.primary,
                     title: 'Language',
-                    subtitle: AppPreferences.instance.locale.value.languageCode
+                    subtitle:
+                        AppPreferences.instance.locale.value.languageCode
                                 .toLowerCase() ==
                             'fr'
                         ? 'Français'
                         : 'English',
-                    onTap: () => _push(
-                        const LanguageScreen(settingsMode: true)),
+                    onTap: () =>
+                        _push(const LanguageScreen(settingsMode: true)),
                   ),
                   ValueListenableBuilder<ThemeMode>(
                     valueListenable: AppPreferences.instance.themeMode,
@@ -156,7 +161,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         icon: isDark
                             ? Icons.dark_mode_rounded
                             : Icons.light_mode_rounded,
-                        color: cs.secondary,
+                        color: cs.primary,
                         title: 'Appearance',
                         subtitle: switch (mode) {
                           ThemeMode.dark => 'Dark theme',
@@ -164,9 +169,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           ThemeMode.system => 'Follows system',
                         },
                         value: isDark,
-                        onChanged: (v) => AppPreferences.instance
-                            .setThemeMode(
-                                v ? ThemeMode.dark : ThemeMode.light),
+                        onChanged: (v) => AppPreferences.instance.setThemeMode(
+                          v ? ThemeMode.dark : ThemeMode.light,
+                        ),
                         last: true,
                       );
                     },
@@ -178,14 +183,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _group([
                   _row(
                     icon: Icons.flag_rounded,
-                    color: const Color(0xFF0EA5E9),
+                    color: cs.primary,
                     title: 'Growth Goals',
                     subtitle: 'Revenue, customers, and repeat orders',
                     onTap: () => _push(const GrowthGoalsScreen()),
                   ),
                   _row(
                     icon: Icons.star_rounded,
-                    color: const Color(0xFFF59E0B),
+                    color: cs.primary,
                     title: 'Favorites',
                     subtitle: 'Pin the screens you use most',
                     onTap: () => _push(const FavoritesScreen()),
@@ -198,14 +203,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 _group([
                   _row(
                     icon: Icons.help_center_rounded,
-                    color: const Color(0xFF06B6D4),
+                    color: cs.primary,
                     title: 'Help Center',
                     subtitle: 'FAQs and support contact',
                     onTap: () => _push(const HelpCenterScreen()),
                   ),
                   _row(
                     icon: Icons.description_rounded,
-                    color: cs.onSurfaceVariant,
+                    color: cs.primary,
                     title: 'Legal Agreements',
                     subtitle: 'Privacy policy and terms of use',
                     onTap: () => _push(const PrivacyPolicyScreen()),
@@ -214,10 +219,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ]),
                 const SizedBox(height: AppSpacing.section),
                 Center(
-                  child: PillButton.outlined(
-                    _signingOut ? 'Signing out…' : 'Sign Out',
-                    icon: Icons.logout_rounded,
-                    onTap: _signingOut ? null : _signOut,
+                  child: OutlinedButton.icon(
+                    onPressed: _signingOut ? null : _signOut,
+                    icon: const Icon(Icons.logout_rounded, size: 16),
+                    label: Text(_signingOut ? 'Signing out…' : 'Sign Out'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: cs.onSurface,
+                      side: BorderSide(color: context.hairlineColor),
+                      minimumSize: const Size(0, 48),
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 96),
@@ -232,23 +243,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _profileCard(ColorScheme cs) {
     final m = _merchant;
     final initials = _initials(m?.businessName ?? m?.ownerName ?? 'T B');
-    return GradientHeroCard(
+    return Container(
+      decoration: BoxDecoration(
+        color: cs.primary,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+      ),
+      padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                height: 64,
-                width: 64,
-                decoration: const BoxDecoration(
-                  color: Colors.white24,
+                height: 56,
+                width: 56,
+                decoration: BoxDecoration(
+                  color: cs.onPrimary.withValues(alpha: 0.22),
                   shape: BoxShape.circle,
                 ),
                 alignment: Alignment.center,
                 child: Text(
                   initials,
-                  style: AppText.screenTitle(size: 20, color: Colors.white),
+                  style: AppText.screenTitle(size: 17, color: cs.onPrimary),
                 ),
               ),
               const SizedBox(width: AppSpacing.lg),
@@ -258,13 +274,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   children: [
                     Text(
                       m?.businessName ?? 'Your business',
-                      style: AppText.screenTitle(size: 22, color: Colors.white),
+                      style: AppText.screenTitle(size: 18, color: cs.onPrimary),
                     ),
                     const SizedBox(height: 2),
                     Text(
                       m?.ownerEmail ?? m?.ownerPhone ?? '',
                       style: AppText.caption(
-                          color: Colors.white.withValues(alpha: 0.8)),
+                        color: cs.onPrimary.withValues(alpha: 0.82),
+                      ),
                     ),
                   ],
                 ),
@@ -277,23 +294,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Expanded(
                 child: FilledButton.icon(
                   onPressed: () => _push(const EditProfileScreen()),
-                  icon: const Icon(Icons.edit_rounded, size: 18),
+                  icon: const Icon(Icons.edit_rounded, size: 16),
                   label: const Text('Edit Profile'),
                   style: FilledButton.styleFrom(
-                    backgroundColor: Colors.white,
+                    backgroundColor: cs.onPrimary,
                     foregroundColor: cs.primary,
-                    minimumSize: const Size.fromHeight(48),
+                    minimumSize: const Size.fromHeight(44),
                   ),
                 ),
               ),
               const SizedBox(width: AppSpacing.md),
-              Container(
-                padding: const EdgeInsets.all(13),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.22),
-                  borderRadius: BorderRadius.circular(AppRadius.md),
+              InkWell(
+                onTap: () {},
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                child: Container(
+                  height: 44,
+                  width: 44,
+                  decoration: BoxDecoration(
+                    color: cs.onPrimary.withValues(alpha: 0.22),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
+                  ),
+                  child: Icon(
+                    Icons.qr_code_2_rounded,
+                    color: cs.onPrimary,
+                    size: 20,
+                  ),
                 ),
-                child: const Icon(Icons.qr_code_2_rounded, color: Colors.white),
               ),
             ],
           ),
@@ -303,8 +329,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   String _initials(String name) {
-    final parts =
-        name.trim().split(RegExp(r'\s+')).where((p) => p.isNotEmpty).toList();
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
     if (parts.isEmpty) return 'TB';
     if (parts.length == 1) {
       return parts.first
@@ -348,16 +377,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 StatusBadge(badge, color: badgeColor),
                 const SizedBox(width: AppSpacing.sm),
               ],
-              Icon(Icons.chevron_right_rounded,
-                  size: 20,
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurfaceVariant
-                      .withValues(alpha: 0.5)),
+              Icon(
+                Icons.chevron_right_rounded,
+                size: 20,
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
+              ),
             ],
           ),
         ),
-        if (!last) Divider(indent: AppSpacing.lg + 44 + AppSpacing.md),
       ],
     );
   }
@@ -381,7 +410,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           subtitle: subtitle,
           trailing: Switch.adaptive(value: value, onChanged: onChanged),
         ),
-        if (!last) Divider(indent: AppSpacing.lg + 44 + AppSpacing.md),
       ],
     );
   }

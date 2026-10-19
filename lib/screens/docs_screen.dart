@@ -22,14 +22,12 @@ class DocsScreen extends StatelessWidget {
           subtitle: 'Product setup and your first sale.',
           onTap: () => AppFeedback.launch(context, '$_base/getting-started'),
         ),
-        const SizedBox(height: 12),
         GlassInfoCard(
           icon: Icons.api_rounded,
           title: 'Feature guides',
           subtitle: 'Payments, drawer, and settings flows explained.',
           onTap: () => AppFeedback.launch(context, '$_base/guides'),
         ),
-        const SizedBox(height: 12),
         GlassInfoCard(
           icon: Icons.bug_report_outlined,
           title: 'Troubleshooting',

@@ -62,8 +62,10 @@ class _AccountScreenState extends State<AccountScreen> {
               _kv('Phone', m.ownerPhone),
               _kv('Email', m.ownerEmail ?? '—'),
               _kv('Address', m.addressLine),
-              const SizedBox(height: 12),
+              const SizedBox(height: 24),
               GlassSurface(
+                borderRadius: AppRadius.smAll,
+                border: Border.all(color: context.hairlineColor),
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Row(
                   children: [
@@ -72,8 +74,8 @@ class _AccountScreenState extends State<AccountScreen> {
                           ? Icons.verified_rounded
                           : Icons.hourglass_bottom_rounded,
                       color: m.isVerified
-                          ? const Color(0xFF10B981)
-                          : cs.tertiary,
+                          ? AppColors.positive
+                          : AppColors.warning,
                     ),
                     const SizedBox(width: AppSpacing.md),
                     Expanded(
@@ -113,23 +115,26 @@ class _AccountScreenState extends State<AccountScreen> {
     );
   }
 
-  Widget _kv(String k, String v) => Padding(
-        padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-        child: GlassSurface(
-          padding: const EdgeInsets.symmetric(
-              horizontal: AppSpacing.lg, vertical: AppSpacing.md),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                width: 110,
-                child: Text(k, style: AppText.caption()),
+  Widget _kv(String k, String v) => Container(
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
+        decoration: BoxDecoration(
+          border: Border(bottom: BorderSide(color: context.hairlineColor)),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
+              width: 110,
+              child: Text(k, style: AppText.caption(color: context.textTertiary)),
+            ),
+            Expanded(
+              child: Text(
+                v,
+                style: AppText.body(color: Theme.of(context).colorScheme.onSurface)
+                    .copyWith(fontWeight: FontWeight.w600),
               ),
-              Expanded(
-                child: Text(v, style: AppText.body()),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
 }

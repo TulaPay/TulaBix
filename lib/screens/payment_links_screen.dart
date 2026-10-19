@@ -9,6 +9,7 @@ import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/pin_prompt.dart';
+import 'package:tulapay/widgets/ui/list_row_card.dart' show StatusBadge;
 
 class PaymentLinksScreen extends StatefulWidget {
   const PaymentLinksScreen({super.key});
@@ -114,11 +115,17 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
 
   Color _statusColor(String status, ColorScheme cs) => switch (status) {
         'active' => cs.primary,
-        'paid' => Colors.green,
+        'paid' => AppColors.positive,
         'expired' => cs.onSurfaceVariant,
         'disabled' => cs.error,
         _ => cs.onSurfaceVariant,
       };
+
+  Widget _eyebrow(BuildContext context, String text) => Text(
+        text,
+        style: AppText.microLabel(color: context.textTertiary)
+            .copyWith(letterSpacing: 1.6),
+      );
 
   @override
   void dispose() {
@@ -140,7 +147,7 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
         centerTitle: false,
         title: Text(
           "Payment Links",
-          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w800),
+          style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
@@ -156,96 +163,45 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
         slivers: [
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
-              child: GlassSurface(
-                borderRadius: BorderRadius.circular(28),
-                opacity: 0.14,
-                blur: 16,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          height: 54,
-                          width: 54,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(18),
-                            color: cs.primary.withValues(alpha: 0.16),
-                          ),
-                          child: Icon(
-                            Icons.link_rounded,
-                            color: cs.primary,
-                            size: 28,
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Create secure payment links',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w800,
-                                  letterSpacing: -0.5,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                'Set the amount, explain the charge, and generate a shareable link for fast checkout.',
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  color: cs.onSurfaceVariant,
-                                  height: 1.4,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      children: [
-                        _TrustChip(
-                          label: 'Encrypted',
-                          icon: Icons.lock_outline,
-                        ),
-                        const SizedBox(width: 8),
-                        _TrustChip(label: 'Instant', icon: Icons.bolt_rounded),
-                        const SizedBox(width: 8),
-                        _TrustChip(
-                          label: 'Trackable',
-                          icon: Icons.query_stats_rounded,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              padding: const EdgeInsets.fromLTRB(24, 12, 24, 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _eyebrow(context, 'CREATE A LINK'),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Create secure payment links',
+                    style: AppText.screenTitle(size: 20, color: cs.onSurface),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Set the amount, explain the charge, and generate a shareable link for fast checkout.',
+                    style: AppText.body(size: 14, color: context.textSecondary),
+                  ),
+                  const SizedBox(height: 16),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: const [
+                      _TrustChip(label: 'Encrypted', icon: Icons.lock_outline),
+                      _TrustChip(label: 'Instant', icon: Icons.bolt_rounded),
+                      _TrustChip(
+                        label: 'Trackable',
+                        icon: Icons.query_stats_rounded,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                Text(
-                  'Payment details',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                  ),
-                ),
+                _eyebrow(context, 'PAYMENT DETAILS'),
                 const SizedBox(height: 12),
                 GlassSurface(
-                  borderRadius: BorderRadius.circular(24),
-                  opacity: 0.12,
-                  blur: 14,
-                  padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
                       _FieldBlock(
@@ -255,14 +211,14 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                         prefix: 'XAF',
                         keyboardType: TextInputType.number,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _FieldBlock(
                         label: 'Payment description',
                         hint: 'Invoice for graphic design',
                         controller: _descriptionController,
                         maxLines: 3,
                       ),
-                      const SizedBox(height: 14),
+                      const SizedBox(height: 16),
                       _FieldBlock(
                         label: 'Reference',
                         hint: 'Optional invoice or order reference',
@@ -271,15 +227,8 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 18),
-                Text(
-                  'Link actions',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                  ),
-                ),
+                const SizedBox(height: 28),
+                _eyebrow(context, 'LINK ACTIONS'),
                 const SizedBox(height: 12),
                 Row(
                   children: [
@@ -309,15 +258,8 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
-                Text(
-                  'Recent links',
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.3,
-                  ),
-                ),
+                const SizedBox(height: 28),
+                _eyebrow(context, 'RECENT LINKS'),
                 const SizedBox(height: 12),
                 FutureBuilder<List<PaymentLink>>(
                   future: _linksFuture,
@@ -351,7 +293,6 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                             status: _statusLabel(link.status),
                             accent: _statusColor(link.status, cs),
                           ),
-                          const SizedBox(height: 12),
                         ],
                       ],
                     );
@@ -394,7 +335,7 @@ class _FieldBlock extends StatelessWidget {
           label.toUpperCase(),
           style: GoogleFonts.plusJakartaSans(
             fontSize: 10,
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
             letterSpacing: 1.4,
             color: cs.onSurfaceVariant.withValues(alpha: 0.55),
           ),
@@ -414,21 +355,7 @@ class _FieldBlock extends StatelessWidget {
             hintText: hint,
             hintStyle: GoogleFonts.plusJakartaSans(
               fontSize: 14,
-              color: cs.onSurfaceVariant.withValues(alpha: 0.4),
-            ),
-            filled: true,
-            fillColor: context.cardMutedColor,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: context.hairlineColor),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: cs.primary, width: 1.6),
+              color: context.textTertiary,
             ),
           ),
         ),
@@ -453,32 +380,26 @@ class _ActionButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
+    final fg = filled ? cs.onPrimary : cs.onSurface;
     return Material(
-      color: Colors.transparent,
+      color: filled ? cs.primary : Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        side: filled ? BorderSide.none : BorderSide(color: context.hairlineColor),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
-        borderRadius: BorderRadius.circular(18),
         onTap: onTap,
-        child: GlassSurface(
-          borderRadius: BorderRadius.circular(18),
-          opacity: filled ? 0.18 : 0.10,
-          blur: 12,
-          padding: const EdgeInsets.symmetric(vertical: 14),
-          border: Border.all(
-            color: filled
-                ? cs.primary.withValues(alpha: 0.18)
-                : cs.outlineVariant.withValues(alpha: 0.12),
-          ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: [
-              Icon(icon, color: filled ? cs.primary : cs.onSurface, size: 22),
+              Icon(icon, color: fg, size: 20),
               const SizedBox(height: 8),
               Text(
                 label,
-                style: GoogleFonts.plusJakartaSans(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w800,
-                  color: filled ? cs.primary : cs.onSurface,
-                ),
+                style: AppText.caption(color: fg)
+                    .copyWith(fontSize: 12, fontWeight: FontWeight.w700),
               ),
             ],
           ),
@@ -506,21 +427,21 @@ class _RecentLinkCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return GlassSurface(
-      borderRadius: BorderRadius.circular(24),
-      opacity: 0.12,
-      blur: 12,
-      padding: const EdgeInsets.all(16),
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(color: context.hairlineColor)),
+      ),
       child: Row(
         children: [
           Container(
-            height: 46,
-            width: 46,
+            height: 40,
+            width: 40,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
-              color: accent.withValues(alpha: 0.16),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
+              color: accent.withValues(alpha: 0.14),
             ),
-            child: Icon(Icons.link_rounded, color: accent, size: 20),
+            child: Icon(Icons.link_rounded, color: accent, size: 18),
           ),
           const SizedBox(width: 14),
           Expanded(
@@ -529,18 +450,14 @@ class _RecentLinkCard extends StatelessWidget {
               children: [
                 Text(
                   title,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontWeight: FontWeight.w800,
-                    fontSize: 15,
-                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppText.cardTitle(size: 14, color: cs.onSurface),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 2),
                 Text(
                   date,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 12,
-                    color: cs.onSurfaceVariant,
-                  ),
+                  style: AppText.caption(color: context.textSecondary),
                 ),
               ],
             ),
@@ -550,27 +467,13 @@ class _RecentLinkCard extends StatelessWidget {
             children: [
               Text(
                 amount,
-                style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.w800,
-                  fontSize: 14,
+                style: AppText.cardTitle(size: 14, color: cs.onSurface)
+                    .copyWith(
+                  fontFeatures: const [FontFeature.tabularFigures()],
                 ),
               ),
               const SizedBox(height: 4),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: accent.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Text(
-                  status,
-                  style: GoogleFonts.plusJakartaSans(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w800,
-                    color: accent,
-                  ),
-                ),
-              ),
+              StatusBadge(status, color: accent),
             ],
           ),
         ],
@@ -591,7 +494,7 @@ class _TrustChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: context.trackColor,
+        color: context.primaryTintColor,
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(

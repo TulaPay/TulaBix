@@ -52,7 +52,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, AppSpacing.md),
+                AppSpacing.xxl, AppSpacing.sm, AppSpacing.xxl, AppSpacing.md),
             child: SegmentedControl(
               segments: const ['Settlements', 'Recent'],
               selectedIndex: _tab,
@@ -88,13 +88,14 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     if (rows.isEmpty) return _empty('No settlements yet');
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(
-          AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.section),
+          AppSpacing.xxl, 0, AppSpacing.xxl, AppSpacing.section),
       itemCount: rows.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+      separatorBuilder: (_, __) => const SizedBox.shrink(),
       itemBuilder: (context, i) {
         final s = rows[i];
         return GlassSurface(
-          padding: const EdgeInsets.all(AppSpacing.lg),
+          border: Border(bottom: BorderSide(color: context.hairlineColor)),
+          padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -112,7 +113,8 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
               ),
               const SizedBox(height: 8),
               Text(money(s.netAmount),
-                  style: AppText.hero(size: 24, color: cs.onSurface)),
+                  style: AppText.hero(size: 24, color: cs.onSurface).copyWith(
+                      fontFeatures: const [FontFeature.tabularFigures()])),
               Text(
                 'Gross ${money(s.grossAmount)} · Fees ${money(s.feeAmount)} · '
                 '${s.payoutAccount}',
@@ -129,9 +131,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     if (rows.isEmpty) return _empty('No transactions yet');
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(
-          AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.section),
+          AppSpacing.xxl, 0, AppSpacing.xxl, AppSpacing.section),
       itemCount: rows.length,
-      separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
+      separatorBuilder: (_, __) => const SizedBox.shrink(),
       itemBuilder: (context, i) {
         final t = rows[i];
         return ListRowCard(
@@ -139,7 +141,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
               ? Icons.south_west_rounded
               : Icons.north_east_rounded,
           iconColor: t.isInflow
-              ? const Color(0xFF10B981)
+              ? AppColors.positive
               : Theme.of(context).colorScheme.secondary,
           title: t.counterpartyName ?? t.typeLabel,
           subtitle:
@@ -168,13 +170,13 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: (paid ? const Color(0xFF10B981) : cs.tertiary)
+        color: (paid ? AppColors.positive : AppColors.warning)
             .withValues(alpha: 0.14),
         borderRadius: BorderRadius.circular(AppRadius.pill),
       ),
       child: Text(status,
           style: AppText.caption(
-                  color: paid ? const Color(0xFF10B981) : cs.tertiary)
+                  color: paid ? AppColors.positive : AppColors.warning)
               .copyWith(fontWeight: FontWeight.w700)),
     );
   }

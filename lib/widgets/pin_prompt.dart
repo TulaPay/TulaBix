@@ -16,9 +16,9 @@ class PinPrompt {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.surface,
+      backgroundColor: Theme.of(context).bottomSheetTheme.backgroundColor,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (_) => const _PinPromptSheet(),
     );
@@ -107,7 +107,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
               Text(
                 'Confirm your PIN',
                 style: GoogleFonts.plusJakartaSans(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   fontSize: 20,
                   color: cs.onSurface,
                 ),
@@ -132,7 +132,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
             textAlign: TextAlign.center,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 28,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               letterSpacing: 12,
             ),
             decoration: InputDecoration(
@@ -141,7 +141,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
               filled: true,
               fillColor: cs.surfaceContainerLow,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(12),
                 borderSide: BorderSide.none,
               ),
             ),
@@ -157,7 +157,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
                 foregroundColor: cs.onPrimary,
                 minimumSize: const Size(double.infinity, 56),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
               child: _verifying

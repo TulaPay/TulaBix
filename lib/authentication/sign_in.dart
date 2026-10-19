@@ -7,6 +7,7 @@ import 'package:tulapay/authentication/sign_up.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/themes/app_theme.dart';
 
 class Country {
   final String name;
@@ -59,10 +60,9 @@ class _SignInState extends State<SignIn> {
   void _showCountryPicker() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),
       builder: (context) {
         final cs = Theme.of(context).colorScheme;
@@ -70,7 +70,7 @@ class _SignInState extends State<SignIn> {
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
           child: GlassSurface(
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(12),
             opacity: 0.18,
             blur: 18,
             padding: const EdgeInsets.all(16),
@@ -90,7 +90,7 @@ class _SignInState extends State<SignIn> {
                   "Select Country",
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -117,7 +117,7 @@ class _SignInState extends State<SignIn> {
                         trailing: Text(
                           country.code,
                           style: GoogleFonts.plusJakartaSans(
-                            fontWeight: FontWeight.w800,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                         onTap: () {
@@ -139,8 +139,7 @@ class _SignInState extends State<SignIn> {
   Future<void> _handleSignIn() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final fullPhoneNumber =
-        "${_selectedCountry.code}${_phoneController.text}";
+    final fullPhoneNumber = "${_selectedCountry.code}${_phoneController.text}";
 
     setState(() => _isSubmitting = true);
     try {
@@ -184,220 +183,237 @@ class _SignInState extends State<SignIn> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new, color: colorScheme.onSurface),
+          icon: Icon(Icons.chevron_left_rounded, color: colorScheme.onSurface),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ),
       body: AppBackdrop(
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-            child: Form(
-              key: _formKey,
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 520),
-                  child: GlassSurface(
-                    borderRadius: BorderRadius.circular(28),
-                    opacity: 0.16,
-                    blur: 18,
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: colorScheme.primary.withValues(alpha: 0.16),
-                          ),
-                          child: Icon(
-                            Icons.lock_person_rounded,
-                            color: colorScheme.primary,
-                            size: 30,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          "Welcome Back",
-                          style: GoogleFonts.plusJakartaSans(
-                            fontSize: 32,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.8,
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          "Log in securely to your TulaPay account.",
-                          style: theme.textTheme.bodyLarge?.copyWith(
-                            color: colorScheme.onSurface.withValues(alpha: 0.66),
-                            height: 1.4,
-                          ),
-                        ),
-                        const SizedBox(height: 24),
+          child: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                  child: Form(
+                    key: _formKey,
+                    child: Center(
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 520),
+                        child: GlassSurface(
+                          borderRadius: BorderRadius.circular(12),
+                          opacity: 0.16,
+                          blur: 18,
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 52,
+                                height: 52,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(12),
+                                  color: context.isDark
+                                      ? AppColors.trackDark
+                                      : AppColors.primaryTint,
+                                ),
+                                child: Icon(
+                                  Icons.lock_person_rounded,
+                                  color: colorScheme.primary,
+                                  size: 24,
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              Text(
+                                "Welcome back",
+                                style: GoogleFonts.plusJakartaSans(
+                                  fontSize: 26,
+                                  fontWeight: FontWeight.w700,
+                                  letterSpacing: -0.6,
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Text(
+                                "Log in securely to your TulaPay account.",
+                                style: theme.textTheme.bodyLarge?.copyWith(
+                                  color: colorScheme.onSurface.withValues(
+                                    alpha: 0.66,
+                                  ),
+                                  height: 1.4,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
 
-                        _buildLabel("Phone Number"),
-                        TextFormField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            hintText: "700 000 000",
-                            prefixIcon: Padding(
-                              padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-                              child: GestureDetector(
-                                onTap: _showCountryPicker,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Text(
-                                      _selectedCountry.flag,
-                                      style: const TextStyle(fontSize: 20),
+                              _buildLabel("Phone number"),
+                              TextFormField(
+                                controller: _phoneController,
+                                keyboardType: TextInputType.phone,
+                                decoration: InputDecoration(
+                                  hintText: "700 000 000",
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 12.0,
+                                      right: 8.0,
                                     ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      _selectedCountry.code,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: colorScheme.onSurface,
+                                    child: GestureDetector(
+                                      onTap: _showCountryPicker,
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text(
+                                            _selectedCountry.flag,
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            _selectedCountry.code,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: colorScheme.onSurface,
+                                            ),
+                                          ),
+                                          Icon(
+                                            Icons.arrow_drop_down,
+                                            color: colorScheme.onSurface,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Container(
+                                            height: 24,
+                                            width: 1,
+                                            color: colorScheme.outline
+                                                .withValues(alpha: 0.24),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Icon(
-                                      Icons.arrow_drop_down,
-                                      color: colorScheme.onSurface,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Container(
-                                      height: 24,
-                                      width: 1,
-                                      color: colorScheme.outline.withValues(alpha: 0.24),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Phone number is required';
-                            }
-                            return null;
-                          },
-                        ),
-                        const SizedBox(height: 12),
-
-                        _buildLabel("Password"),
-                        TextFormField(
-                          controller: _passwordController,
-                          obscureText: !_isPasswordVisible,
-                          decoration: InputDecoration(
-                            hintText: "Enter your password",
-                            prefixIcon: const Icon(Icons.lock_outline),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isPasswordVisible
-                                    ? Icons.visibility_outlined
-                                    : Icons.visibility_off_outlined,
-                                size: 20,
-                              ),
-                              onPressed: () => setState(
-                                () => _isPasswordVisible = !_isPasswordVisible,
-                              ),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Password is required';
-                            }
-                            return null;
-                          },
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const ForgotPasswordScreen(),
-                                ),
-                              );
-                            },
-                            child: Text(
-                              "Forgot Password?",
-                              style: TextStyle(
-                                color: colorScheme.primary,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 18),
-
-                        ElevatedButton(
-                          onPressed: _isSubmitting ? null : _handleSignIn,
-                          child: _isSubmitting
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2),
-                                )
-                              : const Text("Sign In"),
-                        ),
-                        const SizedBox(height: 10),
-                        Center(
-                          child: TextButton.icon(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const OtpSignInScreen(),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.sms_outlined, size: 18),
-                            label: const Text("Sign in with OTP instead"),
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-
-                        Center(
-                          child: Wrap(
-                            crossAxisAlignment: WrapCrossAlignment.center,
-                            children: [
-                              Text(
-                                "Don't have an account? ",
-                                style: TextStyle(
-                                  color: colorScheme.onSurface.withValues(alpha: 0.64),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => const SignUp(),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  "Sign Up",
-                                  style: TextStyle(
-                                    color: colorScheme.primary,
-                                    fontWeight: FontWeight.bold,
                                   ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Phone number is required';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 12),
+
+                              _buildLabel("Password"),
+                              TextFormField(
+                                controller: _passwordController,
+                                obscureText: !_isPasswordVisible,
+                                decoration: InputDecoration(
+                                  hintText: "Enter your password",
+                                  prefixIcon: const Icon(Icons.lock_outline),
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      _isPasswordVisible
+                                          ? Icons.visibility_outlined
+                                          : Icons.visibility_off_outlined,
+                                      size: 20,
+                                    ),
+                                    onPressed: () => setState(
+                                      () => _isPasswordVisible =
+                                          !_isPasswordVisible,
+                                    ),
+                                  ),
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Password is required';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) =>
+                                            const ForgotPasswordScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Text(
+                                    "Forgot password?",
+                                    style: TextStyle(
+                                      color: colorScheme.primary,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 18),
+
+                              ElevatedButton(
+                                onPressed: _isSubmitting ? null : _handleSignIn,
+                                child: _isSubmitting
+                                    ? const SizedBox(
+                                        width: 20,
+                                        height: 20,
+                                        child: CircularProgressIndicator(
+                                          strokeWidth: 2,
+                                        ),
+                                      )
+                                    : const Text("Sign In"),
+                              ),
+                              const SizedBox(height: 10),
+                              Center(
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const OtpSignInScreen(),
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(
+                                    Icons.sms_outlined,
+                                    size: 18,
+                                  ),
+                                  label: const Text("Sign in with OTP instead"),
                                 ),
                               ),
                             ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 28),
+                child: Center(
+                  child: Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    children: [
+                      Text(
+                        "Don't have an account? ",
+                        style: AppText.caption(
+                          color: context.textSecondary,
+                        ).copyWith(fontSize: 13),
+                      ),
+                      GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const SignUp()),
+                        ),
+                        child: Text(
+                          "Sign Up",
+                          style: AppText.pillLabel(color: colorScheme.primary),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -406,14 +422,12 @@ class _SignInState extends State<SignIn> {
 
   Widget _buildLabel(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0, left: 4.0),
+      padding: const EdgeInsets.only(bottom: 8.0),
       child: Text(
         text,
-        style: GoogleFonts.plusJakartaSans(
-          fontSize: 14,
-          fontWeight: FontWeight.w600,
-          color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.8),
-        ),
+        style: AppText.caption(
+          color: context.textTertiary,
+        ).copyWith(fontWeight: FontWeight.w600),
       ),
     );
   }

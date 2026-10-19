@@ -52,8 +52,8 @@ class CircleIconButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return Material(
-      color: context.cardColor,
-      shape: const CircleBorder(),
+      color: Colors.transparent,
+      shape: CircleBorder(side: BorderSide(color: context.hairlineColor)),
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,

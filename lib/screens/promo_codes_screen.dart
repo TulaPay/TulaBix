@@ -41,16 +41,16 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
         child: Container(
           decoration: BoxDecoration(
             color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
           ),
-          padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
+          padding: const EdgeInsets.fromLTRB(24, 16, 24, 28),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('New promo code',
                   style: GoogleFonts.plusJakartaSans(
-                      fontSize: 18, fontWeight: FontWeight.w800)),
+                      fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 14),
               TextField(
                 controller: codeCtrl,
@@ -121,7 +121,7 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
             onRefresh: () async => _reload(),
             child: ListView(
               padding: const EdgeInsets.fromLTRB(
-                  AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, AppSpacing.section),
+                  AppSpacing.xxl, AppSpacing.sm, AppSpacing.xxl, AppSpacing.section),
               children: [
                 if (rows.isEmpty)
                   Padding(
@@ -133,7 +133,10 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
                   ),
                 for (final p in rows) ...[
                   GlassSurface(
-                    padding: const EdgeInsets.all(AppSpacing.lg),
+                    border: Border(
+                        bottom: BorderSide(color: context.hairlineColor)),
+                    padding:
+                        const EdgeInsets.symmetric(vertical: AppSpacing.lg),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -183,7 +186,6 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.md),
                 ],
               ],
             ),
@@ -201,7 +203,7 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
   Widget _chip(String text, ColorScheme cs) => Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
         decoration: BoxDecoration(
-          color: cs.primary.withValues(alpha: 0.12),
+          color: context.primaryTintColor,
           borderRadius: BorderRadius.circular(AppRadius.pill),
         ),
         child: Text(text,

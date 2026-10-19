@@ -12,11 +12,8 @@ abstract class AppChart {
       show: true,
       drawVerticalLine: false,
       horizontalInterval: interval,
-      getDrawingHorizontalLine: (_) => FlLine(
-        color: c,
-        strokeWidth: 1,
-        dashArray: const [3, 4],
-      ),
+      getDrawingHorizontalLine: (_) =>
+          FlLine(color: c, strokeWidth: 1, dashArray: const [3, 4]),
     );
   }
 
@@ -88,8 +85,7 @@ abstract class AppChart {
       touchTooltipData: BarTouchTooltipData(
         getTooltipColor: (_) => cs.inverseSurface,
         tooltipBorderRadius: BorderRadius.circular(AppRadius.sm),
-        tooltipPadding:
-            const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        tooltipPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         getTooltipItem: (group, _, rod, __) => BarTooltipItem(
           format?.call(rod.toY) ?? rod.toY.toStringAsFixed(0),
           AppText.pillLabel(color: cs.onInverseSurface).copyWith(fontSize: 12),
@@ -114,9 +110,7 @@ abstract class AppChart {
         BarChartRodData(
           toY: y,
           width: width,
-          color: highlighted
-              ? cs.primary
-              : cs.primary.withValues(alpha: 0.22),
+          color: highlighted ? cs.primary : cs.primary.withValues(alpha: 0.22),
           borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
         ),
       ],

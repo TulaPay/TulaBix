@@ -50,6 +50,8 @@ class _PaymentPageScreenState extends State<PaymentPageScreen> {
               )
             else if (pageUrl != null) ...[
               GlassSurface(
+                borderRadius: AppRadius.smAll,
+                border: Border.all(color: context.hairlineColor),
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   children: [
@@ -92,7 +94,7 @@ class _PaymentPageScreenState extends State<PaymentPageScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: AppSpacing.md),
+              const SizedBox(height: AppSpacing.xxl),
               GlassInfoCard(
                 icon: Icons.link_rounded,
                 title: 'One-off payment links',

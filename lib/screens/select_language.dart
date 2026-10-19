@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/sign_up.dart';
 import 'package:tulapay/services/app_preferences.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/themes/app_theme.dart';
 
 class LanguageScreen extends StatefulWidget {
   /// When true the screen is opened from Settings: the choice is persisted via
@@ -63,115 +64,110 @@ class _LanguageScreenState extends State<LanguageScreen> {
       ),
       body: AppBackdrop(
         child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 560),
-                child: GlassSurface(
-                  borderRadius: BorderRadius.circular(28),
-                  opacity: 0.16,
-                  blur: 18,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Center(
-                        child: Container(
-                          padding: const EdgeInsets.all(18),
-                          decoration: BoxDecoration(
-                            color: cs.primary.withValues(alpha: 0.16),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.language_rounded,
-                            size: 64,
-                            color: cs.primary,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      Text(
-                        _t('header'),
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w800,
-                          letterSpacing: -0.6,
-                          color: cs.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        _t('subtitle'),
-                        style: GoogleFonts.plusJakartaSans(
-                          fontSize: 16,
-                          color: cs.onSurface.withValues(alpha: 0.72),
-                          height: 1.45,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      LanguageTile(
-                        title: _t('english'),
-                        subtitle: 'English',
-                        isSelected: _selectedLanguageCode == 'en',
-                        onTap: () => setState(() => _selectedLanguageCode = 'en'),
-                        flag: '🇺🇸',
-                      ),
-                      const SizedBox(height: 14),
-                      LanguageTile(
-                        title: _t('french'),
-                        subtitle: 'Français',
-                        isSelected: _selectedLanguageCode == 'fr',
-                        onTap: () => setState(() => _selectedLanguageCode = 'fr'),
-                        flag: '🇫🇷',
-                      ),
-                      const SizedBox(height: 20),
-                      GlassSurface(
-                        borderRadius: BorderRadius.circular(20),
-                        opacity: 0.12,
-                        blur: 12,
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.info_outline_rounded,
-                              size: 20,
-                              color: cs.primary,
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Text(
-                                _t('info'),
-                                style: GoogleFonts.plusJakartaSans(
-                                  fontSize: 13,
-                                  color: cs.onSurface.withValues(alpha: 0.82),
-                                  height: 1.4,
-                                ),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 560),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Center(
+                            child: Container(
+                              width: 84,
+                              height: 84,
+                              decoration: BoxDecoration(
+                                color: context.isDark
+                                    ? AppColors.trackDark
+                                    : AppColors.primaryTint,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.language_rounded,
+                                size: 40,
+                                color: cs.primary,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            _t('header'),
+                            style: AppText.screenTitle(
+                                size: 24, color: cs.onSurface),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            _t('subtitle'),
+                            style: AppText.body(color: context.textSecondary),
+                          ),
+                          const SizedBox(height: 24),
+                          LanguageTile(
+                            title: _t('english'),
+                            subtitle: 'English',
+                            isSelected: _selectedLanguageCode == 'en',
+                            onTap: () =>
+                                setState(() => _selectedLanguageCode = 'en'),
+                            flag: '🇺🇸',
+                          ),
+                          const SizedBox(height: 12),
+                          LanguageTile(
+                            title: _t('french'),
+                            subtitle: 'Français',
+                            isSelected: _selectedLanguageCode == 'fr',
+                            onTap: () =>
+                                setState(() => _selectedLanguageCode = 'fr'),
+                            flag: '🇫🇷',
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            padding: const EdgeInsets.all(AppSpacing.lg),
+                            decoration: BoxDecoration(
+                              color: context.isDark
+                                  ? AppColors.trackDark
+                                  : AppColors.primaryTint,
+                              borderRadius: AppRadius.xsAll,
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.info_outline_rounded,
+                                    size: 18, color: context.textSecondary),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Text(
+                                    _t('info'),
+                                    style: AppText.caption(
+                                        color: context.textSecondary),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () async {
-                          if (widget.settingsMode) {
-                            await AppPreferences.instance
-                                .setLocale(Locale(_selectedLanguageCode));
-                            if (context.mounted) Navigator.of(context).pop();
-                          } else {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const SignUp()),
-                            );
-                          }
-                        },
-                        child: Text(widget.settingsMode
-                            ? _t('save')
-                            : _t('continue')),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        if (widget.settingsMode) {
+                          await AppPreferences.instance
+                              .setLocale(Locale(_selectedLanguageCode));
+                          if (context.mounted) Navigator.of(context).pop();
+                        } else {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const SignUp()),
+                          );
+                        }
+                      },
+                      child: Text(
+                          widget.settingsMode ? _t('save') : _t('continue')),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -203,17 +199,16 @@ class LanguageTile extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(12),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
           border: Border.all(
-            color: isSelected ? cs.primary : cs.outline.withValues(alpha: 0.18),
-            width: isSelected ? 2 : 1,
+            color: isSelected ? cs.primary : context.hairlineColor,
+            width: isSelected ? 1.5 : 1,
           ),
-          color: isSelected ? cs.primary.withValues(alpha: 0.12) : cs.surface,
         ),
         child: Row(
           children: [
@@ -221,8 +216,10 @@ class LanguageTile extends StatelessWidget {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14),
-                color: cs.primary.withValues(alpha: 0.10),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
+                color: context.isDark
+                    ? AppColors.trackDark
+                    : AppColors.primaryTint,
               ),
               child: Center(
                 child: Text(flag, style: const TextStyle(fontSize: 24)),
@@ -236,7 +233,7 @@ class LanguageTile extends StatelessWidget {
                   Text(
                     title,
                     style: GoogleFonts.plusJakartaSans(
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       fontSize: 16,
                       color: cs.onSurface,
                     ),
@@ -252,11 +249,12 @@ class LanguageTile extends StatelessWidget {
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: cs.primary)
+              Icon(Icons.radio_button_checked, size: 18, color: cs.primary)
             else
               Icon(
-                Icons.circle_outlined,
-                color: cs.outline.withValues(alpha: 0.45),
+                Icons.radio_button_unchecked,
+                size: 18,
+                color: context.textTertiary,
               ),
           ],
         ),

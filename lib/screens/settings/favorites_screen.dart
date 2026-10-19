@@ -104,7 +104,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         else
           for (final item in _catalogue)
             Padding(
-              padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+              padding: EdgeInsets.zero,
               child: GlassSurface(
                 padding: EdgeInsets.zero,
                 child: ListRowCard(
@@ -122,8 +122,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                           ? Icons.star_rounded
                           : Icons.star_border_rounded,
                       color: _pinned.contains(item.key)
-                          ? const Color(0xFFF59E0B)
-                          : cs.onSurfaceVariant,
+                          ? AppColors.warning
+                          : context.textTertiary,
                     ),
                     onPressed: () => _toggle(item),
                   ),

@@ -14,9 +14,8 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Navigate to the next screen after 3 seconds
-    Timer(const Duration(seconds: 5), () {
-      // TODO: Navigate to your next screen (e.g., Login or Home)
+    Timer(const Duration(seconds: 3), () {
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const OnBoardingPage()),
       );
@@ -25,30 +24,26 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
-      backgroundColor: colorScheme.primary,
+      backgroundColor: AppColors.primary,
       body: SafeArea(
         child: SizedBox.expand(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               const Spacer(flex: 3),
-              // Brand Logo/Name Section
               Text(
-                "TulaPay",
-                style: AppText.hero(size: 42, color: colorScheme.onPrimary),
+                "TulaBiz",
+                style: AppText.hero(size: 42, color: Colors.white),
               ),
               const SizedBox(height: 8),
               Text(
-                "Securely Connected",
+                "FINANCIAL ENGINE FOR MERCHANTS",
                 style: AppText.microLabel(
-                  color: colorScheme.onPrimary.withValues(alpha: 0.8),
+                  color: Colors.white.withValues(alpha: 0.72),
                 ),
               ),
               const Spacer(flex: 2),
-              // Footer Section
               Padding(
                 padding: const EdgeInsets.only(bottom: 24.0),
                 child: Row(
@@ -57,13 +52,13 @@ class _SplashScreenState extends State<SplashScreen> {
                     Icon(
                       Icons.verified_user_outlined,
                       size: 18,
-                      color: colorScheme.onPrimary.withValues(alpha: 0.7),
+                      color: Colors.white.withValues(alpha: 0.72),
                     ),
                     const SizedBox(width: 8),
                     Text(
                       "Powered by TulaPay",
                       style: AppText.caption(
-                        color: colorScheme.onPrimary.withValues(alpha: 0.7),
+                        color: Colors.white.withValues(alpha: 0.72),
                       ),
                     ),
                   ],

@@ -1,63 +1,71 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-/// Design tokens for the reference-derived visual system.
+/// Design tokens for TulaBix Corporate Redesign visual system.
 ///
-/// The blue identity is unchanged: [AppColors.primary] `#0000FF` and
-/// [AppColors.secondary] `#4D73FF` remain the accent / CTA / active-state
-/// colors. Everything added here is a tint, shade, or neutral used only for
-/// backgrounds, cards, hairlines, tracks, and the gradient hero.
+/// Style guide v1: Royal Blue [AppColors.primary] `#1E3A8A` drives CTAs, nav
+/// and headers; Action Blue [AppColors.secondary] `#2F5AF2` is for links and
+/// selection only. Content sits directly on the page background — grouping is
+/// by eyebrow label, spacing and a 1px hairline, never a card or shadow.
 
 abstract class AppColors {
-  // ── Brand (unchanged) ──────────────────────────────────────────────────────
-  static const Color primary = Color(0xFF0000FF); // Pure Blue — brand accent
-  static const Color secondary = Color(0xFF4D73FF); // Vibrant medium blue
-  static const Color tertiary = Color(0xFFFF5252); // Red — badges / alerts
-  static const Color neutral = Color(0xFF758296); // Gray-blue — captions
+  // ── Brand & Accent ────────────────────────────────────────────────────────
+  static const Color primary = Color(0xFF1E3A8A); // Royal Blue (light-mode CTA)
+  static const Color secondary = Color(
+    0xFF2F5AF2,
+  ); // Action Blue — links / selection
+  static const Color tertiary = Color(
+    0xFFD64545,
+  ); // Corporate Red — badges / alerts
+  static const Color neutral = Color(0xFF6B7490); // Gray-blue — captions
 
   // ── Semantic (financial state only) ───────────────────────────────────────
-  // Reserved for money in/out, gains/losses, and alert severity — never for
-  // decoration. Readable on both light and dark surfaces as-is.
-  static const Color positive = Color(0xFF10B981); // money in / gain
-  static const Color negative = Color(0xFFFF5252); // money out / loss (== tertiary)
-  static const Color warning = Color(0xFFF5A524); // attention, not an error
+  static const Color positive = Color(0xFF0E9F6E); // money in / gain
+  static const Color negative = Color(0xFFD64545); // money out / loss (Red)
+  static const Color warning = Color(0xFFC77C11); // attention / pending
 
-  // ── Blue tonal ramp (surfaces only) ────────────────────────────────────────
-  static const Color primaryShade = Color(0xFF0000CC); // pressed / hover
-  static const Color primaryTint = Color(0xFFECECFF); // chip / track fill (light)
-  static const Color heroGradientStart = Color(0xFF4D73FF);
-  static const Color heroGradientEnd = Color(0xFF0000FF);
+  // ── Blue tonal ramp ────────────────────────────────────────────────────────
+  static const Color primaryShade = Color(0xFF152C6B); // pressed / hover
+  static const Color primaryTint = Color(0xFFE4E9F9); // chip / track fill
+  static const Color heroGradientStart = Color(0xFF1E3A8A);
+  static const Color heroGradientEnd = Color(0xFF1E3A8A);
 
   // ── Light surfaces ─────────────────────────────────────────────────────────
-  static const Color bgLight = Color(0xFFF0F4FF); // pale blue backdrop
+  static const Color bgLight = Color(0xFFF3F5FA); // page background
   static const Color cardLight = Colors.white;
-  static const Color cardMutedLight = Color(0xFFF5F7FF); // neutral inner card
-  static const Color trackLight = Color(0xFFE8ECF9); // segmented-control track
-  static const Color hairlineLight = Color(0xFFE4E8F4);
-  static const Color textPrimaryLight = Color(0xFF0A102D);
-  static const Color textSecondaryLight = Color(0xFF6A7385);
-  static const Color textTertiaryLight = Color(0xFFA2AAB9);
-  static const Color inkPillLight = Color(0xFF0A102D); // dark pill button
+  static const Color cardMutedLight = Color(
+    0xFFE8ECFB,
+  ); // inner card / tinted surface
+  static const Color trackLight = Color(0xFFE4EAF8);
+  static const Color hairlineLight = Color(0xFFDCE1EA);
+  static const Color textPrimaryLight = Color(0xFF10162B);
+  static const Color textSecondaryLight = Color(0xFF5B6472);
+  static const Color textTertiaryLight = Color(0xFF8992A6);
+  static const Color inkPillLight = Color(0xFF10162B); // dark pill button
 
   // ── Dark surfaces ──────────────────────────────────────────────────────────
-  static const Color bgDark = Color(0xFF05081A); // deep indigo black
-  static const Color cardDark = Color(0xFF141A3A);
-  static const Color cardMutedDark = Color(0xFF10152F);
-  static const Color trackDark = Color(0xFF1E254A);
-  static const Color hairlineDark = Color(0xFF2A3157);
-  static const Color textPrimaryDark = Color(0xFFF2F4FF);
-  static const Color textSecondaryDark = Color(0xFF98A2C4);
-  static const Color textTertiaryDark = Color(0xFF6D77A0);
-  static const Color primaryDarkAccent = Color(0xFF80A0FF);
-  static const Color inkPillDark = Color(0xFFF2F4FF); // light pill in dark mode
+  static const Color bgDark = Color(0xFF0B1020); // deep corporate navy black
+  static const Color cardDark = Color(0xFF141A33); // corporate navy card
+  static const Color cardMutedDark = Color(0xFF1B2142);
+  static const Color trackDark = Color(0xFF1B2142);
+  static const Color hairlineDark = Color(
+    0xFF262D49,
+  ); // sharp navy hairline border
+  static const Color textPrimaryDark = Color(0xFFEEF1FA);
+  static const Color textSecondaryDark = Color(0xFF9AA3BD);
+  static const Color textTertiaryDark = Color(0xFF6B7490);
+  static const Color primaryDarkAccent = Color(
+    0xFF5D7FFF,
+  ); // primary / links on dark only
+  static const Color inkPillDark = Color(0xFFFFFFFF); // light pill in dark mode
 
-  // Kept for backwards compatibility with any older references.
+  // Backwards compatibility.
   static const Color surfaceLight = cardLight;
   static const Color surfaceDark = cardDark;
   static const Color textDark = textPrimaryLight;
 }
 
-/// 4-based spacing scale. Use these instead of loose magic numbers.
+/// 4-based spacing scale.
 abstract class AppSpacing {
   static const double xs = 4;
   static const double sm = 8;
@@ -67,17 +75,23 @@ abstract class AppSpacing {
   static const double xxl = 24;
   static const double huge = 32;
   static const double section = 40;
+  static const double major =
+      56; // gap between major sections (replaces card edges)
 }
 
 /// Corner-radius scale.
 abstract class AppRadius {
-  static const double sm = 12;
-  static const double md = 16;
-  static const double lg = 20;
-  static const double xl = 24;
-  static const double xxl = 28;
+  // Style guide v1: 4 / 8 / 12 / pill. lg–xxl are kept as aliases of md so
+  // existing call sites collapse onto the new scale.
+  static const double xs = 4;
+  static const double sm = 8;
+  static const double md = 12;
+  static const double lg = md;
+  static const double xl = md;
+  static const double xxl = md;
   static const double pill = 999;
 
+  static const BorderRadius xsAll = BorderRadius.all(Radius.circular(xs));
   static const BorderRadius smAll = BorderRadius.all(Radius.circular(sm));
   static const BorderRadius mdAll = BorderRadius.all(Radius.circular(md));
   static const BorderRadius lgAll = BorderRadius.all(Radius.circular(lg));
@@ -86,40 +100,53 @@ abstract class AppRadius {
   static const BorderRadius pillAll = BorderRadius.all(Radius.circular(pill));
 }
 
-/// Soft, low-contrast elevation. The references use one gentle drop or none.
+/// Elevation shadows matching corporate card specifications.
 abstract class AppShadows {
-  static List<BoxShadow> card(Brightness b) => b == Brightness.dark
-      ? const [
-          BoxShadow(
-            color: Color(0x33000000),
-            blurRadius: 24,
-            offset: Offset(0, 10),
-          ),
-        ]
-      : const [
-          BoxShadow(
-            color: Color(0x0F0A102D),
-            blurRadius: 24,
-            offset: Offset(0, 8),
-          ),
-        ];
+  /// Elevation is retired — grouping comes from spacing and hairlines.
+  static List<BoxShadow> card(Brightness b) => const [];
 
-  static List<BoxShadow> floating(Color accent) => [
-        BoxShadow(
-          color: accent.withValues(alpha: 0.22),
-          blurRadius: 20,
-          offset: const Offset(0, 10),
-        ),
-      ];
+  static List<BoxShadow> floating(Color accent) => const [];
 }
 
-/// Typography helpers built on Plus Jakarta Sans. Pass a [color]; if omitted the
-/// caller is expected to sit inside a `DefaultTextStyle` / themed `Text`.
+/// Gradient presets for the Corporate Redesign.
+abstract class AppGradients {
+  /// Balance card gradient — blue-tinted flat (matches redesign light card)
+  static const LinearGradient balanceCard = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFFE4E9F9), Color(0xFFE4E9F9)],
+  );
+
+  /// Hero brand gradient — used on splash and primary CTAs
+  static const LinearGradient heroBrand = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF1E3A8A), Color(0xFF1E3A8A)],
+  );
+
+  /// Positive glow gradient (money in)
+  static const LinearGradient positiveGlow = LinearGradient(
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    colors: [Color(0xFF0E9F6E), Color(0xFF0E9F6E)],
+  );
+}
+
+/// Animation duration and curve constants.
+abstract class AppAnimations {
+  static const Duration fast = Duration(milliseconds: 150);
+  static const Duration standard = Duration(milliseconds: 250);
+  static const Duration expressive = Duration(milliseconds: 350);
+  static const Curve defaultCurve = Curves.easeInOut;
+  static const Curve entranceCurve = Curves.easeOut;
+}
+
+/// Typography helpers built on Plus Jakarta Sans.
 abstract class AppText {
   static TextStyle hero({double size = 40, Color? color}) =>
       GoogleFonts.plusJakartaSans(
         fontSize: size,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
         letterSpacing: -1.5,
         height: 1.05,
         color: color,
@@ -128,18 +155,18 @@ abstract class AppText {
   static TextStyle screenTitle({double size = 28, Color? color}) =>
       GoogleFonts.plusJakartaSans(
         fontSize: size,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
         letterSpacing: -1.0,
         height: 1.1,
         color: color,
       );
 
   static TextStyle sectionTitle({Color? color}) => GoogleFonts.plusJakartaSans(
-        fontSize: 18,
-        fontWeight: FontWeight.w700,
-        letterSpacing: -0.4,
-        color: color,
-      );
+    fontSize: 18,
+    fontWeight: FontWeight.w700,
+    letterSpacing: -0.4,
+    color: color,
+  );
 
   static TextStyle cardTitle({double size = 15, Color? color}) =>
       GoogleFonts.plusJakartaSans(
@@ -150,11 +177,11 @@ abstract class AppText {
       );
 
   static TextStyle microLabel({Color? color}) => GoogleFonts.plusJakartaSans(
-        fontSize: 11,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 1.4,
-        color: color,
-      );
+    fontSize: 11,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 1.4,
+    color: color,
+  );
 
   static TextStyle body({double size = 14, Color? color}) =>
       GoogleFonts.plusJakartaSans(
@@ -165,39 +192,40 @@ abstract class AppText {
       );
 
   static TextStyle caption({Color? color}) => GoogleFonts.plusJakartaSans(
-        fontSize: 12,
-        fontWeight: FontWeight.w500,
-        height: 1.4,
-        color: color,
-      );
+    fontSize: 12,
+    fontWeight: FontWeight.w500,
+    height: 1.4,
+    color: color,
+  );
 
   static TextStyle pillLabel({Color? color}) => GoogleFonts.plusJakartaSans(
-        fontSize: 13,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 0.2,
-        color: color,
-      );
+    fontSize: 13,
+    fontWeight: FontWeight.w700,
+    letterSpacing: 0.2,
+    color: color,
+  );
 }
 
-/// Convenience accessors for the theme-aware neutral tokens.
+/// Convenience accessors for theme-aware tokens.
 extension AppThemeX on BuildContext {
   ColorScheme get colors => Theme.of(this).colorScheme;
   bool get isDark => Theme.of(this).brightness == Brightness.dark;
 
-  Color get cardColor =>
-      isDark ? AppColors.cardDark : AppColors.cardLight;
+  Color get cardColor => isDark ? AppColors.cardDark : AppColors.cardLight;
   Color get cardMutedColor =>
       isDark ? AppColors.cardMutedDark : AppColors.cardMutedLight;
-  Color get trackColor =>
-      isDark ? AppColors.trackDark : AppColors.trackLight;
+  Color get trackColor => isDark ? AppColors.trackDark : AppColors.trackLight;
   Color get hairlineColor =>
       isDark ? AppColors.hairlineDark : AppColors.hairlineLight;
   Color get textSecondary =>
       isDark ? AppColors.textSecondaryDark : AppColors.textSecondaryLight;
   Color get textTertiary =>
       isDark ? AppColors.textTertiaryDark : AppColors.textTertiaryLight;
+  Color get primaryTintColor =>
+      isDark ? AppColors.trackDark : AppColors.primaryTint;
+  Color get inputFillColor =>
+      isDark ? AppColors.cardDark : const Color(0xFFF1F3F8);
   Color get inkPillColor =>
       isDark ? AppColors.inkPillDark : AppColors.inkPillLight;
-  // Light mode: dark pill -> white label. Dark mode: light pill -> ink label.
   Color get onInkPillColor => isDark ? AppColors.bgDark : Colors.white;
 }

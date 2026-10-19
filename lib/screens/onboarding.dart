@@ -68,7 +68,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: colorScheme.surface,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: SafeArea(
         child: Column(
           children: [
@@ -115,7 +115,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
                           flex: 3,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: colorScheme.primaryContainer.withValues(alpha: 0.2),
+                              color: context.isDark ? AppColors.trackDark : AppColors.primaryTint,
                               shape: BoxShape.circle,
                             ),
                             padding: const EdgeInsets.all(20),
@@ -135,7 +135,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
                                 _onboardingData[index]['title']!,
                                 textAlign: TextAlign.center,
                                 style: AppText.screenTitle(
-                                    size: 28, color: colorScheme.onSurface),
+                                    size: 24, color: colorScheme.onSurface),
                               ),
                               const SizedBox(height: 16),
                               Text(
@@ -156,7 +156,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
             ),
             // Bottom Controls
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.fromLTRB(28, 0, 28, 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -172,8 +172,8 @@ class OnBoardingPageState extends State<OnBoardingPage> {
                         decoration: BoxDecoration(
                           color: _currentPage == index
                               ? colorScheme.primary
-                              : colorScheme.primary.withValues(alpha: 0.2),
-                          borderRadius: BorderRadius.circular(4),
+                              : context.hairlineColor,
+                          borderRadius: BorderRadius.circular(AppRadius.pill),
                         ),
                       ),
                     ),
@@ -182,25 +182,18 @@ class OnBoardingPageState extends State<OnBoardingPage> {
                   GestureDetector(
                     onTap: _onNextTap,
                     child: Container(
-                      height: 60,
-                      width: 60,
+                      height: 56,
+                      width: 56,
                       decoration: BoxDecoration(
                         color: colorScheme.primary,
                         shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: colorScheme.primary.withValues(alpha: 0.3),
-                            blurRadius: 15,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
                       ),
                       child: Icon(
                         _currentPage == _onboardingData.length - 1
                             ? Icons.check_rounded
-                            : Icons.arrow_forward_ios_rounded,
-                        color: Colors.white,
-                        size: 24,
+                            : Icons.chevron_right_rounded,
+                        color: colorScheme.onPrimary,
+                        size: 22,
                       ),
                     ),
                   ),

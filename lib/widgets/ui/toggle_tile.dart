@@ -11,6 +11,10 @@ class ToggleTile extends StatelessWidget {
   final ValueChanged<bool> onChanged;
   final bool showStateLabel;
 
+  /// When true (default) a hairline [Divider] is drawn below the tile so
+  /// consecutive tiles in a list are visually separated.
+  final bool showDivider;
+
   const ToggleTile({
     super.key,
     required this.title,
@@ -18,43 +22,53 @@ class ToggleTile extends StatelessWidget {
     required this.value,
     required this.onChanged,
     this.showStateLabel = false,
+    this.showDivider = true,
   });
 
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppSpacing.lg,
-        vertical: AppSpacing.md,
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(title, style: AppText.cardTitle(color: cs.onSurface)),
-                if (subtitle != null) ...[
-                  const SizedBox(height: 2),
-                  Text(subtitle!,
-                      style: AppText.caption(color: cs.onSurfaceVariant)),
-                ],
-              ],
-            ),
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: 14,
           ),
-          if (showStateLabel) ...[
-            Text(
-              value ? 'ON' : 'OFF',
-              style: AppText.pillLabel(
-                color: value ? cs.primary : cs.onSurfaceVariant,
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: AppText.cardTitle(color: cs.onSurface)),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle!,
+                        style: AppText.caption(color: cs.onSurfaceVariant),
+                      ),
+                    ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(width: AppSpacing.sm),
-          ],
-          Switch.adaptive(value: value, onChanged: onChanged),
-        ],
-      ),
+              if (showStateLabel) ...[
+                Text(
+                  value ? 'ON' : 'OFF',
+                  style: AppText.pillLabel(
+                    color: value ? cs.primary : cs.onSurfaceVariant,
+                  ),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+              ],
+              Switch.adaptive(value: value, onChanged: onChanged),
+            ],
+          ),
+        ),
+        if (showDivider)
+          Divider(height: 1, thickness: 1, color: context.hairlineColor),
+      ],
     );
   }
 }

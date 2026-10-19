@@ -25,7 +25,7 @@ class CashFlowChart extends StatelessWidget {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     final inColor = cs.primary;
-    final outColor = AppColors.negative.withValues(alpha: 0.55);
+    final outColor = AppColors.negative.withValues(alpha: 0.45);
 
     var maxVal = 0.0;
     for (final p in points) {
@@ -93,7 +93,7 @@ class CashFlowChart extends StatelessWidget {
   BarChartRodData _rod(double y, Color color) => BarChartRodData(
     toY: y,
     color: color,
-    width: 9,
-    borderRadius: const BorderRadius.vertical(top: Radius.circular(4)),
+    width: 12,
+    borderRadius: const BorderRadius.vertical(top: Radius.circular(2)),
   );
 }

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
 
-/// Pill segmented control: neutral track, active segment is a white (card)
-/// pill with a soft shadow, inactive segments are muted text.
+/// Segmented control: tinted track, active segment is a white (panel) tile,
+/// inactive segments are muted text. No shadow.
 class SegmentedControl extends StatelessWidget {
   final List<String> segments;
   final int selectedIndex;
@@ -21,8 +21,8 @@ class SegmentedControl extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
-        color: context.trackColor,
-        borderRadius: BorderRadius.circular(AppRadius.md),
+        color: context.primaryTintColor,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
       child: Row(
         children: List.generate(segments.length, (i) {
@@ -37,22 +37,13 @@ class SegmentedControl extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 9),
                 decoration: BoxDecoration(
                   color: selected ? context.cardColor : Colors.transparent,
-                  borderRadius: BorderRadius.circular(AppRadius.sm),
-                  boxShadow: selected
-                      ? [
-                          BoxShadow(
-                            color: cs.shadow.withValues(alpha: 0.08),
-                            blurRadius: 10,
-                            offset: const Offset(0, 3),
-                          ),
-                        ]
-                      : null,
+                  borderRadius: BorderRadius.circular(AppRadius.xs + 2),
                 ),
                 child: Text(
                   segments[i],
                   textAlign: TextAlign.center,
                   style: AppText.pillLabel(
-                    color: selected ? cs.onSurface : cs.onSurfaceVariant,
+                    color: selected ? cs.onSurface : context.textTertiary,
                   ).copyWith(fontSize: 13),
                 ),
               ),

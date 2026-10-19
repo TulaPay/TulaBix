@@ -55,7 +55,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
-                AppSpacing.xl, AppSpacing.sm, AppSpacing.xl, AppSpacing.md),
+                AppSpacing.xxl, AppSpacing.sm, AppSpacing.xxl, AppSpacing.md),
             child: SegmentedControl(
               segments: _filters,
               selectedIndex: _filterIndex,
@@ -92,10 +92,9 @@ class _ActivityScreenState extends State<ActivityScreen> {
                   }
                   return ListView.separated(
                     padding: const EdgeInsets.fromLTRB(
-                        AppSpacing.xl, 0, AppSpacing.xl, AppSpacing.section),
+                        AppSpacing.xxl, 0, AppSpacing.xxl, AppSpacing.section),
                     itemCount: rows.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: AppSpacing.md),
+                    separatorBuilder: (_, __) => const SizedBox.shrink(),
                     itemBuilder: (context, i) =>
                         _TxnTile(rows[i], onTap: () => showTransactionDetail(context, rows[i])),
                   );
@@ -117,7 +116,7 @@ class _TxnTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
-    final green = const Color(0xFF10B981);
+    const green = AppColors.positive;
     return ListRowCard(
       icon: txn.isInflow
           ? Icons.south_west_rounded
@@ -141,7 +140,6 @@ Future<void> showTransactionDetail(
   return showModalBottomSheet(
     context: context,
     isScrollControlled: true,
-    backgroundColor: Colors.transparent,
     builder: (context) {
       final cs = Theme.of(context).colorScheme;
       Widget kv(String k, String v) => Padding(

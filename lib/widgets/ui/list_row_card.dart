@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
-import 'package:tulapay/widgets/ui/icon_chip.dart';
 
-/// Small tinted status pill (e.g. "Verified", "Goal: 104%").
+/// Small tinted status pill.
 class StatusBadge extends StatelessWidget {
   final String text;
   final Color? color;
@@ -15,23 +14,22 @@ class StatusBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
       decoration: BoxDecoration(
-        color: c.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(AppRadius.sm),
+        color: c.withValues(alpha: 0.14),
+        borderRadius: AppRadius.pillAll,
       ),
       child: Text(
         text,
-        style: AppText.caption(color: c)
-            .copyWith(fontSize: 10, fontWeight: FontWeight.w800),
+        style: AppText.caption(
+          color: c,
+        ).copyWith(fontSize: 11, fontWeight: FontWeight.w700),
       ),
     );
   }
 }
 
-/// The reference list row: leading icon chip (or custom [leading]) → title +
-/// subtitle → trailing value/secondary or a [trailing] widget / chevron.
-///
-/// [floating] true renders it as its own white card (Wallet-style); false
-/// renders a bare row for grouping inside one card with hairline dividers.
+/// Corporate Redesign list row: leading icon chip → title + subtitle → trailing value.
+/// Defaults to flat inline row with a bottom hairline divider (`floating = false`), matching
+/// the Corporate HTML specification.
 class ListRowCard extends StatelessWidget {
   final IconData? icon;
   final Color? iconColor;
@@ -57,8 +55,17 @@ class ListRowCard extends StatelessWidget {
     this.trailing,
     this.showChevron = false,
     this.onTap,
-    this.floating = true,
+    this.floating = false,
   });
+
+  /// Returns the correct color for a value string:
+  /// '+…' → positive green, '-…' → negative red, else → onSurface.
+  Color _valueColor(String? value, ColorScheme cs) {
+    if (value == null) return cs.onSurface;
+    if (value.startsWith('+')) return AppColors.positive;
+    if (value.startsWith('-')) return AppColors.negative;
+    return cs.onSurface;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,48 +77,84 @@ class ListRowCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(value!, style: AppText.cardTitle(color: cs.onSurface)),
+              Text(
+                value!,
+                style: AppText.cardTitle(
+                  color: _valueColor(value, cs),
+                  size: 14,
+                ).copyWith(fontWeight: FontWeight.w700),
+              ),
               if (secondaryValue != null) ...[
                 const SizedBox(height: 2),
-                Text(secondaryValue!,
-                    style: AppText.caption(color: cs.onSurfaceVariant)),
+                Text(
+                  secondaryValue!,
+                  style: AppText.caption(
+                    color: cs.onSurfaceVariant,
+                  ).copyWith(fontSize: 11, fontWeight: FontWeight.w600),
+                ),
               ],
             ],
           )
         : showChevron
-            ? Icon(Icons.chevron_right_rounded,
-                size: 20, color: cs.onSurfaceVariant.withValues(alpha: 0.5))
-            : null;
+        ? Icon(
+            Icons.chevron_right_rounded,
+            size: 20,
+            color: context.textTertiary,
+          )
+        : null;
 
-    final row = Padding(
-      padding: EdgeInsets.all(floating ? AppSpacing.lg : AppSpacing.md),
+    final leadingWidget =
+        leading ??
+        Container(
+          width: 36,
+          height: 36,
+          decoration: BoxDecoration(
+            color: context.primaryTintColor,
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+          ),
+          child: Icon(
+            icon ?? Icons.circle,
+            color: iconColor ?? cs.primary,
+            size: 18,
+          ),
+        );
+
+    final content = Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
         children: [
-          leading ??
-              IconChip(icon ?? Icons.circle,
-                  color: iconColor ?? cs.primary, size: 44),
-          const SizedBox(width: AppSpacing.md),
+          leadingWidget,
+          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(title,
-                    style: AppText.cardTitle(color: cs.onSurface),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis),
+                Text(
+                  title,
+                  style: AppText.cardTitle(
+                    color: cs.onSurface,
+                    size: 14,
+                  ).copyWith(fontWeight: FontWeight.w700),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 if (subtitle != null) ...[
                   const SizedBox(height: 2),
-                  Text(subtitle!,
-                      style: AppText.caption(color: cs.onSurfaceVariant),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis),
+                  Text(
+                    subtitle!,
+                    style: AppText.caption(
+                      color: cs.onSurfaceVariant,
+                    ).copyWith(fontSize: 12, fontWeight: FontWeight.w500),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ],
               ],
             ),
           ),
           if (trailingWidget != null) ...[
-            const SizedBox(width: AppSpacing.md),
+            const SizedBox(width: 12),
             trailingWidget,
           ],
         ],
@@ -121,22 +164,36 @@ class ListRowCard extends StatelessWidget {
     if (!floating) {
       return Material(
         color: Colors.transparent,
-        child: InkWell(onTap: onTap, child: row),
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border(
+                bottom: BorderSide(color: context.hairlineColor, width: 1),
+              ),
+            ),
+            child: content,
+          ),
+        ),
       );
     }
 
-    return Material(
-      color: context.cardColor,
-      borderRadius: BorderRadius.circular(AppRadius.lg),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: onTap,
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppRadius.lg),
-            border: Border.all(color: context.hairlineColor),
+    return Container(
+      decoration: BoxDecoration(
+        color: context.cardColor,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: context.hairlineColor, width: 1),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: content,
           ),
-          child: row,
         ),
       ),
     );

@@ -96,8 +96,8 @@ class _BusinessScreenState extends State<BusinessScreen> {
                         ],
                       )
                     : _error != null
-                        ? _errorState(cs)
-                        : _content(cs),
+                    ? _errorState(cs)
+                    : _content(cs),
               ),
             ),
           ],
@@ -109,7 +109,12 @@ class _BusinessScreenState extends State<BusinessScreen> {
   Widget _errorState(ColorScheme cs) {
     return ListView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(AppSpacing.xxl, 120, AppSpacing.xxl, 100),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xxl,
+        120,
+        AppSpacing.xxl,
+        100,
+      ),
       children: [
         Icon(Icons.cloud_off_rounded, size: 48, color: cs.outlineVariant),
         const SizedBox(height: 12),
@@ -147,7 +152,6 @@ class _BusinessScreenState extends State<BusinessScreen> {
             deltaLabel:
                 '${m.deltaPct.abs().toStringAsFixed(1)}% ${m.deltaCaption}',
             deltaPositive: m.deltaPct >= 0,
-            sparkline: m.sparkline,
           ),
           const SizedBox(height: AppSpacing.section),
 
@@ -197,7 +201,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
             children: [
               const MicroLabel('Overview'),
               const SizedBox(height: 2),
-              Text('Business', style: AppText.screenTitle(size: 28)),
+              Text('Business', style: AppText.screenTitle(size: 24)),
             ],
           ),
           PillButton.dark(
@@ -220,7 +224,6 @@ class _BusinessScreenState extends State<BusinessScreen> {
           label: 'Available to settle',
           value: money(m.availablePayout, compact: true),
           secondary: 'Next: ${m.nextSettlement}',
-          icon: Icons.account_balance_rounded,
           filled: true,
         ),
         StatCard(
@@ -228,19 +231,16 @@ class _BusinessScreenState extends State<BusinessScreen> {
           value: '${m.processingCount}',
           unit: 'txns',
           secondary: money(m.processingAmount, compact: true),
-          icon: Icons.sync_rounded,
         ),
         StatCard(
           label: 'Failed',
           value: money(m.failedAmount, compact: true),
           secondary: '${m.failedCount} to review',
-          icon: Icons.error_outline_rounded,
         ),
         StatCard(
           label: 'Settled',
           value: money(m.settled, compact: true),
           secondary: m.settledCaption,
-          icon: Icons.verified_rounded,
         ),
       ],
     );
@@ -411,20 +411,23 @@ class _BusinessScreenState extends State<BusinessScreen> {
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(AppRadius.md),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
         ),
         child: Text(
           c.short,
           style: AppText.caption(
             color: onColor,
-          ).copyWith(fontWeight: FontWeight.w900, fontSize: 11),
+          ).copyWith(fontWeight: FontWeight.w700, fontSize: 11),
         ),
       ),
       title: c.name,
       subtitle: '${c.txns} transactions',
       trailing: Text(
         '${(c.share * 100).round()}%',
-        style: AppText.hero(size: 20, color: cs.primary),
+        style: AppText.hero(
+          size: 20,
+          color: cs.primary,
+        ).copyWith(fontFeatures: const [FontFeature.tabularFigures()]),
       ),
       onTap: () {},
     );
@@ -497,18 +500,18 @@ const _bank = 0xFF10B981;
 const _other = 0xFF8E9AAB;
 
 (String, String, int) _channelMeta(String key) => switch (key) {
-      'mtn_momo' => ('MTN Mobile Money', 'MTN', _mtn),
-      'orange_money' => ('Orange Money', 'OM', _orange),
-      'visa' || 'mastercard' || 'card' => ('Card payment', 'CARD', _card),
-      'bank_transfer' => ('Bank transfer', 'BANK', _bank),
-      'qr_checkout' => ('QR checkout', 'QR', _card),
-      'payment_link' => ('Payment link', 'LINK', _orange),
-      _ => (
-          key.isEmpty ? 'Other' : key,
-          key.length >= 3 ? key.substring(0, 3).toUpperCase() : key.toUpperCase(),
-          _other,
-        ),
-    };
+  'mtn_momo' => ('MTN Mobile Money', 'MTN', _mtn),
+  'orange_money' => ('Orange Money', 'OM', _orange),
+  'visa' || 'mastercard' || 'card' => ('Card payment', 'CARD', _card),
+  'bank_transfer' => ('Bank transfer', 'BANK', _bank),
+  'qr_checkout' => ('QR checkout', 'QR', _card),
+  'payment_link' => ('Payment link', 'LINK', _orange),
+  _ => (
+    key.isEmpty ? 'Other' : key,
+    key.length >= 3 ? key.substring(0, 3).toUpperCase() : key.toUpperCase(),
+    _other,
+  ),
+};
 
 class _ChannelAgg {
   final String key;
@@ -635,20 +638,16 @@ _Metrics _computeMetrics(
     0,
     (s, c) => s + c.amount,
   );
-  final channels =
-      channelTotals.values.map((c) {
-          final meta = _channelMeta(c.key);
-          return _Channel(
-            meta.$1,
-            meta.$2,
-            meta.$3,
-            c.count,
-            channelTotalAmount == 0
-                ? 0
-                : (c.amount / channelTotalAmount).toDouble(),
-          );
-        }).toList()
-        ..sort((a, b) => b.share.compareTo(a.share));
+  final channels = channelTotals.values.map((c) {
+    final meta = _channelMeta(c.key);
+    return _Channel(
+      meta.$1,
+      meta.$2,
+      meta.$3,
+      c.count,
+      channelTotalAmount == 0 ? 0 : (c.amount / channelTotalAmount).toDouble(),
+    );
+  }).toList()..sort((a, b) => b.share.compareTo(a.share));
 
   // Available-to-settle is a current balance, not scoped to the period —
   // same formula as Homepage's MAIN BALANCE (lib/models/ledger.dart).
