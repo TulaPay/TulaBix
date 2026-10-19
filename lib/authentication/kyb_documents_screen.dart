@@ -60,17 +60,20 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
   /// tax document, per the KYB spec's "Document upload PDF" requirement) is
   /// only offered when [allowFile] is true — the selfie and beneficial-owner
   /// ID photos have no PDF use case, so they stay camera/gallery-only.
+  // No explicit backgroundColor here — relies on the theme's
+  // bottomSheetTheme (a real solid fill). This used to wrap its content in
+  // GlassSurface with backgroundColor: Colors.transparent, which rendered
+  // the whole menu with zero background after the redesign — GlassSurface
+  // no longer draws a blur/tint fill unless a `tint` is explicitly passed,
+  // so the sheet's text/icons were floating transparently over the page
+  // behind them with no contrast at all.
   Future<XFile?> _pickDocument({bool allowFile = true, bool front = false}) {
     return showModalBottomSheet<XFile?>(
       context: context,
-      backgroundColor: Colors.transparent,
       builder: (context) {
         final cs = Theme.of(context).colorScheme;
         return SafeArea(
-          child: GlassSurface(
-            borderRadius: BorderRadius.circular(12),
-            opacity: 0.18,
-            blur: 18,
+          child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(
               mainAxisSize: MainAxisSize.min,
