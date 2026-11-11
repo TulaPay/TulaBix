@@ -1,0 +1,1050 @@
+{
+  "@@locale": "en",
+  "aClearPhotoOfThe": "A clear photo of the representative's face, matched against the ID above.",
+  "aPaymentLinkOrYour": "a Payment Link or your QR Payment Page instead.",
+  "aValidGovernmentIssuedId": "A valid government-issued ID card",
+  "acceptAllMajorCreditAnd": "Accept all major credit and debit cards from customers around the world with bank-grade security.",
+  "accessIsLimitedToThe": "Access is limited to the features needed for your merchant account.",
+  "accountClosed": "Account closed",
+  "accountInformation": "Account Information",
+  "accountRecovery": "Account Recovery",
+  "accountSecurity": "Account & Security",
+  "accountSuspended": "Account suspended",
+  "activity": "Activity",
+  "addAPaymentDescription": "Add a payment description",
+  "addAPrivateNoteAbout": "Add a private note about this customer...",
+  "addAShortReceiptNote": "Add a short receipt note",
+  "addATitleAndNumeric": "Add a title and numeric target",
+  "addBeneficialOwner": "Add beneficial owner",
+  "addCustomer": "Add Customer",
+  "address": "Address",
+  "alertsAndNotificationChannels": "Alerts and notification channels",
+  "allActions": "All Actions",
+  "allCaughtUp": "All caught up",
+  "allTime": "All time",
+  "allocatedAmount": "Allocated amount",
+  "alreadyHaveAnAccount": "Already have an account? ",
+  "amount": "Amount",
+  "amountToReceive": "Amount to receive",
+  "analytics": "Analytics",
+  "analyzeYourBusinessPerformanceWith": "Analyze your business performance with real-time analytics and detailed revenue reports.",
+  "and": " and ",
+  "andSecurityEvents": "and security events.",
+  "andWatchProgressAgainstThem": "and watch progress against them.",
+  "answersToCommonQuestionsPlus": "Answers to common questions, plus a direct line to support.",
+  "anyoneWhoOwnsOrControls": "Anyone who owns or controls 25% or more of the business. Leave empty for a sole proprietorship — that collapses into the representative above.",
+  "appearance": "Appearance",
+  "approvesYourSubmissionPullDown": "approves your submission. Pull down to check again.",
+  "asItAppearsOnYour": "As it appears on your registration documents",
+  "askForDeviceBiometricsPasscode": "Ask for device biometrics / passcode each launch",
+  "availableBalance": "AVAILABLE BALANCE",
+  "availableMonFri8am6pm": "Available Mon–Fri, 8am–6pm WAT.",
+  "availableToSettle": "Available to settle",
+  "awaSBoutique": "Awa's Boutique",
+  "bankAccount": "Bank account",
+  "bankGradeSecurity": "Bank-grade security",
+  "bankTransfer": "Bank transfer",
+  "bankTransfer2": "Bank Transfer",
+  "bankTransferSubmitted": "Bank Transfer Submitted",
+  "basicInformationAboutYourCompany": "Basic information about your company",
+  "beneficialOwners": "Beneficial owners",
+  "beneficiaryAccount": "Beneficiary account",
+  "billing": "Billing",
+  "browseFeatureGuidesAndTroubleshooting": "Browse feature guides and troubleshooting notes.",
+  "budget": "Budget",
+  "budgetAllocation": "Budget Allocation",
+  "budgetUsageTrend": "Budget Usage Trend",
+  "budgets": "Budgets",
+  "budgetsThisMonth": "Budgets This Month",
+  "builtYetNothingHereIs": "built yet — nothing here is saved.",
+  "business": "Business",
+  "businessDetails": "Business details",
+  "businessEmail": "Business email",
+  "businessEmailIsRequired": "Business email is required",
+  "businessFinancingThroughTulabiz": "Business financing through TulaBiz.",
+  "businessIdentityAndMerchantVerification": "Business identity and merchant verification.",
+  "businessIdentityAndVerification": "Business identity and verification",
+  "businessIdentityContactAndVerification": "Business identity, contact, and verification.",
+  "businessInformation": "Business information",
+  "businessName": "Business name",
+  "businessNameIsRequired": "Business name is required",
+  "businessPhone": "Business phone",
+  "businessPhoneIsRequired": "Business phone is required",
+  "businessType": "Business type",
+  "cancel": "Cancel",
+  "cardPayment": "Card payment",
+  "cashFlow": "Cash flow",
+  "cashPaymentReceived": "Cash Payment Received",
+  "cashReceipt": "Cash Receipt",
+  "cashReceipts": "Cash Receipts",
+  "category": "Category",
+  "category2": "CATEGORY",
+  "change": "Change",
+  "changePassword": "Change password",
+  "changeThePasswordYouUse": "Change the password you use to sign in.",
+  "changeYour6DigitTransaction": "Change your 6-digit transaction PIN.",
+  "channel": "Channel",
+  "checkYourEmail": "Check Your Email",
+  "checklist": "Checklist",
+  "checkoutPreferencesReceiptsAndPayment": "Checkout preferences, receipts, and payment behavior.",
+  "chooseFromGallery": "Choose from gallery",
+  "chooseHowTheAppAlerts": "Choose how the app alerts you about payment activity ",
+  "chooseHowTheAppAlerts2": "Choose how the app alerts you about payment activity and security events.",
+  "city": "City",
+  "cityIsRequired": "City is required",
+  "code": "Code",
+  "codeAndTitleAreRequired": "Code and title are required",
+  "codeCopied": "Code copied",
+  "collect": "Collect",
+  "collectPayment": "Collect Payment",
+  "collectTheBusinessDetailsWe": "Collect the business details we need before KYB document review.",
+  "comingSoon": "Coming soon",
+  "commonIssuesAndWhatTo": "Common issues and what to check first.",
+  "completed": "Completed",
+  "completedPaymentsAreBatchedAnd": "Completed payments are batched and paid to your settlement account on ",
+  "completedPaymentsAreBatchedAnd2": "Completed payments are batched and paid to your settlement account on the next business day. You can see each batch under Payments.",
+  "confirm": "Confirm",
+  "confirm6DigitPin": "Confirm 6-digit PIN",
+  "confirmNewPassword": "Confirm new password",
+  "confirmNewPin": "Confirm new PIN",
+  "confirmYourPin": "Confirm your PIN",
+  "confirmYourSettlementAccountAnd": "Confirm your settlement account and fees.",
+  "connectPayments": "Connect payments",
+  "construction": "Construction",
+  "contact": "Contact",
+  "contactSupport": "Contact support",
+  "contactSupport2": "Contact Support",
+  "contactSupportIfYouBelieve": "Contact support if you believe this is a mistake.",
+  "continueLabel": "Continue",
+  "continueToKyb": "Continue to KYB",
+  "copy": "Copy",
+  "copyRef": "Copy ref",
+  "couldNotExportAnalytics": "Could not export analytics",
+  "couldNotExportTheStatement": "Could not export the statement",
+  "couldNotLoadAnalyticsPull": "Could not load analytics. Pull to try again.",
+  "couldNotLoadBusinessData": "Could not load business data. Pull to try again.",
+  "couldNotLoadCustomersPull": "Could not load customers. Pull to try again.",
+  "couldNotLoadThisStatement": "Could not load this statement.",
+  "couldNotLoadYourAccount": "Could not load your account",
+  "couldNotLoadYourProfile": "Could not load your profile",
+  "couldNotLoadYourSecurity": "Could not load your security settings",
+  "couldNotResendTheCode": "Could not resend the code — please try again.",
+  "couldNotSaveCodeMay": "Could not save — code may already exist",
+  "couldNotSaveReverting": "Could not save — reverting",
+  "couldNotSaveThisCustomer": "Could not save this customer. Try again.",
+  "couldNotSaveThisSetting": "Could not save this setting — try again",
+  "couldNotSaveTryAgain": "Could not save — try again",
+  "couldNotSendTheConfirmation": "Could not send the confirmation email — please try again.",
+  "couldNotSignOutTry": "Could not sign out — try again",
+  "couldNotSubmitTryAgain": "Could not submit — try again",
+  "couldNotUpdatePassword": "Could not update password",
+  "couldNotVerifyPinCheck": "Could not verify PIN — check your connection",
+  "counterparty": "Counterparty",
+  "create": "Create",
+  "createACleanReceiptWith": "Create a clean receipt with a clear amount and item description.",
+  "createALink": "CREATE A LINK",
+  "createALinkForA": "Create a link for a specific amount or invoice.",
+  "createANew6Digit": "Create a new 6-digit PIN for your TulaBiz account.",
+  "createANewPasswordFor": "Create a new password for your TulaBiz account.",
+  "createAPin": "Create a PIN",
+  "createAccount": "Create Account",
+  "createAndManageRevenueStreams": "Create and manage revenue streams for different branches.",
+  "createSecurePaymentLinks": "Create secure payment links",
+  "createYourAccountToStart": "Create your account to start managing payments in one liquid workspace.",
+  "created": "Created",
+  "criticalFallbackAlerts": "Critical fallback alerts",
+  "currency": "Currency",
+  "current": "Current",
+  "custom": "Custom",
+  "customerInfo": "Customer info",
+  "customerName": "Customer name",
+  "customerSMtnNumber": "Customer's MTN number",
+  "customerSince": "Customer since",
+  "customerTier": "Customer tier",
+  "customers": "Customers",
+  "darkTheme": "Dark theme",
+  "dataEncryptedAndStrictlyConfidential": "Data encrypted and strictly confidential",
+  "dataProtection": "Data protection",
+  "date": "Date",
+  "dedicatedBusinessLineIfDifferent": "Dedicated business line, if different",
+  "delete": "Delete",
+  "description": "Description",
+  "destinationWallet": "Destination wallet",
+  "device": "Device",
+  "didnTGetIt": "Didn't get it? ",
+  "didnTReceiveTheCode": "Didn't receive the code? ",
+  "digitalWalletPower": "Digital Wallet Power",
+  "directory": "Directory",
+  "disabled": "Disabled",
+  "discount": "Discount %",
+  "docs": "Docs",
+  "documentation": "Documentation",
+  "donTHaveAnAccount": "Don't have an account? ",
+  "driverSLicense": "Driver's License",
+  "eG12RueDe": "e.g. 12 Rue de la Paix",
+  "eG2376xxXxx": "e.g. +237 6XX XXX XXX",
+  "eG500000": "e.g. 500000",
+  "eG6xxxxxxxx": "e.g. 6XXXXXXXX",
+  "eGDouala": "e.g. Douala",
+  "eGGraphicDesign": "e.g. Graphic design",
+  "eGMainWallet": "e.g. Main wallet",
+  "eGSavingsWallet": "e.g. Savings wallet",
+  "editGoal": "Edit goal",
+  "editProfile": "Edit Profile",
+  "email": "Email",
+  "emailAddress": "Email address",
+  "emailAddressIsRequired": "Email address is required",
+  "emailNotifications": "Email notifications",
+  "emailSupport": "Email support",
+  "enableQr": "Enable QR",
+  "encrypted": "Encrypted",
+  "enter6DigitPin": "Enter 6-digit PIN",
+  "enter6DigitsToKeep": "Enter 6 digits to keep your account and transactions secure.",
+  "enterANumber": "Enter a number",
+  "enterAValidAmount": "Enter a valid amount",
+  "enterAValidEmailAddress": "Enter a valid email address",
+  "enterAValidMobileMoney": "Enter a valid mobile money number",
+  "enterAValidMobileNumber": "Enter a valid mobile number",
+  "enterAnAmountOfAt": "Enter an amount of at least 200 XAF",
+  "enterFullName": "Enter full name",
+  "enterTheCustomerSMtn": "Enter the customer's MTN MoMo number",
+  "enterYour6DigitPin": "Enter your 6-digit PIN",
+  "enterYour6DigitTransaction": "Enter your 6-digit transaction PIN to continue.",
+  "enterYourCode": "Enter Your Code",
+  "enterYourPassword": "Enter your password",
+  "estimatedMonthlyTransactionVolumeXaf": "Estimated monthly transaction volume (XAF)",
+  "estimatedTime": "Estimated time: ",
+  "estimatedVolumeIsRequired": "Estimated volume is required",
+  "expenseCategories": "Expense Categories",
+  "expenses": "Expenses",
+  "expensesTrend": "Expenses Trend",
+  "expired": "Expired",
+  "exportLabel": "Export",
+  "exportingBusinessReport": "Exporting business report…",
+  "failed": "Failed",
+  "faqsAndSupportContact": "FAQs and support contact",
+  "favorites": "Favorites",
+  "featureGuides": "Feature guides",
+  "fee": "Fee",
+  "feesCharged": "Fees charged",
+  "financialEngineForMerchants": "FINANCIAL ENGINE FOR MERCHANTS",
+  "financialOperationsEngine": "Financial Operations Engine",
+  "financialStatements": "Financial statements",
+  "findAnswersLaunchSupportOr": "Find answers, launch support, or learn the product flow.",
+  "finish": "Finish",
+  "followsSystem": "Follows system",
+  "foodBeverage": "Food & Beverage",
+  "forEveryPayoutRegardlessOf": "for every payout regardless of this setting.",
+  "forMoreThanAnHour": "for more than an hour, contact support with the reference.",
+  "forgotPassword": "Forgot password?",
+  "forgotPin": "Forgot PIN?",
+  "fromTheButtonBelowAnd": "from the button below and we'll verify and update it.",
+  "fullName": "Full name",
+  "fullNameIsRequired": "Full name is required",
+  "generate": "Generate",
+  "generateALinkFirst": "Generate a link first",
+  "generateProfessionalMonthlyReportsFor": "Generate professional monthly reports for tax and auditing.",
+  "generateReceipt": "Generate receipt",
+  "generating": "Generating…",
+  "getAHumanResponseDuring": "Get a human response during business hours.",
+  "getNotified": "Get notified",
+  "getStarted": "Get Started",
+  "gettingStarted": "Getting started",
+  "gettingStarted2": "Getting Started",
+  "globalCardPayments": "Global Card Payments",
+  "goToLogin": "Go to Login",
+  "grossRevenue": "Gross revenue",
+  "growth": "Growth",
+  "growthGoals": "Growth Goals",
+  "guidesProductNotesAndImplementation": "Guides, product notes, and implementation references.",
+  "handlePhysicalAndDigitalPayments": "Handle physical and digital payments seamlessly in one unified platform designed for speed.",
+  "healthBeauty": "Health & Beauty",
+  "help": "Help",
+  "helpCenter": "Help Center",
+  "helpSupport": "Help & Support",
+  "higherLimitsAndLowerFees": "Higher limits and lower fees. Requires review.",
+  "higherTransactionLimits": "Higher transaction limits",
+  "history": "History",
+  "home": "Home",
+  "howCanWeHelp": "How can we help?",
+  "howDoIChangeMy": "How do I change my payout number?",
+  "howLongDoSettlementsTake": "How long do settlements take?",
+  "iAgreeToThe": "I agree to the ",
+  "iVeConfirmedContinue": "I've confirmed — Continue",
+  "ibanAccountNumber": "IBAN / account number",
+  "idDocumentAddedTapTo": "ID document added — tap to replace",
+  "idDocumentCapturedTapTo": "ID document captured — tap to retake",
+  "idVerification": "ID verification",
+  "identityDocument": "Identity document",
+  "includeAtLeastOneNumber": "Include at least one number",
+  "includeAtLeastOneUppercase": "Include at least one uppercase letter",
+  "income": "Income",
+  "incomeSources": "Income Sources",
+  "incomeTrend": "Income Trend",
+  "incorrectPinTryAgain": "Incorrect PIN — try again",
+  "industrySector": "Industry / sector",
+  "instant": "Instant",
+  "internalNotes": "Internal notes",
+  "internalTransfer": "Internal Transfer",
+  "internalTransferCompleted": "Internal Transfer Completed",
+  "internationalPassport": "International Passport",
+  "invoice": "Invoice",
+  "invoiceForGraphicDesign": "Invoice for graphic design",
+  "itemOrService": "Item or service",
+  "jeanDupont": "Jean Dupont",
+  "joinThousandsOfMerchantsGrowing": "Join thousands of merchants growing their business with TulaPay's secure platform.",
+  "joinTulapay": "Join TulaPay",
+  "kybVerificationLevel1": "KYB verification — Level 1",
+  "language": "Language",
+  "legalAgreements": "Legal Agreements",
+  "legalBusinessName": "Legal business name",
+  "lightTheme": "Light theme",
+  "link": "Link",
+  "linkActions": "LINK ACTIONS",
+  "linksCashReceiptsQrPayments": "Links, cash receipts, QR payments, and bank transfers.",
+  "liveChat": "Live chat",
+  "liveChatOpensDuringBusiness": "Live chat opens during business hours",
+  "loan": "Loan",
+  "loans": "Loans",
+  "logIn": "Log In",
+  "logInSecurelyToYour": "Log in securely to your TulaPay account.",
+  "main": "Main",
+  "markAllRead": "Mark all read",
+  "merchantDashboard": "Merchant Dashboard",
+  "merchantPayoutAccount": "Merchant payout account",
+  "message": "Message",
+  "minimum8Characters": "Minimum 8 characters",
+  "mobileMoneyConfirmationsCanTake": "Mobile money confirmations can take a few minutes. If it stays pending ",
+  "mobileMoneyConfirmationsCanTake2": "Mobile money confirmations can take a few minutes. If it stays pending for more than an hour, contact support with the reference.",
+  "mobileMoneyNumber": "Mobile money number",
+  "momoNumberForOrangeMoney": "MoMo number. For Orange Money or other methods, use ",
+  "moneyIn": "Money in",
+  "moneyInMotion": "Money in motion",
+  "moneyInVsOut": "Money in vs out",
+  "moneyOut": "Money out",
+  "more": "More",
+  "mtnMomoOnly": "MTN MoMo only",
+  "multipleBusinessWallets": "Multiple business wallets",
+  "mustBe6Digits": "Must be 6 digits",
+  "mustBeAtLeast8": "Must be at least 8 characters",
+  "myQrCode": "My QR Code",
+  "n24Hours": "24 hours",
+  "n5Steps": "5 Steps",
+  "nameCannotBeBlank": "Name cannot be blank",
+  "nameIsRequired": "Name is required.",
+  "nationalIdCardCni": "National ID Card (CNI)",
+  "needsAttention": "Needs attention",
+  "net": "Net",
+  "netRevenue": "Net revenue",
+  "newCapabilities": "NEW CAPABILITIES",
+  "newCode": "New code",
+  "newCustomer": "New customer",
+  "newGoal": "New goal",
+  "newPassword": "New password",
+  "newPin": "New PIN",
+  "newPromoCode": "New promo code",
+  "nextYouLlUploadYour": "Next, you'll upload your RCCM, tax, and ID documents for KYB review.",
+  "niuIsRequired": "NIU is required",
+  "niuTaxIdentificationNumber": "NIU (Tax Identification Number)",
+  "niuTaxIdentificationNumberIf": "NIU (Tax Identification Number) (if registered)",
+  "noActivityYet": "No activity yet",
+  "noActivityYetPaymentsWill": "No activity yet — payments will show up here.",
+  "noBudgetSetForThis": "No budget set for this month yet.",
+  "noCashReceiptsRecordedYet": "No cash receipts recorded yet.",
+  "noContactInfo": "No contact info",
+  "noCostsLoggedThisMonth": "No costs logged this month.",
+  "noCostsLoggedThisPeriod": "No costs logged this period.",
+  "noCustomersFound": "No customers found",
+  "noCustomersYet": "No customers yet",
+  "noExpensesLoggedYet": "No expenses logged yet.",
+  "noFailedPaymentsThisPeriod": "No failed payments this period.",
+  "noGoalsYetTapTo": "No goals yet — tap + to add one",
+  "noPaymentLinksYetGenerate": "No payment links yet — generate one above.",
+  "noPaymentsReceivedYetThis": "No payments received yet this month.",
+  "noPromoCodesYet": "No promo codes yet",
+  "noSettlementsYet": "No settlements yet",
+  "noTransactionsWithThisCustomer": "No transactions with this customer yet.",
+  "noTransactionsYet": "No transactions yet",
+  "noTransactionsYetThisPeriod": "No transactions yet this period.",
+  "noTransfersYet": "No transfers yet.",
+  "notScheduled": "Not scheduled",
+  "notSetUpYet": "Not set up yet",
+  "notYetAvailable": "Not yet available",
+  "note": "Note",
+  "nothingAllocatedYet": "Nothing allocated yet.",
+  "nothingYet": "Nothing yet.",
+  "notificationPreferences": "Notification preferences",
+  "notifications": "Notifications",
+  "oneOffPaymentLinks": "One-off payment links",
+  "openDocs": "Open docs",
+  "openItOnThisDevice": "Open it on this device to continue — it'll bring you right back here.",
+  "operatingCosts": "Operating costs",
+  "optional": "Optional",
+  "optionalInvoiceOrOrderReference": "Optional invoice or order reference",
+  "optionalMemo": "Optional memo",
+  "optionalWhatIsThisFor": "Optional — what is this for?",
+  "orders": "Orders",
+  "overview": "Overview",
+  "owner": "Owner",
+  "ownerName": "Owner name",
+  "ownerNameIsRequired": "Owner name is required",
+  "ownerRepresentativeName": "Owner / representative name",
+  "ownerRepresentativePhone": "Owner / representative phone",
+  "ownership": "Ownership %",
+  "pageLinkCopied": "Page link copied",
+  "paid": "Paid",
+  "password": "Password",
+  "passwordAppLockAndPin": "Password, app lock, and PIN",
+  "passwordIsRequired": "Password is required",
+  "passwordMustBeAtLeast": "Password must be at least 8 characters",
+  "passwordResetSuccessful": "Password Reset Successful",
+  "passwordUpdated": "Password updated",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "paymentDescription": "Payment description",
+  "paymentDetails": "PAYMENT DETAILS",
+  "paymentLink": "Payment link",
+  "paymentLinkCopied": "Payment link copied",
+  "paymentLinkGenerated": "Payment link generated",
+  "paymentLinkGenerated2": "Payment Link Generated",
+  "paymentLinks": "Payment Links",
+  "paymentMethods": "Payment Methods",
+  "paymentMode": "Payment mode",
+  "paymentPage": "Payment Page",
+  "paymentPromptSent": "Payment Prompt Sent",
+  "paymentPromptSentToThe": "Payment prompt sent to the customer's phone",
+  "payments": "Payments",
+  "paymentsDrawerAndSettingsFlows": "Payments, drawer, and settings flows explained.",
+  "paymentsTransfers": "Payments & Transfers",
+  "payoutAccount": "Payout account",
+  "payoutAccountChangesAreHandled": "Payout account changes are handled by support for security — email us ",
+  "payoutAccountChangesAreHandled2": "Payout account changes are handled by support for security — email us from the button below and we'll verify and update it.",
+  "payoutDestinationPublishedFeesAnd": "Payout destination, published fees, and history.",
+  "payouts": "Payouts",
+  "payoutsReceived": "Payouts received",
+  "pending": "Pending",
+  "perChannelRatesAreListed": "Per-channel rates are listed under Settings → Payment Methods → Billing.",
+  "periodEnd": "Period end",
+  "periodStart": "Period start",
+  "phone": "Phone",
+  "phoneNumber": "Phone number",
+  "phoneNumberIsRequired": "Phone number is required",
+  "pinPasswordDeviceSecurityAnd": "PIN, password, device security, and account recovery.",
+  "pinResetSuccessful": "PIN Reset Successful",
+  "pinSetSuccessfully": "PIN Set Successfully",
+  "pinTheScreensYouUse": "Pin the screens you use most for one-tap access.",
+  "pinTheScreensYouUse2": "Pin the screens you use most",
+  "pinsDoNotMatch": "PINs do not match",
+  "pinsDoNotMatchPlease": "PINs do not match. Please try again.",
+  "platformFees": "Platform fees",
+  "pleaseAcceptTheTermsAnd": "Please accept the Terms and Conditions to proceed",
+  "pleaseEnterTheComplete6": "Please enter the complete 6-digit code",
+  "posSettings": "POS Settings",
+  "poweredByTulapay": "Powered by TulaPay",
+  "preferences": "Preferences",
+  "premiumTier": "Premium tier",
+  "previewPage": "Preview page",
+  "priorityVerification": "Priority verification",
+  "privacyPolicy": "Privacy Policy",
+  "privacyPolicyAndTermsOf": "Privacy policy and terms of use",
+  "privacySecurity": "Privacy & Security",
+  "processing": "Processing",
+  "productSetupAndYourFirst": "Product setup and your first sale.",
+  "professionalServices": "Professional Services",
+  "profileUpdated": "Profile updated",
+  "promoCodes": "Promo Codes",
+  "provider": "Provider",
+  "publishedFees": "Published fees",
+  "pullToRefreshOrTry": "Pull to refresh or try again in a moment.",
+  "pushNotifications": "Push notifications",
+  "qrCheckout": "QR checkout",
+  "questionsAboutPrivacyCanBe": "Questions about privacy can be routed to support from the Help Center.",
+  "quickActions": "QUICK ACTIONS",
+  "quickActions2": "Quick actions",
+  "rccmAndTaxDocumentsAren": "RCCM and tax documents aren't required for your business type.",
+  "rccmBusinessRegistration": "RCCM / Business Registration",
+  "rccmBusinessRegistrationNumber": "RCCM / Business Registration Number",
+  "rccmBusinessRegistrationNumberIf": "RCCM / Business Registration Number (if registered)",
+  "rccmDocumentUploadedTapTo": "RCCM document uploaded — tap to replace",
+  "rccmNumber": "RCCM number",
+  "rccmNumberIsRequired": "RCCM number is required",
+  "reEnterYourNewPassword": "Re-enter your new password",
+  "reEnterYourPinTo": "Re-enter your PIN to confirm it's correct.",
+  "readDocumentation": "Read documentation",
+  "readyToGenerate": "Ready to generate",
+  "realTimePaymentAndAccount": "Real-time payment and account alerts",
+  "receipt": "Receipt",
+  "receiptDetails": "RECEIPT DETAILS",
+  "receiptFormatCheckoutModesAnd": "Receipt format, checkout modes, and terminal controls aren't ",
+  "receiptFormatCheckoutModesAnd2": "Receipt format, checkout modes, and terminal controls aren't built yet — nothing here is saved.",
+  "receiptRecorded": "Receipt recorded",
+  "recentActivity": "RECENT ACTIVITY",
+  "recentCashReceipts": "Recent cash receipts",
+  "recentExpenses": "Recent Expenses",
+  "recentLinks": "RECENT LINKS",
+  "recentTransactions": "Recent Transactions",
+  "recentTransfers": "RECENT TRANSFERS",
+  "recordACashSale": "Record a cash sale",
+  "recording": "Recording…",
+  "reference": "Reference",
+  "referenceCopied": "Reference copied",
+  "refunds": "Refunds",
+  "refundsIssued": "Refunds issued",
+  "registeredBusiness": "Registered Business",
+  "registeredBusinessName": "Registered business name",
+  "representative": "Representative",
+  "requestUpgrade": "Request upgrade",
+  "requireUnlockOnOpen": "Require unlock on open",
+  "requiredLabel": "Required",
+  "resend": "Resend",
+  "resendCodeIn": "Resend code in ",
+  "resendLinkIn": "Resend link in ",
+  "resetPassword": "Reset password",
+  "resetPassword2": "Reset Password",
+  "resetPin": "Reset PIN",
+  "retailWholesale": "Retail & Wholesale",
+  "revenue": "Revenue",
+  "revenueCustomersAndRepeatOrders": "Revenue, customers, and repeat orders",
+  "save": "Save",
+  "saveChanges": "Save changes",
+  "saveCustomer": "Save customer",
+  "searchCustomers": "Search customers...",
+  "securityAccess": "Security & Access",
+  "seeAll": "See all",
+  "selectABusinessType": "Select a business type",
+  "selectABusinessTypeTo": "Select a business type to proceed",
+  "selectAnIndustry": "Select an industry",
+  "selectBusinessType": "Select business type",
+  "selectCountry": "Select Country",
+  "selectIndustry": "Select industry",
+  "selfie": "Selfie",
+  "selfieCapturedTapToRetake": "Selfie captured — tap to retake",
+  "sendAndReceiveUpTo": "Send and receive up to 5,000,000 XAF daily without restrictions.",
+  "sendCode": "Send Code",
+  "sendDetailsAndAttachmentsTo": "Send details and attachments to the support team.",
+  "sendPaymentPrompt": "Send payment prompt",
+  "sendingAConfirmationLinkTo": "Sending a confirmation link to",
+  "setTargetsForRevenueCustomers": "Set targets for revenue, customers, and repeat orders ",
+  "setTargetsForRevenueCustomers2": "Set targets for revenue, customers, and repeat orders and watch progress against them.",
+  "setTheAmountExplainThe": "Set the amount, explain the charge, and generate a shareable link for fast checkout.",
+  "settings": "Settings",
+  "settled": "Settled",
+  "settlementAccount": "Settlement account",
+  "settlementAccount2": "Settlement Account",
+  "settlementAccountAndFees": "Settlement account and fees",
+  "settlementUpdatesAndReports": "Settlement updates and reports",
+  "settlements": "Settlements",
+  "setupChecklist": "Setup Checklist",
+  "setupOnboardingAndFirstTransaction": "Setup, onboarding, and first transaction flow.",
+  "share": "Share",
+  "shareSummary": "Share summary",
+  "showYourQrSoCustomers": "Show your QR so customers can scan and pay.",
+  "signIn": "Sign In",
+  "signInWithOtp": "Sign In with OTP",
+  "signInWithOtpInstead": "Sign in with OTP instead",
+  "signOut": "Sign out",
+  "signOut2": "Sign Out",
+  "signUp": "Sign Up",
+  "signingOut": "Signing out…",
+  "skip": "Skip",
+  "smartCashManagement": "Smart Cash Management",
+  "smsNotifications": "SMS notifications",
+  "somethingWentWrongPleaseTry": "Something went wrong — please try again.",
+  "sourceWallet": "Source wallet",
+  "standardReviewTakes1224": "Standard review takes 12–24 hours",
+  "startAChat": "Start a chat",
+  "statement": "Statement",
+  "statements": "Statements",
+  "status": "Status",
+  "storeSendAndReceiveMoney": "Store, send, and receive money instantly with our secure multi-currency e-wallet.",
+  "street": "Street",
+  "streetAddress": "Street address",
+  "streetAddressIsRequired": "Street address is required",
+  "submitForReview": "Submit for review",
+  "submitTransfer": "Submit transfer",
+  "summary": "SUMMARY",
+  "support": "Support",
+  "supportLegal": "Support & Legal",
+  "takeAPhoto": "Take a photo",
+  "takeAPhotoOrUpload": "Take a photo or upload your ID",
+  "takeASelfie": "Take a selfie",
+  "talkToTheTeamOr": "Talk to the team or send a ticket with logs.",
+  "target": "Target",
+  "taxDocumentUploadedTapTo": "Tax document uploaded — tap to replace",
+  "taxIdentificationNiu": "Tax Identification (NIU)",
+  "taxIdentificationNumber": "Tax identification number",
+  "technology": "Technology",
+  "termsOfService": "Terms of Service",
+  "theCustomerApprovesOrDeclines": "The customer approves or declines on their own phone. ",
+  "theCustomerApprovesOrDeclines2": "The customer approves or declines on their own phone. You'll see the transaction update in Activity once they respond.",
+  "theNextBusinessDayYou": "the next business day. You can see each batch under Payments.",
+  "thisSendsAPaymentPrompt": "This sends a payment prompt straight to an MTN ",
+  "thisSendsAPaymentPrompt2": "This sends a payment prompt straight to an MTN MoMo number. For Orange Money or other methods, use a Payment Link or your QR Payment Page instead.",
+  "title": "Title",
+  "topChannels": "Top channels",
+  "totalBudget": "TOTAL BUDGET",
+  "totalExpenses": "TOTAL EXPENSES",
+  "totalRevenue": "TOTAL REVENUE",
+  "totalSaleAmount": "TOTAL SALE AMOUNT",
+  "totalSpent": "Total spent",
+  "totalTransactions": "Total transactions",
+  "trackMerchantGrowth": "Track merchant growth",
+  "trackYourGrowth": "Track Your Growth",
+  "trackable": "Trackable",
+  "transactionCount": "Transaction count",
+  "transactionHistory": "Transaction history",
+  "transactions": "Transactions",
+  "transfer": "Transfer",
+  "transferDetails": "TRANSFER DETAILS",
+  "transferSubmitted": "Transfer submitted",
+  "transferSubmittedAndPayoutInitiated": "Transfer submitted and payout initiated successfully",
+  "transportationLogistics": "Transportation & Logistics",
+  "troubleshooting": "Troubleshooting",
+  "tulabixMerchantSupport": "TulaBix merchant support",
+  "tulabizAnalyticsExport": "TulaBiz analytics export",
+  "tulabizCorporate": "TulaBiz Corporate",
+  "tulabizStatement": "TulaBiz statement",
+  "type": "Type",
+  "unlockProfessionalFinancialToolsAnd": "Unlock professional financial tools and expand your business limits with TulaPay.",
+  "updateDetails": "Update details",
+  "updatePassword": "Update password",
+  "upgradeAccount": "Upgrade Account",
+  "upgradeRequestedWeLlBe": "Upgrade requested — we'll be in touch",
+  "upgradeToTier2": "Upgrade to Tier 2",
+  "uploadAFilePdfOr": "Upload a file (PDF or image)",
+  "uploadTheDocumentsBelowTake": "Upload the documents below — take a photo or upload a file directly.",
+  "uploadTheirIdDocumentOptional": "Upload their ID document (optional)",
+  "uploadYourRccmDocument": "Upload your RCCM document",
+  "uploadYourTaxDocument": "Upload your tax document",
+  "usageData": "Usage data",
+  "useAtLeast8Characters": "Use at least 8 characters",
+  "usedToImproveReliabilityFraud": "Used to improve reliability, fraud prevention, and support.",
+  "verification": "Verification",
+  "verificationCode": "Verification code",
+  "verificationInProgress": "Verification in progress",
+  "verificationRejected": "Verification rejected",
+  "verified": "Verified",
+  "verifyAccount": "Verify account",
+  "verifyCode": "Verify Code",
+  "verifyProfile": "Verify profile",
+  "verifyYourBusinessInUnder": "Verify your business in under 5 minutes",
+  "verifyYourPhone": "Verify Your Phone",
+  "verifyYourPhoneToReset": "Verify your phone to reset your password or PIN.",
+  "weHaveSentA6": "We have sent a 6-digit verification code to",
+  "weLlSendAnSms": "We'll send an SMS and push notifications once your account is active.",
+  "weLlTextA6": "We'll text a 6-digit code to your registered phone number.",
+  "weReReviewingYourDocuments": "We're reviewing your documents",
+  "weVeSentAConfirmation": "We've sent a confirmation link to",
+  "welcomeBack": "Welcome back",
+  "whatAreTheFees": "What are the fees?",
+  "whatWouldYouLikeTo": "What would you like to reset?",
+  "whereShouldWeSendYour": "Where should we send your payouts?",
+  "whereYouWillReceiveYour": "Where you will receive your payments",
+  "whyIsAPaymentStill": "Why is a payment still pending?",
+  "youLlGetFullAccess": "You'll get full access to TulaBiz as soon as our team ",
+  "youLlGetFullAccess2": "You'll get full access to TulaBiz as soon as our team approves your submission. Pull down to check again.",
+  "youLlSeeTheTransaction": "You'll see the transaction update in Activity once they respond.",
+  "youReAllCaughtUp": "You're all caught up",
+  "youReNotYetEligible": "You're not yet eligible for a loan — lending isn't live on ",
+  "youReNotYetEligible2": "You're not yet eligible for a loan — lending isn't live on your account yet. We'll let you know as soon as it is.",
+  "your6DigitSecurityPin": "Your 6-digit security PIN has been created. Use it to authorize transactions.",
+  "your6DigitTransactionPin": "Your 6-digit transaction PIN is managed separately and is required ",
+  "your6DigitTransactionPin2": "Your 6-digit transaction PIN is managed separately and is required for every payout regardless of this setting.",
+  "yourAccountYetWeLl": "your account yet. We'll let you know as soon as it is.",
+  "yourAlwaysOnLinkCustomers": "Your always-on link customers can pay you from.",
+  "yourBusiness": "Your business",
+  "yourBusinessIsCurrentlyIn": "Your business is currently in our queue. Our security team verifies all new merchants to ensure network safety and compliance.",
+  "yourDataIsEncryptedAnd": "Your data is encrypted and handled according to CEMAC regulations.",
+  "yourPasswordHasBeenReset": "Your password has been reset. Sign in with your new password.",
+  "yourPhoneIsVerifiedChoose": "Your phone is verified — choose one to continue.",
+  "yourPinHasBeenReset": "Your PIN has been reset. Sign in with your password as usual.",
+  "yourPrivacyMattersTulabixLimited": "Your privacy matters. Tulabix Limited only collects the data needed to process payments, support merchants, and keep the platform secure. We do not sell merchant data.",
+  "yourSupportRequestsAndPayments": "Your support requests and payments handled first.",
+  "otherLabel": "Other",
+  "businessTypeRegistered": "Registered business",
+  "businessTypeInformal": "Informal / SME",
+  "businessTypeAssociation": "Association",
+  "all": "All",
+  "periodWeek": "Week",
+  "periodMonth": "Month",
+  "periodQuarter": "Quarter",
+  "periodYear": "Year",
+  "thisWeek": "this week",
+  "thisMonth": "this month",
+  "thisQuarter": "this quarter",
+  "thisYear": "this year",
+  "vsLastWeek": "vs last week",
+  "vsLastMonth": "vs last month",
+  "vsLastQuarter": "vs last quarter",
+  "vsLastYear": "vs last year",
+  "codeSentTo": "We've sent a 6-digit code to {phone}",
+  "@codeSentTo": {
+    "placeholders": {
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "ownerNumber": "Owner {n}",
+  "@ownerNumber": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "percentUsed": "{pct}% Used",
+  "@percentUsed": {
+    "placeholders": {
+      "pct": {
+        "type": "String"
+      }
+    }
+  },
+  "amountUsed": "{amount} Used",
+  "@amountUsed": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "weekNumber": "Week {n}",
+  "@weekNumber": {
+    "placeholders": {
+      "n": {
+        "type": "int"
+      }
+    }
+  },
+  "nextDate": "Next: {date}",
+  "@nextDate": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "txnsUnit": "txns",
+  "countToReview": "{count} to review",
+  "@countToReview": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "paymentsFailedToSettle": "{count, plural, =1{1 payment failed to settle} other{{count} payments failed to settle}}",
+  "@paymentsFailedToSettle": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "amountNeedsReview": "{amount} needs review.",
+  "@amountNeedsReview": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "transactionsCount": "{count} transactions",
+  "@transactionsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "ofAmountIn": "of {amount} in",
+  "@ofAmountIn": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "typePayment": "Payment",
+  "typeRefund": "Refund",
+  "typePayout": "Payout",
+  "typeLoanDisbursement": "Loan disbursement",
+  "typeLoanRepayment": "Loan repayment",
+  "channelCard": "Card",
+  "channelMobileMoney": "Mobile money",
+  "channelCash": "Cash",
+  "statusScheduled": "Scheduled",
+  "statusRefunded": "Refunded",
+  "customerActive": "Active",
+  "customerRecent": "Recent",
+  "customerDormant": "Dormant",
+  "tierStarter": "Starter",
+  "tierGrowth": "Growth",
+  "tierScale": "Scale",
+  "itemsCount": "{count} items",
+  "@itemsCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "tulabixTransaction": "TulaBix transaction {id}",
+  "@tulabixTransaction": {
+    "placeholders": {
+      "id": {
+        "type": "String"
+      }
+    }
+  },
+  "vsLastWeekTpv": "vs last week · 30d TPV: {amount}",
+  "@vsLastWeekTpv": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "catGeneral": "General",
+  "catFood": "Food",
+  "catFashion": "Fashion",
+  "catServices": "Services",
+  "recordedAmount": "Recorded {amount}",
+  "@recordedAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "recordedAmountFrom": "Recorded {amount} from {customer}",
+  "@recordedAmountFrom": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "customer": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotRecordReceipt": "Could not record receipt: {error}",
+  "@couldNotRecordReceipt": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "checklistProgress": "{done} of {total} done — finish these to go live.",
+  "@checklistProgress": {
+    "placeholders": {
+      "done": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "momoPromptSent": "MoMo prompt for {amount} sent to {phone}",
+  "@momoPromptSent": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "phone": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotSendPrompt": "Could not send payment prompt: {error}",
+  "@couldNotSendPrompt": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "createdPaymentLinkFor": "Created payment link for {amount} — {description}",
+  "@createdPaymentLinkFor": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "description": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotGenerateLink": "Could not generate link: {error}",
+  "@couldNotGenerateLink": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "sharePayAmount": "Pay {amount}: {url}",
+  "@sharePayAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "sharePaySecurely": "Pay {business} securely: {url}",
+  "@sharePaySecurely": {
+    "placeholders": {
+      "business": {
+        "type": "String"
+      },
+      "url": {
+        "type": "String"
+      }
+    }
+  },
+  "statusActive": "Active",
+  "recentLabel": "Recent",
+  "grossFeesLine": "Gross {gross} · Fees {fees} · {account}",
+  "@grossFeesLine": {
+    "placeholders": {
+      "gross": {
+        "type": "String"
+      },
+      "fees": {
+        "type": "String"
+      },
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "percentOff": "{percent}% off",
+  "@percentOff": {
+    "placeholders": {
+      "percent": {
+        "type": "int"
+      }
+    }
+  },
+  "timesUsed": "{count} used",
+  "@timesUsed": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "verificationLine": "KYC {kyc} · Tier {tier} · Account {account}",
+  "@verificationLine": {
+    "placeholders": {
+      "kyc": {
+        "type": "String"
+      },
+      "tier": {
+        "type": "String"
+      },
+      "account": {
+        "type": "String"
+      }
+    }
+  },
+  "currentOfTarget": "{current} of {target}",
+  "@currentOfTarget": {
+    "placeholders": {
+      "current": {
+        "type": "String"
+      },
+      "target": {
+        "type": "String"
+      }
+    }
+  },
+  "dateRangeTo": "{start} to {end}",
+  "@dateRangeTo": {
+    "placeholders": {
+      "start": {
+        "type": "String"
+      },
+      "end": {
+        "type": "String"
+      }
+    }
+  },
+  "enterThe": "Enter the {field}",
+  "@enterThe": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "transferToDestination": "{amount} transfer to {destination}",
+  "@transferToDestination": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      },
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "transferRecordedPayoutFailed": "Transfer recorded, but payout failed: {error}",
+  "@transferRecordedPayoutFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "couldNotSubmitTransfer": "Could not submit transfer: {error}",
+  "@couldNotSubmitTransfer": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "tooltipIn": "In",
+  "tooltipOut": "Out",
+  "stateOn": "ON",
+  "stateOff": "OFF",
+  "copiedToClipboard": "Copied to clipboard",
+  "nothingCanOpenLink": "Nothing on this device can open that link",
+  "supportEmailCopied": "Support email copied",
+  "sourceLabelBank": "Bank account",
+  "signedOutInactivity": "You were signed out after a period of inactivity.",
+  "paymentCompletedTitle": "Payment Completed 🎉",
+  "payoutCompletedTitle": "Payout Completed 🎉",
+  "transactionCompletedTitle": "Transaction Completed 🎉",
+  "processedAmount": "Successfully processed {amount}",
+  "@processedAmount": {
+    "placeholders": {
+      "amount": {
+        "type": "String"
+      }
+    }
+  },
+  "fromCounterparty": " from {name}",
+  "@fromCounterparty": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "viaChannel": " via {channel}",
+  "@viaChannel": {
+    "placeholders": {
+      "channel": {
+        "type": "String"
+      }
+    }
+  },
+  "notificationDefaultTitle": "Notification"
+}

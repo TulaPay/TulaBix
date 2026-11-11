@@ -15,6 +15,7 @@ import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/custom_drawer.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class _HomeData {
   final MerchantBusinessSummary summary;
@@ -105,7 +106,7 @@ class _HomepageState extends State<Homepage> {
               ),
               const SizedBox(height: 4),
               Text(
-                snap.data?.businessName ?? 'Merchant Dashboard',
+                snap.data?.businessName ?? context.l10n.merchantDashboard,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: AppText.screenTitle(size: 18, color: cs.onSurface)
@@ -190,7 +191,7 @@ class _HomepageState extends State<Homepage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'QUICK ACTIONS',
+                      context.l10n.quickActions,
                       style: AppText.microLabel(color: context.textTertiary)
                           .copyWith(letterSpacing: 1.6),
                     ),
@@ -207,7 +208,7 @@ class _HomepageState extends State<Homepage> {
                     _quickAction(
                       context,
                       icon: Icons.phone_android_rounded,
-                      label: 'Collect',
+                      label: context.l10n.collect,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -218,7 +219,7 @@ class _HomepageState extends State<Homepage> {
                     _quickAction(
                       context,
                       icon: Icons.link_rounded,
-                      label: 'Link',
+                      label: context.l10n.link,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -229,7 +230,7 @@ class _HomepageState extends State<Homepage> {
                     _quickAction(
                       context,
                       icon: Icons.account_balance_rounded,
-                      label: 'Transfer',
+                      label: context.l10n.transfer,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -240,7 +241,7 @@ class _HomepageState extends State<Homepage> {
                     _quickAction(
                       context,
                       icon: Icons.receipt_long_outlined,
-                      label: 'Receipt',
+                      label: context.l10n.receipt,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -251,7 +252,7 @@ class _HomepageState extends State<Homepage> {
                     _quickAction(
                       context,
                       icon: Icons.description_outlined,
-                      label: 'Statement',
+                      label: context.l10n.statement,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -262,7 +263,7 @@ class _HomepageState extends State<Homepage> {
                     _quickAction(
                       context,
                       icon: Icons.more_horiz_rounded,
-                      label: 'More',
+                      label: context.l10n.more,
                       onTap: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -286,14 +287,14 @@ class _HomepageState extends State<Homepage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'RECENT ACTIVITY',
+                      context.l10n.recentActivity,
                       style: AppText.microLabel(color: context.textTertiary)
                           .copyWith(letterSpacing: 1.6),
                     ),
                     GestureDetector(
                       onTap: () {},
                       child: Text(
-                        'See all',
+                        context.l10n.seeAll,
                         style: AppText.caption(color: cs.secondary).copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -320,7 +321,7 @@ class _HomepageState extends State<Homepage> {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Text(
-                          'No activity yet — payments will show up here.',
+                          context.l10n.noActivityYetPaymentsWill,
                           style: AppText.caption(color: cs.onSurfaceVariant),
                         ),
                       );
@@ -336,7 +337,7 @@ class _HomepageState extends State<Homepage> {
                             iconColor: tx.isInflow
                                 ? AppColors.positive
                                 : cs.secondary,
-                            title: tx.counterpartyName ?? tx.typeLabel,
+                            title: tx.counterpartyName ?? context.typeLabel(tx),
                             subtitle: DateFormat(
                               'MMM d, h:mm a',
                             ).format(tx.createdAt),
@@ -443,7 +444,7 @@ class _BalanceCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'AVAILABLE BALANCE',
+                context.l10n.availableBalance,
                 style: AppText.microLabel(color: cs.primary)
                     .copyWith(letterSpacing: 1.6),
               ),
@@ -483,7 +484,7 @@ class _BalanceCard extends StatelessWidget {
                 ),
               ),
               Text(
-                'vs last week · 30d TPV: ${summary == null ? '••••' : money(summary!.revenue30d)}',
+                context.l10n.vsLastWeekTpv(summary == null ? '••••' : money(summary!.revenue30d)),
                 style: AppText.caption(color: cs.onSurfaceVariant).copyWith(
                   fontSize: 12,
                 ),

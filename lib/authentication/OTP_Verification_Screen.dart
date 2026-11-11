@@ -6,6 +6,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/email_otp_verification_screen.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // Used only to confirm the phone number entered at signup — ordinary sign-in
 // is password-only and never reaches this screen (see AuthService). On
@@ -85,8 +86,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     final otp = _controllers.map((e) => e.text).join();
     if (otp.length != 6) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please enter the complete 6-digit code"),
+        SnackBar(
+          content: Text(context.l10n.pleaseEnterTheComplete6),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -119,8 +120,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Something went wrong — please try again.'),
+        SnackBar(
+          content: Text(context.l10n.somethingWentWrongPleaseTry),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -141,8 +142,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Could not resend the code — please try again.'),
+        SnackBar(
+          content: Text(context.l10n.couldNotResendTheCode),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -195,7 +196,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        "Verification code",
+                        context.l10n.verificationCode,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -206,7 +207,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        "We have sent a 6-digit verification code to",
+                        context.l10n.weHaveSentA6,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: cs.onSurface.withValues(alpha: 0.66),
@@ -235,8 +236,8 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         children: [
                           Text(
                             _canResend
-                                ? "Didn't receive the code? "
-                                : "Resend code in ",
+                                ? context.l10n.didnTReceiveTheCode
+                                : context.l10n.resendCodeIn,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: cs.onSurface.withValues(alpha: 0.66),
                             ),
@@ -245,7 +246,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                               ? GestureDetector(
                                   onTap: _resendOtp,
                                   child: Text(
-                                    "Resend",
+                                    context.l10n.resend,
                                     style: TextStyle(
                                       color: cs.primary,
                                       fontWeight: FontWeight.bold,
@@ -266,7 +267,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           ? const CircularProgressIndicator()
                           : ElevatedButton(
                               onPressed: _verifyOtp,
-                              child: const Text("Verify account"),
+                              child: Text(context.l10n.verifyAccount),
                             ),
                     ],
                   ),

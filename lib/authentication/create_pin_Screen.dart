@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/kyc_onboarding.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class CreatePinScreen extends StatefulWidget {
   final String businessName;
@@ -74,7 +75,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
     if (_pin != _confirmPin) {
       setState(() {
         _confirmPin = "";
-        _errorMessage = "PINs do not match. Please try again.";
+        _errorMessage = context.l10n.pinsDoNotMatchPlease;
       });
       return;
     }
@@ -93,7 +94,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
       if (!mounted) return;
       setState(() {
         _confirmPin = "";
-        _errorMessage = "Something went wrong — please try again.";
+        _errorMessage = context.l10n.somethingWentWrongPleaseTry;
       });
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -120,7 +121,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                 Icon(Icons.check_circle_outline, color: cs.primary, size: 80),
                 const SizedBox(height: 20),
                 Text(
-                  "PIN Set Successfully",
+                  context.l10n.pinSetSuccessfully,
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
@@ -128,7 +129,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  "Your 6-digit security PIN has been created. Use it to authorize transactions.",
+                  context.l10n.your6DigitSecurityPin,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: cs.onSurface.withValues(alpha: 0.7)),
                 ),
@@ -146,7 +147,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                       (route) => false,
                     );
                   },
-                  child: const Text("Get Started"),
+                  child: Text(context.l10n.getStarted),
                 ),
               ],
             ),
@@ -211,7 +212,7 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        _isConfirming ? "Confirm your PIN" : "Create a PIN",
+                        _isConfirming ? context.l10n.confirmYourPin : context.l10n.createAPin,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -225,8 +226,8 @@ class _CreatePinScreenState extends State<CreatePinScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 8),
                         child: Text(
                           _isConfirming
-                              ? "Re-enter your PIN to confirm it's correct."
-                              : "Enter 6 digits to keep your account and transactions secure.",
+                              ? context.l10n.reEnterYourPinTo
+                              : context.l10n.enter6DigitsToKeep,
                           textAlign: TextAlign.center,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: cs.onSurface.withValues(alpha: 0.66),

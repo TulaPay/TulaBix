@@ -6,6 +6,7 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/services/push_notification_service.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class NotificationsSettingsScreen extends StatefulWidget {
   const NotificationsSettingsScreen({super.key});
@@ -47,7 +48,7 @@ class _NotificationsSettingsScreenState
       });
     } catch (_) {
       if (!mounted) return;
-      AppFeedback.toast(context, 'Could not save — reverting');
+      AppFeedback.toast(context, context.l10n.couldNotSaveReverting);
       // Resync from the server rather than guessing which toggle to revert.
       try {
         final p = await MerchantRepository.instance.preferences();
@@ -72,7 +73,7 @@ class _NotificationsSettingsScreenState
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "Notifications",
+          context.l10n.notifications,
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
       ),
@@ -86,7 +87,7 @@ class _NotificationsSettingsScreenState
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Notification preferences',
+                        context.l10n.notificationPreferences,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -95,8 +96,7 @@ class _NotificationsSettingsScreenState
                       ),
                       const SizedBox(height: 6),
                       Text(
-                        'Choose how the app alerts you about payment activity '
-                        'and security events.',
+                        context.l10n.chooseHowTheAppAlerts2,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
                           color: cs.onSurfaceVariant,
@@ -112,8 +112,8 @@ class _NotificationsSettingsScreenState
                     children: [
                       _buildSwitch(
                         context,
-                        "Email notifications",
-                        "Settlement updates and reports",
+                        context.l10n.emailNotifications,
+                        context.l10n.settlementUpdatesAndReports,
                         _email,
                         (v) {
                           setState(() => _email = v);
@@ -123,8 +123,8 @@ class _NotificationsSettingsScreenState
                       const Divider(height: 1),
                       _buildSwitch(
                         context,
-                        "Push notifications",
-                        "Real-time payment and account alerts",
+                        context.l10n.pushNotifications,
+                        context.l10n.realTimePaymentAndAccount,
                         _push,
                         (v) async {
                           setState(() => _push = v);
@@ -141,8 +141,8 @@ class _NotificationsSettingsScreenState
                       const Divider(height: 1),
                       _buildSwitch(
                         context,
-                        "SMS notifications",
-                        "Critical fallback alerts",
+                        context.l10n.smsNotifications,
+                        context.l10n.criticalFallbackAlerts,
                         _sms,
                         (v) {
                           setState(() => _sms = v);

@@ -5,6 +5,7 @@ import 'package:tulapay/authentication/kyb_documents_screen.dart';
 import 'package:tulapay/models/business_type.dart';
 import 'package:tulapay/services/merchant_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Step 3 of the redesigned onboarding flow — now comes *before* KYB
 /// documents (kyb_documents_screen.dart), reversing the old order. This is
@@ -59,7 +60,9 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
   // the matching document uploads in KybDocumentsScreen.
   bool get _isRegisteredBusiness =>
       businessTypeLabels[_selectedBusinessType] == 'registered_business';
-  final List<String> _categories = [
+  // Stored as-is in `businessCategory` (shared enum literals) — only the
+  // dropdown display is localized, see _categoryLabel.
+  static const List<String> _categories = [
     "Retail & Wholesale",
     "Food & Beverage",
     "Professional Services",
@@ -69,6 +72,20 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
     "Construction",
     "Other",
   ];
+
+  String _categoryLabel(String c) {
+    final l = context.l10n;
+    return switch (c) {
+      "Retail & Wholesale" => l.retailWholesale,
+      "Food & Beverage" => l.foodBeverage,
+      "Professional Services" => l.professionalServices,
+      "Transportation & Logistics" => l.transportationLogistics,
+      "Technology" => l.technology,
+      "Health & Beauty" => l.healthBeauty,
+      "Construction" => l.construction,
+      _ => l.otherLabel,
+    };
+  }
 
   @override
   void dispose() {
@@ -166,7 +183,7 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Business information",
+                          context.l10n.businessInformation,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 26,
                             fontWeight: FontWeight.w700,
@@ -176,119 +193,119 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Collect the business details we need before KYB document review.",
+                          context.l10n.collectTheBusinessDetailsWe,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: cs.onSurface.withValues(alpha: 0.66),
                             height: 1.4,
                           ),
                         ),
                         const SizedBox(height: 24),
-                        _buildSectionTitle("Representative"),
-                        _buildLabel("Owner / representative name"),
+                        _buildSectionTitle(context.l10n.representative),
+                        _buildLabel(context.l10n.ownerRepresentativeName),
                         TextFormField(
                           controller: _ownerNameController,
                           textCapitalization: TextCapitalization.words,
-                          decoration: const InputDecoration(
-                            hintText: "Enter full name",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.enterFullName,
                             prefixIcon: Icon(Icons.person_outline),
                           ),
                           validator: (val) => (val == null || val.isEmpty)
-                              ? "Owner name is required"
+                              ? context.l10n.ownerNameIsRequired
                               : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Owner / representative phone"),
+                        _buildLabel(context.l10n.ownerRepresentativePhone),
                         TextFormField(
                           controller: _ownerPhoneController,
                           keyboardType: TextInputType.phone,
-                          decoration: const InputDecoration(
-                            hintText: "e.g. +237 6XX XXX XXX",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.eG2376xxXxx,
                             prefixIcon: Icon(Icons.phone_outlined),
                           ),
                           validator: (val) => (val == null || val.isEmpty)
-                              ? "Phone number is required"
+                              ? context.l10n.phoneNumberIsRequired
                               : null,
                         ),
                         const SizedBox(height: 20),
                         const Divider(),
                         const SizedBox(height: 20),
-                        _buildSectionTitle("Registered Business"),
+                        _buildSectionTitle(context.l10n.registeredBusiness),
                         Text(
-                          "As it appears on your registration documents",
+                          context.l10n.asItAppearsOnYour,
                           style: TextStyle(
                             color: cs.onSurfaceVariant,
                             fontSize: 13,
                           ),
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Registered business name"),
+                        _buildLabel(context.l10n.registeredBusinessName),
                         TextFormField(
                           controller: _businessNameController,
-                          decoration: const InputDecoration(
-                            hintText: "Legal business name",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.legalBusinessName,
                             prefixIcon: Icon(Icons.business_outlined),
                           ),
                           validator: (val) => (val == null || val.isEmpty)
-                              ? "Business name is required"
+                              ? context.l10n.businessNameIsRequired
                               : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Business type"),
+                        _buildLabel(context.l10n.businessType),
                         DropdownButtonFormField<String>(
                           initialValue: _selectedBusinessType,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(Icons.category_outlined),
                           ),
-                          hint: const Text("Select business type"),
+                          hint: Text(context.l10n.selectBusinessType),
                           items: businessTypeLabels.keys
                               .map(
                                 (label) => DropdownMenuItem(
                                   value: label,
-                                  child: Text(label),
+                                  child: Text(context.businessTypeName(label)),
                                 ),
                               )
                               .toList(),
                           onChanged: (val) =>
                               setState(() => _selectedBusinessType = val),
                           validator: (val) =>
-                              (val == null) ? "Select a business type" : null,
+                              (val == null) ? context.l10n.selectABusinessType : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Industry / sector"),
+                        _buildLabel(context.l10n.industrySector),
                         DropdownButtonFormField<String>(
                           initialValue: _selectedCategory,
                           decoration: const InputDecoration(
                             prefixIcon: Icon(Icons.storefront_outlined),
                           ),
-                          hint: const Text("Select industry"),
+                          hint: Text(context.l10n.selectIndustry),
                           items: _categories
                               .map(
                                 (category) => DropdownMenuItem(
                                   value: category,
-                                  child: Text(category),
+                                  child: Text(_categoryLabel(category)),
                                 ),
                               )
                               .toList(),
                           onChanged: (val) =>
                               setState(() => _selectedCategory = val),
                           validator: (val) =>
-                              (val == null) ? "Select an industry" : null,
+                              (val == null) ? context.l10n.selectAnIndustry : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Business phone"),
+                        _buildLabel(context.l10n.businessPhone),
                         TextFormField(
                           controller: _businessPhoneController,
                           keyboardType: TextInputType.phone,
-                          decoration: const InputDecoration(
-                            hintText: "Dedicated business line, if different",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.dedicatedBusinessLineIfDifferent,
                             prefixIcon: Icon(Icons.call_outlined),
                           ),
                           validator: (val) => (val == null || val.isEmpty)
-                              ? "Business phone is required"
+                              ? context.l10n.businessPhoneIsRequired
                               : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Business email"),
+                        _buildLabel(context.l10n.businessEmail),
                         TextFormField(
                           controller: _businessEmailController,
                           keyboardType: TextInputType.emailAddress,
@@ -297,19 +314,19 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
                             prefixIcon: Icon(Icons.alternate_email_rounded),
                           ),
                           validator: (val) => (val == null || val.isEmpty)
-                              ? "Business email is required"
+                              ? context.l10n.businessEmailIsRequired
                               : null,
                         ),
                         const SizedBox(height: 16),
                         _buildLabel(
                           _isRegisteredBusiness
-                              ? "RCCM / Business Registration Number"
-                              : "RCCM / Business Registration Number (if registered)",
+                              ? context.l10n.rccmBusinessRegistrationNumber
+                              : context.l10n.rccmBusinessRegistrationNumberIf,
                         ),
                         TextFormField(
                           controller: _registrationNumberController,
-                          decoration: const InputDecoration(
-                            hintText: "RCCM number",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.rccmNumber,
                             prefixIcon: Icon(
                               Icons.confirmation_number_outlined,
                             ),
@@ -317,73 +334,73 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
                           validator: (val) {
                             if (!_isRegisteredBusiness) return null;
                             return (val == null || val.isEmpty)
-                                ? "RCCM number is required"
+                                ? context.l10n.rccmNumberIsRequired
                                 : null;
                           },
                         ),
                         const SizedBox(height: 16),
                         _buildLabel(
                           _isRegisteredBusiness
-                              ? "NIU (Tax Identification Number)"
-                              : "NIU (Tax Identification Number) (if registered)",
+                              ? context.l10n.niuTaxIdentificationNumber
+                              : context.l10n.niuTaxIdentificationNumberIf,
                         ),
                         TextFormField(
                           controller: _taxIdController,
-                          decoration: const InputDecoration(
-                            hintText: "Tax identification number",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.taxIdentificationNumber,
                             prefixIcon: Icon(Icons.receipt_long_outlined),
                           ),
                           validator: (val) {
                             if (!_isRegisteredBusiness) return null;
                             return (val == null || val.isEmpty)
-                                ? "NIU is required"
+                                ? context.l10n.niuIsRequired
                                 : null;
                           },
                         ),
                         const SizedBox(height: 16),
                         _buildLabel(
-                          "Estimated monthly transaction volume (XAF)",
+                          context.l10n.estimatedMonthlyTransactionVolumeXaf,
                         ),
                         TextFormField(
                           controller: _estimatedVolumeController,
                           keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            hintText: "e.g. 500000",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.eG500000,
                             prefixIcon: Icon(Icons.trending_up_rounded),
                           ),
                           validator: (val) {
                             if (val == null || val.isEmpty) {
-                              return "Estimated volume is required";
+                              return context.l10n.estimatedVolumeIsRequired;
                             }
                             if (num.tryParse(val) == null) {
-                              return "Enter a number";
+                              return context.l10n.enterANumber;
                             }
                             return null;
                           },
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("Street address"),
+                        _buildLabel(context.l10n.streetAddress),
                         TextFormField(
                           controller: _streetController,
-                          decoration: const InputDecoration(
-                            hintText: "e.g. 12 Rue de la Paix",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.eG12RueDe,
                             prefixIcon: Icon(Icons.location_on_outlined),
                           ),
                           validator: (val) => (val == null || val.isEmpty)
-                              ? "Street address is required"
+                              ? context.l10n.streetAddressIsRequired
                               : null,
                         ),
                         const SizedBox(height: 16),
-                        _buildLabel("City"),
+                        _buildLabel(context.l10n.city),
                         TextFormField(
                           controller: _cityController,
                           textCapitalization: TextCapitalization.words,
-                          decoration: const InputDecoration(
-                            hintText: "e.g. Douala",
+                          decoration: InputDecoration(
+                            hintText: context.l10n.eGDouala,
                             prefixIcon: Icon(Icons.location_city_outlined),
                           ),
                           validator: (val) => (val == null || val.isEmpty)
-                              ? "City is required"
+                              ? context.l10n.cityIsRequired
                               : null,
                         ),
                         const SizedBox(height: 20),
@@ -402,7 +419,7 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  "Next, you'll upload your RCCM, tax, and ID documents for KYB review.",
+                                  context.l10n.nextYouLlUploadYour,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: cs.onSurfaceVariant,
@@ -424,7 +441,7 @@ class _BusinessInformationScreenState extends State<BusinessInformationScreen> {
                                     strokeWidth: 2,
                                   ),
                                 )
-                              : const Text("Continue to KYB"),
+                              : Text(context.l10n.continueToKyb),
                         ),
                       ],
                     ),

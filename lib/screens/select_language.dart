@@ -158,6 +158,10 @@ class _LanguageScreenState extends State<LanguageScreen> {
                               .setLocale(Locale(_selectedLanguageCode));
                           if (context.mounted) Navigator.of(context).pop();
                         } else {
+                          // No merchant row yet, so this is in-memory only —
+                          // it carries the choice through sign-up/sign-in.
+                          AppPreferences.instance.locale.value =
+                              Locale(_selectedLanguageCode);
                           Navigator.of(context).push(
                             MaterialPageRoute(builder: (_) => const SignUp()),
                           );

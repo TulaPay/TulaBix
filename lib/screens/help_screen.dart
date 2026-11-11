@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -13,23 +14,23 @@ class HelpScreen extends StatelessWidget {
     final topics = [
       _HelpTopic(
         icon: Icons.shopping_bag_outlined,
-        title: 'Getting Started',
-        subtitle: 'Setup, onboarding, and first transaction flow.',
+        title: context.l10n.gettingStarted2,
+        subtitle: context.l10n.setupOnboardingAndFirstTransaction,
       ),
       _HelpTopic(
         icon: Icons.lock_outline_rounded,
-        title: 'Security & Access',
-        subtitle: 'PIN, password, device security, and account recovery.',
+        title: context.l10n.securityAccess,
+        subtitle: context.l10n.pinPasswordDeviceSecurityAnd,
       ),
       _HelpTopic(
         icon: Icons.payments_outlined,
-        title: 'Payments & Transfers',
-        subtitle: 'Links, cash receipts, QR payments, and bank transfers.',
+        title: context.l10n.paymentsTransfers,
+        subtitle: context.l10n.linksCashReceiptsQrPayments,
       ),
       _HelpTopic(
         icon: Icons.support_agent_rounded,
-        title: 'Contact Support',
-        subtitle: 'Talk to the team or send a ticket with logs.',
+        title: context.l10n.contactSupport2,
+        subtitle: context.l10n.talkToTheTeamOr,
       ),
     ];
 
@@ -37,7 +38,7 @@ class HelpScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
-          "Help & Support",
+          context.l10n.helpSupport,
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
         backgroundColor: Colors.transparent,
@@ -71,7 +72,7 @@ class HelpScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'How can we help?',
+                            context.l10n.howCanWeHelp,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 20,
                               fontWeight: FontWeight.w700,
@@ -80,7 +81,7 @@ class HelpScreen extends StatelessWidget {
                           ),
                           const SizedBox(height: 6),
                           Text(
-                            'Find answers, launch support, or learn the product flow.',
+                            context.l10n.findAnswersLaunchSupportOr,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 13,
                               color: context.textSecondary,
@@ -154,7 +155,7 @@ class HelpScreen extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.fromLTRB(24, 28, 24, 8),
               child: Text(
-                'Quick actions',
+                context.l10n.quickActions2,
                 style: GoogleFonts.plusJakartaSans(
                   fontSize: 16,
                   fontWeight: FontWeight.w700,
@@ -169,20 +170,20 @@ class HelpScreen extends StatelessWidget {
               delegate: SliverChildListDelegate([
                 _ActionTile(
                   icon: Icons.chat_bubble_outline_rounded,
-                  title: 'Start a chat',
-                  subtitle: 'Get a human response during business hours.',
+                  title: context.l10n.startAChat,
+                  subtitle: context.l10n.getAHumanResponseDuring,
                   onTap: () {},
                 ),
                 _ActionTile(
                   icon: Icons.mail_outline_rounded,
-                  title: 'Email support',
-                  subtitle: 'Send details and attachments to the support team.',
+                  title: context.l10n.emailSupport,
+                  subtitle: context.l10n.sendDetailsAndAttachmentsTo,
                   onTap: () {},
                 ),
                 _ActionTile(
                   icon: Icons.article_outlined,
-                  title: 'Read documentation',
-                  subtitle: 'Browse feature guides and troubleshooting notes.',
+                  title: context.l10n.readDocumentation,
+                  subtitle: context.l10n.browseFeatureGuidesAndTroubleshooting,
                   onTap: () {},
                 ),
                 const SizedBox(height: 24),

@@ -8,6 +8,7 @@ import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 //
@@ -25,6 +26,13 @@ class _CustomerScreenState extends State<CustomerScreen> {
   String _searchQuery = '';
   String _selectedFilter = 'All';
   static const _filters = ['All', 'Active', 'Recent', 'Dormant'];
+
+  String _filterLabel(String f) => switch (f) {
+        'All' => context.l10n.all,
+        'Active' => context.l10n.customerActive,
+        'Recent' => context.l10n.customerRecent,
+        _ => context.l10n.customerDormant,
+      };
 
   bool _loading = true;
   String? _error;
@@ -51,7 +59,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = 'Could not load customers. Pull to try again.';
+        _error = context.l10n.couldNotLoadCustomersPull;
         _loading = false;
       });
     }
@@ -138,9 +146,9 @@ class _CustomerScreenState extends State<CustomerScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const MicroLabel('Directory'),
+              MicroLabel(context.l10n.directory),
               const SizedBox(height: 2),
-              Text('Customers', style: AppText.screenTitle(size: 24)),
+              Text(context.l10n.customers, style: AppText.screenTitle(size: 24)),
             ],
           ),
           Row(
@@ -163,7 +171,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
           TextField(
             onChanged: (v) => setState(() => _searchQuery = v),
             decoration: InputDecoration(
-              hintText: 'Search customers...',
+              hintText: context.l10n.searchCustomers,
               prefixIcon: Icon(
                 Icons.search_rounded,
                 color: cs.onSurfaceVariant,
@@ -195,7 +203,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(
-                        f,
+                        _filterLabel(f),
                         style:
                             AppText.caption(
                               color: sel ? cs.primary : context.textSecondary,
@@ -226,7 +234,7 @@ class _CustomerScreenState extends State<CustomerScreen> {
         const SizedBox(height: 16),
         Center(
           child: Text(
-            _customers.isEmpty ? 'No customers yet' : 'No customers found',
+            _customers.isEmpty ? context.l10n.noCustomersYet : context.l10n.noCustomersFound,
             style: GoogleFonts.plusJakartaSans(
               fontSize: 16,
               fontWeight: FontWeight.w600,
@@ -289,8 +297,11 @@ Color _tierColor(String tier) => switch (tier) {
   _ => const Color(0xFFB87333), // starter
 };
 
-String _tierLabel(String tier) =>
-    tier.isEmpty ? 'Starter' : tier[0].toUpperCase() + tier.substring(1);
+String _tierLabel(BuildContext context, String tier) => switch (tier) {
+      'scale' => context.l10n.tierScale,
+      'growth' => context.l10n.tierGrowth,
+      _ => context.l10n.tierStarter,
+    };
 
 class _TierDot extends StatelessWidget {
   final Color color;
@@ -367,7 +378,7 @@ class _CustomerRow extends StatelessWidget {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        customer.email ?? customer.phone ?? 'No contact info',
+                        customer.email ?? customer.phone ?? context.l10n.noContactInfo,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: AppText.caption(
@@ -432,7 +443,7 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
 
   Future<void> _save() async {
     if (_name.text.trim().isEmpty) {
-      setState(() => _error = 'Name is required.');
+      setState(() => _error = context.l10n.nameIsRequired);
       return;
     }
     setState(() {
@@ -451,7 +462,7 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
       if (mounted) {
         setState(() {
           _saving = false;
-          _error = 'Could not save this customer. Try again.';
+          _error = context.l10n.couldNotSaveThisCustomer;
         });
       }
     }
@@ -483,7 +494,7 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
           ),
           const SizedBox(height: 24),
           Text(
-            'New customer',
+            context.l10n.newCustomer,
             style: GoogleFonts.plusJakartaSans(
               fontWeight: FontWeight.w700,
               fontSize: 22,
@@ -491,11 +502,11 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
             ),
           ),
           const SizedBox(height: 24),
-          _field(_name, 'Full name', Icons.person_outline_rounded, cs),
+          _field(_name, context.l10n.fullName, Icons.person_outline_rounded, cs),
           const SizedBox(height: 16),
-          _field(_email, 'Email address', Icons.email_outlined, cs),
+          _field(_email, context.l10n.emailAddress, Icons.email_outlined, cs),
           const SizedBox(height: 16),
-          _field(_phone, 'Phone number', Icons.phone_outlined, cs),
+          _field(_phone, context.l10n.phoneNumber, Icons.phone_outlined, cs),
           if (_error != null) ...[
             const SizedBox(height: 12),
             Text(_error!, style: TextStyle(color: cs.error, fontSize: 13)),
@@ -512,7 +523,7 @@ class _AddCustomerSheetState extends State<_AddCustomerSheet> {
                       color: Colors.white,
                     ),
                   )
-                : const Text('Save customer'),
+                : Text(context.l10n.saveCustomer),
           ),
         ],
       ),
@@ -633,7 +644,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
                         ),
                       ),
                       Text(
-                        c.email ?? c.phone ?? 'No contact info',
+                        c.email ?? c.phone ?? context.l10n.noContactInfo,
                         style: GoogleFonts.plusJakartaSans(
                           color: cs.onSurfaceVariant,
                           fontSize: 14,
@@ -650,9 +661,9 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
             padding: const EdgeInsets.symmetric(horizontal: 24),
             child: Row(
               children: [
-                _action('Message', Icons.chat_bubble_outline_rounded, cs),
+                _action(context.l10n.message, Icons.chat_bubble_outline_rounded, cs),
                 const SizedBox(width: 12),
-                _action('Invoice', Icons.receipt_long_rounded, cs),
+                _action(context.l10n.invoice, Icons.receipt_long_rounded, cs),
                 const SizedBox(width: 12),
                 _circleAction(Icons.more_horiz_rounded, cs),
               ],
@@ -669,9 +680,9 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
               fontWeight: FontWeight.w700,
               fontSize: 13,
             ),
-            tabs: const [
-              Tab(text: 'Transactions'),
-              Tab(text: 'Customer info'),
+            tabs: [
+              Tab(text: context.l10n.transactions),
+              Tab(text: context.l10n.customerInfo),
             ],
           ),
           Expanded(
@@ -726,7 +737,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
     if (_txns.isEmpty) {
       return Center(
         child: Text(
-          'No transactions with this customer yet.',
+          context.l10n.noTransactionsWithThisCustomer,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 13,
             color: cs.onSurfaceVariant,
@@ -761,7 +772,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '${tx.typeLabel} · ${tx.channelLabel}',
+                      '${context.typeLabel(tx)} · ${context.channelLabel(tx)}',
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w700,
                         fontSize: 14,
@@ -796,18 +807,18 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
     return ListView(
       padding: const EdgeInsets.all(24),
       children: [
-        _infoRow('Phone number', c.phone ?? '—', cs),
-        _infoRow('Customer tier', _tierLabel(c.tier), cs),
-        _infoRow('Total transactions', '${c.totalTransactions} items', cs),
-        _infoRow('Total spent', money(c.totalSpent), cs),
+        _infoRow(context.l10n.phoneNumber, c.phone ?? '—', cs),
+        _infoRow(context.l10n.customerTier, _tierLabel(context, c.tier), cs),
+        _infoRow(context.l10n.totalTransactions, context.l10n.itemsCount(c.totalTransactions), cs),
+        _infoRow(context.l10n.totalSpent, money(c.totalSpent), cs),
         _infoRow(
-          'Customer since',
+          context.l10n.customerSince,
           DateFormat('MMM d, yyyy').format(c.createdAt),
           cs,
         ),
         const SizedBox(height: 24),
         Text(
-          'Internal notes',
+          context.l10n.internalNotes,
           style: GoogleFonts.plusJakartaSans(
             fontWeight: FontWeight.w700,
             fontSize: 14,
@@ -820,7 +831,7 @@ class _CustomerDetailSheetState extends State<_CustomerDetailSheet>
           style: TextStyle(color: cs.onSurface),
           controller: TextEditingController(text: c.note ?? ''),
           decoration: InputDecoration(
-            hintText: 'Add a private note about this customer...',
+            hintText: context.l10n.addAPrivateNoteAbout,
             hintStyle: TextStyle(
               color: cs.onSurfaceVariant.withValues(alpha: 0.5),
             ),

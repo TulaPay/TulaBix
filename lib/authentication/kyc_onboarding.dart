@@ -3,6 +3,7 @@ import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/business_information_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class KycOnboarding extends StatefulWidget {
   final String businessName;
@@ -85,7 +86,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                           ),
                           const SizedBox(height: 20),
                           Text(
-                            "Verify your business in under 5 minutes",
+                            context.l10n.verifyYourBusinessInUnder,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 26,
                               fontWeight: FontWeight.w700,
@@ -96,7 +97,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            "Join thousands of merchants growing their business with TulaPay's secure platform.",
+                            context.l10n.joinThousandsOfMerchantsGrowing,
                             style: theme.textTheme.bodyLarge?.copyWith(
                               color: cs.onSurface.withValues(alpha: 0.66),
                               height: 1.5,
@@ -106,20 +107,20 @@ class _KycOnboardingState extends State<KycOnboarding> {
                           _buildRequirementItem(
                             context,
                             icon: Icons.business_outlined,
-                            title: "Business details",
-                            subtitle: "Basic information about your company",
+                            title: context.l10n.businessDetails,
+                            subtitle: context.l10n.basicInformationAboutYourCompany,
                           ),
                           _buildRequirementItem(
                             context,
                             icon: Icons.badge_outlined,
-                            title: "ID verification",
-                            subtitle: "A valid government-issued ID card",
+                            title: context.l10n.idVerification,
+                            subtitle: context.l10n.aValidGovernmentIssuedId,
                           ),
                           _buildRequirementItem(
                             context,
                             icon: Icons.account_balance_outlined,
-                            title: "Settlement account",
-                            subtitle: "Where you will receive your payments",
+                            title: context.l10n.settlementAccount,
+                            subtitle: context.l10n.whereYouWillReceiveYour,
                           ),
                         ],
                       ),
@@ -137,7 +138,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                           ),
                           const SizedBox(width: 8),
                           Text(
-                            "Data encrypted and strictly confidential",
+                            context.l10n.dataEncryptedAndStrictlyConfidential,
                             style: theme.textTheme.bodySmall?.copyWith(
                               color: context.textTertiary,
                             ),
@@ -159,7 +160,7 @@ class _KycOnboardingState extends State<KycOnboarding> {
                           ),
                         );
                       },
-                      child: const Text("Get Started"),
+                      child: Text(context.l10n.getStarted),
                     ),
                   ],
                 ),

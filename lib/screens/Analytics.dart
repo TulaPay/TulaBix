@@ -9,6 +9,8 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/utils/csv_export.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/app_localizations.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // Real income/expenses/budget analytics — computed from `transactions`,
 // `merchant_expenses`, and `merchant_budgets`. A fresh merchant with no
@@ -52,7 +54,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     final now = DateTime.now();
     _months = [
       ..._recentMonths(now),
-      _MonthOption(DateTime(2000), DateTime(now.year + 1), 'All time'),
+      _MonthOption(DateTime(2000), DateTime(now.year + 1), context.l10n.allTime),
     ];
     _selectedMonth = _months.first;
     _load();
@@ -96,7 +98,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = 'Could not load analytics. Pull to try again.';
+        _error = context.l10n.couldNotLoadAnalyticsPull;
         _loading = false;
       });
     }
@@ -108,8 +110,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
     final rows = <List<Object?>>[
       ['TulaBiz analytics export', DateFormat('MMM d, yyyy').format(DateTime.now())],
       [],
-      ['Transactions'],
-      ['Date', 'Type', 'Channel', 'Status', 'Counterparty', 'Amount', 'Currency', 'Fee', 'Reference'],
+      [context.l10n.transactions],
+      [context.l10n.date, context.l10n.type, context.l10n.channel, context.l10n.status, context.l10n.counterparty, context.l10n.amount, context.l10n.currency, context.l10n.fee, context.l10n.reference],
       for (final t in _txns)
         [
           DateFormat('yyyy-MM-dd HH:mm').format(t.createdAt),
@@ -123,13 +125,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
           t.reference ?? '',
         ],
       [],
-      ['Expenses'],
-      ['Date', 'Category', 'Amount', 'Note'],
+      [context.l10n.expenses],
+      [context.l10n.date, context.l10n.category, context.l10n.amount, context.l10n.note],
       for (final e in _expenses)
         [DateFormat('yyyy-MM-dd').format(e.incurredAt), e.category, e.amount, e.note ?? ''],
       [],
-      ['Budgets'],
-      ['Category', 'Period start', 'Period end', 'Allocated amount'],
+      [context.l10n.budgets],
+      [context.l10n.category, context.l10n.periodStart, context.l10n.periodEnd, context.l10n.allocatedAmount],
       for (final b in _budgets)
         [
           b.category,
@@ -143,12 +145,12 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       await shareAsCsv(
         'tulabiz-analytics-${DateFormat('yyyyMMdd').format(DateTime.now())}.csv',
         rows,
-        subject: 'TulaBiz analytics export',
+        subject: context.l10n.tulabizAnalyticsExport,
       );
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not export analytics')),
+        SnackBar(content: Text(context.l10n.couldNotExportAnalytics)),
       );
     }
   }
@@ -160,7 +162,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Analytics', style: AppText.screenTitle(size: 24)),
+        title: Text(context.l10n.analytics, style: AppText.screenTitle(size: 24)),
         toolbarHeight: 64,
         elevation: 0,
         actions: [
@@ -168,7 +170,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             padding: const EdgeInsets.only(right: AppSpacing.lg),
             child: Center(
               child: PillButton.dark(
-                'Export',
+                context.l10n.exportLabel,
                 icon: Icons.ios_share_rounded,
                 dense: true,
                 onTap: _export,
@@ -212,7 +214,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   Widget _content(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final data = _computeData(_selectedMonth, _txns, _expenses, _budgets);
+    final data = _computeData(context.l10n, _selectedMonth, _txns, _expenses, _budgets);
 
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -298,10 +300,10 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 indicatorSize: TabBarIndicatorSize.label,
                 indicatorColor: colorScheme.primary,
                 indicatorWeight: 2,
-                tabs: const [
-                  Tab(text: 'Income'),
-                  Tab(text: 'Expenses'),
-                  Tab(text: 'Budget'),
+                tabs: [
+                  Tab(text: context.l10n.income),
+                  Tab(text: context.l10n.expenses),
+                  Tab(text: context.l10n.budget),
                 ],
               ),
             ),
@@ -315,9 +317,9 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   }
 
   String get _headerTitle => switch (_tabController.index) {
-        0 => 'TOTAL REVENUE',
-        1 => 'TOTAL EXPENSES',
-        _ => 'TOTAL BUDGET',
+        0 => context.l10n.totalRevenue,
+        1 => context.l10n.totalExpenses,
+        _ => context.l10n.totalBudget,
       };
 
   String _headerAmount(_AnalyticsData d) => switch (_tabController.index) {
@@ -329,7 +331,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
   String _headerPercentage(_AnalyticsData d) => switch (_tabController.index) {
         0 => percentDelta(d.incomeDeltaPct),
         1 => percentDelta(d.expensesDeltaPct),
-        _ => '${d.budgetUsedPct.toStringAsFixed(0)}% Used',
+        _ => context.l10n.percentUsed(d.budgetUsedPct.toStringAsFixed(0)),
       };
 
   Color _headerPercentageColor(ThemeData theme, _AnalyticsData d) {
@@ -369,7 +371,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       children: [
         _buildChartCard(
               context,
-              title: 'Income Trend',
+              title: context.l10n.incomeTrend,
               subtitle: money(d.income),
               child: AspectRatio(
                 aspectRatio: 1.5,
@@ -383,11 +385,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             .slideY(begin: 0.1, curve: Curves.easeOutQuad),
         const SizedBox(height: 16),
         if (d.incomeSources.isEmpty)
-          _emptyCard(context, 'Income Sources', 'No payments received yet this month.')
+          _emptyCard(context, context.l10n.incomeSources, context.l10n.noPaymentsReceivedYetThis)
         else
           _buildPieChartCard(
                 context,
-                title: 'Income Sources',
+                title: context.l10n.incomeSources,
                 sections: d.incomeSources.map((s) => s.amount).toList(),
                 colors: List.generate(
                   d.incomeSources.length,
@@ -402,13 +404,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               .slideY(begin: 0.1, curve: Curves.easeOutQuad),
         const SizedBox(height: 16),
         if (d.recentIncome.isEmpty)
-          _emptyCard(context, 'Recent Transactions', 'Nothing yet.')
+          _emptyCard(context, context.l10n.recentTransactions, context.l10n.nothingYet)
         else
           _buildTransactionsList(
             context,
-            title: 'Recent Transactions',
+            title: context.l10n.recentTransactions,
             items: d.recentIncome
-                .map((t) => t.counterpartyName ?? t.channelLabel)
+                .map((t) => t.counterpartyName ?? context.channelLabel(t))
                 .toList(),
             amounts:
                 d.recentIncome.map((t) => '+${money(t.amount, compact: true)}').toList(),
@@ -437,7 +439,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       children: [
         _buildChartCard(
               context,
-              title: 'Expenses Trend',
+              title: context.l10n.expensesTrend,
               subtitle: money(d.expenses),
               child: AspectRatio(
                 aspectRatio: 1.5,
@@ -451,11 +453,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
             .slideY(begin: 0.1, curve: Curves.easeOutQuad),
         const SizedBox(height: 16),
         if (d.expenseCategories.isEmpty)
-          _emptyCard(context, 'Expense Categories', 'No costs logged this month.')
+          _emptyCard(context, context.l10n.expenseCategories, context.l10n.noCostsLoggedThisMonth)
         else
           _buildPieChartCard(
                 context,
-                title: 'Expense Categories',
+                title: context.l10n.expenseCategories,
                 sections: d.expenseCategories.map((s) => s.amount).toList(),
                 colors: List.generate(
                   d.expenseCategories.length,
@@ -471,11 +473,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               .slideY(begin: 0.1, curve: Curves.easeOutQuad),
         const SizedBox(height: 16),
         if (d.recentExpenses.isEmpty)
-          _emptyCard(context, 'Recent Expenses', 'No expenses logged yet.')
+          _emptyCard(context, context.l10n.recentExpenses, context.l10n.noExpensesLoggedYet)
         else
           _buildTransactionsList(
             context,
-            title: 'Recent Expenses',
+            title: context.l10n.recentExpenses,
             items: d.recentExpenses.map((e) => e.category).toList(),
             amounts: d.recentExpenses
                 .map((e) => '-${money(e.amount, compact: true)}')
@@ -505,8 +507,8 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
       children: [
         _buildChartCard(
               context,
-              title: 'Budget Usage Trend',
-              subtitle: '${money(d.expenses, compact: true)} Used',
+              title: context.l10n.budgetUsageTrend,
+              subtitle: context.l10n.amountUsed(money(d.expenses, compact: true)),
               child: AspectRatio(
                 aspectRatio: 1.5,
                 child: BarChart(
@@ -525,13 +527,13 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
         if (d.budgetAllocation.isEmpty)
           _emptyCard(
             context,
-            'Budget Allocation',
-            'No budget set for this month yet.',
+            context.l10n.budgetAllocation,
+            context.l10n.noBudgetSetForThis,
           )
         else
           _buildPieChartCard(
                 context,
-                title: 'Budget Allocation',
+                title: context.l10n.budgetAllocation,
                 sections: d.budgetAllocation.map((s) => s.amount).toList(),
                 colors: List.generate(
                   d.budgetAllocation.length,
@@ -547,11 +549,11 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
               .slideY(begin: 0.1, curve: Curves.easeOutQuad),
         const SizedBox(height: 16),
         if (d.budgetItems.isEmpty)
-          _emptyCard(context, 'Budgets', 'Nothing allocated yet.')
+          _emptyCard(context, context.l10n.budgets, context.l10n.nothingAllocatedYet)
         else
           _buildTransactionsList(
             context,
-            title: 'Budgets This Month',
+            title: context.l10n.budgetsThisMonth,
             items: d.budgetItems.map((b) => b.category).toList(),
             amounts: d.budgetItems
                 .map((b) => money(b.allocatedAmount, compact: true))
@@ -609,7 +611,7 @@ class _AnalyticsScreenState extends State<AnalyticsScreen>
                 color: colorScheme.onSurfaceVariant,
                 fontSize: 10,
               );
-              String text = 'Week ${value.toInt() + 1}';
+              String text = context.l10n.weekNumber(value.toInt() + 1);
               return SideTitleWidget(
                 meta: meta,
                 space: 4,
@@ -980,17 +982,18 @@ List<double> _weeklyBuckets(
   return totals;
 }
 
-String _channelLabel(String key) => switch (key) {
+String _channelLabel(AppLocalizations l, String key) => switch (key) {
       'mtn_momo' => 'MTN Mobile Money',
       'orange_money' => 'Orange Money',
-      'visa' || 'mastercard' || 'card' => 'Card payment',
-      'bank_transfer' => 'Bank transfer',
-      'qr_checkout' => 'QR checkout',
-      'payment_link' => 'Payment link',
-      _ => key.isEmpty ? 'Other' : key,
+      'visa' || 'mastercard' || 'card' => l.cardPayment,
+      'bank_transfer' => l.bankTransfer,
+      'qr_checkout' => l.qrCheckout,
+      'payment_link' => l.paymentLink,
+      _ => key.isEmpty ? l.otherLabel : key,
     };
 
 _AnalyticsData _computeData(
+  AppLocalizations l,
   _MonthOption month,
   List<LedgerTransaction> allTxns,
   List<MerchantExpense> allExpenses,
@@ -1018,7 +1021,7 @@ _AnalyticsData _computeData(
     incomeByChannel[key] = (incomeByChannel[key] ?? 0) + t.amount;
   }
   final incomeSources = incomeByChannel.entries
-      .map((e) => _PieSlice(_channelLabel(e.key), e.value.toDouble()))
+      .map((e) => _PieSlice(_channelLabel(l, e.key), e.value.toDouble()))
       .toList()
     ..sort((a, b) => b.amount.compareTo(a.amount));
 
@@ -1056,8 +1059,8 @@ _AnalyticsData _computeData(
       : ((expenses - prevExpenses) / prevExpenses) * 100;
 
   final expenseCategories = <_PieSlice>[
-    if (platformFees > 0) _PieSlice('Platform fees', platformFees.toDouble()),
-    if (refunds > 0) _PieSlice('Refunds issued', refunds.toDouble()),
+    if (platformFees > 0) _PieSlice(l.platformFees, platformFees.toDouble()),
+    if (refunds > 0) _PieSlice(l.refundsIssued, refunds.toDouble()),
     for (final e in monthExpenses) _PieSlice(e.category, e.amount.toDouble()),
   ]..sort((a, b) => b.amount.compareTo(a.amount));
 

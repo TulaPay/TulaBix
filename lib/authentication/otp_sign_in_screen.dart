@@ -6,6 +6,7 @@ import 'package:tulapay/authentication/sign_in.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Alternate sign-in path: phone + OTP instead of phone + password.
 /// Password sign-in ([SignIn]) stays the default/primary path — this is
@@ -86,7 +87,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      _showError('Something went wrong — please try again.');
+      _showError(context.l10n.somethingWentWrongPleaseTry);
     }
   }
 
@@ -113,7 +114,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      _showError('Something went wrong — please try again.');
+      _showError(context.l10n.somethingWentWrongPleaseTry);
     }
   }
 
@@ -176,7 +177,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Sign In with OTP",
+          context.l10n.signInWithOtp,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 26,
             fontWeight: FontWeight.w700,
@@ -186,14 +187,14 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          "We'll text a 6-digit code to your registered phone number.",
+          context.l10n.weLlTextA6,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: cs.onSurface.withValues(alpha: 0.66),
             height: 1.4,
           ),
         ),
         const SizedBox(height: 24),
-        _buildLabel("Phone number"),
+        _buildLabel(context.l10n.phoneNumber),
         TextFormField(
           controller: _phoneController,
           keyboardType: TextInputType.phone,
@@ -231,7 +232,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
             ),
           ),
           validator: (value) =>
-              (value == null || value.isEmpty) ? 'Required' : null,
+              (value == null || value.isEmpty) ? context.l10n.requiredLabel : null,
         ),
         const SizedBox(height: 24),
         ElevatedButton(
@@ -242,7 +243,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text("Send Code"),
+              : Text(context.l10n.sendCode),
         ),
       ],
     );
@@ -256,7 +257,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
         Icon(Icons.mark_email_read_outlined, size: 80, color: cs.primary),
         const SizedBox(height: 24),
         Text(
-          "Enter Your Code",
+          context.l10n.enterYourCode,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -265,7 +266,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
         ),
         const SizedBox(height: 12),
         Text(
-          "We've sent a 6-digit code to ${_selectedCountry.code} ${_phoneController.text}",
+          context.l10n.codeSentTo("${_selectedCountry.code} ${_phoneController.text}"),
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: cs.onSurface.withValues(alpha: 0.66),
@@ -285,7 +286,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text("Sign In"),
+              : Text(context.l10n.signIn),
         ),
       ],
     );
@@ -363,7 +364,7 @@ class _OtpSignInScreenState extends State<OtpSignInScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "Select Country",
+                  context.l10n.selectCountry,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,

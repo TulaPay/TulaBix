@@ -5,6 +5,8 @@ import 'package:tulapay/models/commerce.dart';
 import 'package:tulapay/models/ledger.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/app_localizations.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
@@ -22,7 +24,6 @@ class BusinessScreen extends StatefulWidget {
 }
 
 class _BusinessScreenState extends State<BusinessScreen> {
-  static const _periods = ['Week', 'Month', 'Quarter', 'Year'];
   int _period = 1; // Month
 
   bool _loading = true;
@@ -59,7 +60,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() {
-        _error = 'Could not load business data. Pull to try again.';
+        _error = context.l10n.couldNotLoadBusinessData;
         _loading = false;
       });
     }
@@ -70,7 +71,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
   void _export() {
     ScaffoldMessenger.of(
       context,
-    ).showSnackBar(const SnackBar(content: Text('Exporting business report…')));
+    ).showSnackBar(SnackBar(content: Text(context.l10n.exportingBusinessReport)));
   }
 
   @override
@@ -124,8 +125,10 @@ class _BusinessScreenState extends State<BusinessScreen> {
   }
 
   Widget _content(ColorScheme cs) {
-    final m = _computeMetrics(_period, _txns, _settlements, _expenses);
-    final period = _periods[_period].toLowerCase();
+    final l = context.l10n;
+    final m = _computeMetrics(l, _period, _txns, _settlements, _expenses);
+    final periods = [l.periodWeek, l.periodMonth, l.periodQuarter, l.periodYear];
+    final thisPeriod = [l.thisWeek, l.thisMonth, l.thisQuarter, l.thisYear][_period];
 
     return SingleChildScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
@@ -139,43 +142,43 @@ class _BusinessScreenState extends State<BusinessScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SegmentedControl(
-            segments: _periods,
+            segments: periods,
             selectedIndex: _period,
             onChanged: (i) => setState(() => _period = i),
           ),
           const SizedBox(height: AppSpacing.xl),
 
           MetricHeadline(
-            label: 'Net revenue',
+            label: context.l10n.netRevenue,
             value: money(m.net),
-            caption: 'this $period',
+            caption: thisPeriod,
             deltaLabel:
                 '${m.deltaPct.abs().toStringAsFixed(1)}% ${m.deltaCaption}',
             deltaPositive: m.deltaPct >= 0,
           ),
           const SizedBox(height: AppSpacing.section),
 
-          const SectionHeader('Money in motion'),
+          SectionHeader(context.l10n.moneyInMotion),
           const SizedBox(height: AppSpacing.md),
           _moneyInMotion(m),
           const SizedBox(height: AppSpacing.section),
 
-          const SectionHeader('Cash flow'),
+          SectionHeader(context.l10n.cashFlow),
           const SizedBox(height: AppSpacing.md),
           _cashFlowCard(m, cs),
           const SizedBox(height: AppSpacing.section),
 
-          const SectionHeader('Operating costs'),
+          SectionHeader(context.l10n.operatingCosts),
           const SizedBox(height: AppSpacing.md),
           _costsCard(m, cs),
           const SizedBox(height: AppSpacing.section),
 
-          const SectionHeader('Needs attention'),
+          SectionHeader(context.l10n.needsAttention),
           const SizedBox(height: AppSpacing.md),
           _alerts(m),
           const SizedBox(height: AppSpacing.section),
 
-          const SectionHeader('Top channels'),
+          SectionHeader(context.l10n.topChannels),
           const SizedBox(height: AppSpacing.md),
           _channels(m, cs),
         ],
@@ -199,13 +202,13 @@ class _BusinessScreenState extends State<BusinessScreen> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const MicroLabel('Overview'),
+              MicroLabel(context.l10n.overview),
               const SizedBox(height: 2),
-              Text('Business', style: AppText.screenTitle(size: 24)),
+              Text(context.l10n.business, style: AppText.screenTitle(size: 24)),
             ],
           ),
           PillButton.dark(
-            'Export',
+            context.l10n.exportLabel,
             icon: Icons.ios_share_rounded,
             dense: true,
             onTap: _export,
@@ -221,24 +224,24 @@ class _BusinessScreenState extends State<BusinessScreen> {
     return StatGrid(
       cards: [
         StatCard(
-          label: 'Available to settle',
+          label: context.l10n.availableToSettle,
           value: money(m.availablePayout, compact: true),
-          secondary: 'Next: ${m.nextSettlement}',
+          secondary: context.l10n.nextDate(m.nextSettlement),
           filled: true,
         ),
         StatCard(
-          label: 'Processing',
+          label: context.l10n.processing,
           value: '${m.processingCount}',
-          unit: 'txns',
+          unit: context.l10n.txnsUnit,
           secondary: money(m.processingAmount, compact: true),
         ),
         StatCard(
-          label: 'Failed',
+          label: context.l10n.failed,
           value: money(m.failedAmount, compact: true),
-          secondary: '${m.failedCount} to review',
+          secondary: context.l10n.countToReview(m.failedCount),
         ),
         StatCard(
-          label: 'Settled',
+          label: context.l10n.settled,
           value: money(m.settled, compact: true),
           secondary: m.settledCaption,
         ),
@@ -250,7 +253,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
 
   Widget _cashFlowCard(_Metrics m, ColorScheme cs) {
     return ChartCard(
-      title: 'Money in vs out',
+      title: context.l10n.moneyInVsOut,
       value: money(m.net, compact: true),
       trailing: DeltaChip(
         '${m.deltaPct.abs().toStringAsFixed(1)}%',
@@ -266,19 +269,19 @@ class _BusinessScreenState extends State<BusinessScreen> {
               _legend(
                 cs,
                 cs.primary,
-                'Money in',
+                context.l10n.moneyIn,
                 money(m.moneyIn, compact: true),
               ),
               _legend(
                 cs,
                 AppColors.negative.withValues(alpha: 0.55),
-                'Money out',
+                context.l10n.moneyOut,
                 money(m.moneyOut, compact: true),
               ),
               _legend(
                 cs,
                 cs.onSurface,
-                'Net',
+                context.l10n.net,
                 money(m.net, compact: true),
                 showDot: false,
               ),
@@ -341,11 +344,11 @@ class _BusinessScreenState extends State<BusinessScreen> {
     ];
 
     return ChartCard(
-      title: 'Operating costs',
+      title: context.l10n.operatingCosts,
       value: money(total, compact: true),
       child: m.costs.isEmpty
           ? Text(
-              'No costs logged this period.',
+              context.l10n.noCostsLoggedThisPeriod,
               style: AppText.caption(color: cs.onSurfaceVariant),
             )
           : BreakdownList(
@@ -366,17 +369,16 @@ class _BusinessScreenState extends State<BusinessScreen> {
 
   Widget _alerts(_Metrics m) {
     if (m.failedCount == 0) {
-      return const AlertTile(
+      return AlertTile(
         severity: AlertSeverity.info,
-        title: 'All caught up',
-        subtitle: 'No failed payments this period.',
+        title: context.l10n.allCaughtUp,
+        subtitle: context.l10n.noFailedPaymentsThisPeriod,
       );
     }
     return AlertTile(
       severity: AlertSeverity.critical,
-      title:
-          '${m.failedCount} payment${m.failedCount == 1 ? '' : 's'} failed to settle',
-      subtitle: '${money(m.failedAmount)} needs review.',
+      title: context.l10n.paymentsFailedToSettle(m.failedCount),
+      subtitle: context.l10n.amountNeedsReview(money(m.failedAmount)),
     );
   }
 
@@ -385,7 +387,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
   Widget _channels(_Metrics m, ColorScheme cs) {
     if (m.channels.isEmpty) {
       return Text(
-        'No transactions yet this period.',
+        context.l10n.noTransactionsYetThisPeriod,
         style: AppText.caption(color: cs.onSurfaceVariant),
       );
     }
@@ -421,7 +423,7 @@ class _BusinessScreenState extends State<BusinessScreen> {
         ),
       ),
       title: c.name,
-      subtitle: '${c.txns} transactions',
+      subtitle: context.l10n.transactionsCount(c.txns),
       trailing: Text(
         '${(c.share * 100).round()}%',
         style: AppText.hero(
@@ -491,7 +493,6 @@ class _Metrics {
 }
 
 const _periodDays = [7, 30, 90, 365];
-const _periodLabels = ['week', 'month', 'quarter', 'year'];
 
 const _mtn = 0xFFFFCC00;
 const _orange = 0xFFFF6D00;
@@ -499,15 +500,15 @@ const _card = 0xFF2D6CDF;
 const _bank = 0xFF10B981;
 const _other = 0xFF8E9AAB;
 
-(String, String, int) _channelMeta(String key) => switch (key) {
+(String, String, int) _channelMeta(AppLocalizations l, String key) => switch (key) {
   'mtn_momo' => ('MTN Mobile Money', 'MTN', _mtn),
   'orange_money' => ('Orange Money', 'OM', _orange),
-  'visa' || 'mastercard' || 'card' => ('Card payment', 'CARD', _card),
-  'bank_transfer' => ('Bank transfer', 'BANK', _bank),
-  'qr_checkout' => ('QR checkout', 'QR', _card),
-  'payment_link' => ('Payment link', 'LINK', _orange),
+  'visa' || 'mastercard' || 'card' => (l.cardPayment, 'CARD', _card),
+  'bank_transfer' => (l.bankTransfer, 'BANK', _bank),
+  'qr_checkout' => (l.qrCheckout, 'QR', _card),
+  'payment_link' => (l.paymentLink, 'LINK', _orange),
   _ => (
-    key.isEmpty ? 'Other' : key,
+    key.isEmpty ? l.otherLabel : key,
     key.length >= 3 ? key.substring(0, 3).toUpperCase() : key.toUpperCase(),
     _other,
   ),
@@ -569,6 +570,7 @@ List<_PeriodBucket> _buildBuckets(int period, DateTime now) {
 }
 
 _Metrics _computeMetrics(
+  AppLocalizations l,
   int period,
   List<LedgerTransaction> allTxns,
   List<SettlementBatch> settlements,
@@ -639,7 +641,7 @@ _Metrics _computeMetrics(
     (s, c) => s + c.amount,
   );
   final channels = channelTotals.values.map((c) {
-    final meta = _channelMeta(c.key);
+    final meta = _channelMeta(l, c.key);
     return _Channel(
       meta.$1,
       meta.$2,
@@ -660,7 +662,7 @@ _Metrics _computeMetrics(
     }
   }
   final nextSettlement = next == null
-      ? 'Not scheduled'
+      ? l.notScheduled
       : DateFormat('EEE, d MMM').format(next.periodEnd);
 
   final buckets = _buildBuckets(period, now);
@@ -683,14 +685,14 @@ _Metrics _computeMetrics(
   final sparkline = cashFlow.map((p) => p.inflow - p.outflow).toList();
 
   final costs = <_Cost>[
-    if (platformFees > 0) _Cost('Platform fees', platformFees.toDouble()),
-    if (refundsIssued > 0) _Cost('Refunds issued', refundsIssued.toDouble()),
+    if (platformFees > 0) _Cost(l.platformFees, platformFees.toDouble()),
+    if (refundsIssued > 0) _Cost(l.refundsIssued, refundsIssued.toDouble()),
     for (final e in allExpenses.where((e) => inCurrent(e.incurredAt)))
       _Cost(e.category, e.amount.toDouble()),
   ];
 
   return _Metrics(
-    deltaCaption: 'vs last ${_periodLabels[period]}',
+    deltaCaption: [l.vsLastWeek, l.vsLastMonth, l.vsLastQuarter, l.vsLastYear][period],
     deltaPct: deltaPct.toDouble(),
     sparkline: sparkline,
     availablePayout: availablePayout.toDouble(),
@@ -700,7 +702,7 @@ _Metrics _computeMetrics(
     failedAmount: failedAmount.toDouble(),
     failedCount: failedCount,
     settled: settled.toDouble(),
-    settledCaption: 'of ${money(grossCompleted, compact: true)} in',
+    settledCaption: l.ofAmountIn(money(grossCompleted, compact: true)),
     cashFlow: cashFlow,
     costs: costs,
     channels: channels,

@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/format.dart';
+import 'package:tulapay/l10n/app_localizations.dart';
+import 'package:tulapay/services/app_preferences.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/services/supabase_client.dart';
 
@@ -62,7 +64,9 @@ class PushNotificationService {
 
         if (notification != null && android != null && !kIsWeb) {
           showNotification(
-            title: notification.title ?? 'Notification',
+            title: notification.title ??
+                lookupAppLocalizations(AppPreferences.instance.locale.value)
+                    .notificationDefaultTitle,
             body: notification.body ?? '',
           );
         }
@@ -147,14 +151,20 @@ class PushNotificationService {
                 final channel = newRow['channel']?.toString() ?? '';
                 final counterparty = newRow['counterparty_name']?.toString();
 
-                final typeLabel = type == 'payment'
-                    ? 'Payment'
-                    : (type == 'payout' ? 'Payout' : 'Transaction');
+                final l = lookupAppLocalizations(AppPreferences.instance.locale.value);
+                final title = type == 'payment'
+                    ? l.paymentCompletedTitle
+                    : (type == 'payout'
+                        ? l.payoutCompletedTitle
+                        : l.transactionCompletedTitle);
 
                 showNotification(
-                  title: '$typeLabel Completed 🎉',
-                  body:
-                      'Successfully processed ${money(amount)}${counterparty != null && counterparty.isNotEmpty ? ' from $counterparty' : ''}${channel.isNotEmpty ? ' via $channel' : ''}',
+                  title: title,
+                  body: l.processedAmount(money(amount)) +
+                      (counterparty != null && counterparty.isNotEmpty
+                          ? l.fromCounterparty(counterparty)
+                          : '') +
+                      (channel.isNotEmpty ? l.viaChannel(channel) : ''),
                 );
               }
             },

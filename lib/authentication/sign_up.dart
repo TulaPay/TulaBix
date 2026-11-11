@@ -7,6 +7,7 @@ import 'package:tulapay/authentication/sign_in.dart';
 import 'package:tulapay/models/business_type.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class Country {
   final String name;
@@ -94,7 +95,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "Select Country",
+                  context.l10n.selectCountry,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -150,8 +151,8 @@ class _SignUpState extends State<SignUp> {
 
     if (!_acceptTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Please accept the Terms and Conditions to proceed'),
+        SnackBar(
+          content: Text(context.l10n.pleaseAcceptTheTermsAnd),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -159,8 +160,8 @@ class _SignUpState extends State<SignUp> {
     }
     if (_selectedBusinessType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Select a business type to proceed'),
+        SnackBar(
+          content: Text(context.l10n.selectABusinessTypeTo),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -198,8 +199,8 @@ class _SignUpState extends State<SignUp> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Something went wrong — please try again.'),
+        SnackBar(
+          content: Text(context.l10n.somethingWentWrongPleaseTry),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -259,7 +260,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              "Join TulaPay",
+                              context.l10n.joinTulapay,
                               style: GoogleFonts.plusJakartaSans(
                                 fontSize: 26,
                                 fontWeight: FontWeight.w700,
@@ -269,7 +270,7 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 6),
                             Text(
-                              "Create your account to start managing payments in one liquid workspace.",
+                              context.l10n.createYourAccountToStart,
                               style: theme.textTheme.bodyLarge?.copyWith(
                                 color: colorScheme.onSurface.withValues(
                                   alpha: 0.66,
@@ -279,41 +280,41 @@ class _SignUpState extends State<SignUp> {
                             ),
                             const SizedBox(height: 24),
 
-                            _buildLabel("Full name"),
+                            _buildLabel(context.l10n.fullName),
                             TextFormField(
                               controller: _nameController,
                               textCapitalization: TextCapitalization.words,
-                              decoration: const InputDecoration(
-                                hintText: "Jean Dupont",
+                              decoration: InputDecoration(
+                                hintText: context.l10n.jeanDupont,
                                 prefixIcon: Icon(Icons.person_outline),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Full name is required';
+                                  return context.l10n.fullNameIsRequired;
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Business name"),
+                            _buildLabel(context.l10n.businessName),
                             TextFormField(
                               controller: _businessNameController,
                               textCapitalization: TextCapitalization.words,
-                              decoration: const InputDecoration(
-                                hintText: "Awa's Boutique",
+                              decoration: InputDecoration(
+                                hintText: context.l10n.awaSBoutique,
                                 prefixIcon: Icon(Icons.storefront_outlined),
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Business name is required';
+                                  return context.l10n.businessNameIsRequired;
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Phone number"),
+                            _buildLabel(context.l10n.phoneNumber),
                             TextFormField(
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
@@ -358,17 +359,17 @@ class _SignUpState extends State<SignUp> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Phone number is required';
+                                  return context.l10n.phoneNumberIsRequired;
                                 }
                                 if (value.length < 8) {
-                                  return 'Enter a valid mobile number';
+                                  return context.l10n.enterAValidMobileNumber;
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Email address"),
+                            _buildLabel(context.l10n.emailAddress),
                             TextFormField(
                               controller: _emailController,
                               keyboardType: TextInputType.emailAddress,
@@ -378,25 +379,25 @@ class _SignUpState extends State<SignUp> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Email address is required';
+                                  return context.l10n.emailAddressIsRequired;
                                 }
                                 final emailRegex = RegExp(
                                   r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                                 );
                                 if (!emailRegex.hasMatch(value)) {
-                                  return 'Enter a valid email address';
+                                  return context.l10n.enterAValidEmailAddress;
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Password"),
+                            _buildLabel(context.l10n.password),
                             TextFormField(
                               controller: _passwordController,
                               obscureText: _obscurePassword,
                               decoration: InputDecoration(
-                                hintText: "Minimum 8 characters",
+                                hintText: context.l10n.minimum8Characters,
                                 prefixIcon: const Icon(Icons.lock_outline),
                                 suffixIcon: IconButton(
                                   icon: Icon(
@@ -412,34 +413,34 @@ class _SignUpState extends State<SignUp> {
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
-                                  return 'Password is required';
+                                  return context.l10n.passwordIsRequired;
                                 }
                                 if (value.length < 8) {
-                                  return 'Password must be at least 8 characters';
+                                  return context.l10n.passwordMustBeAtLeast;
                                 }
                                 if (!value.contains(RegExp(r'[0-9]'))) {
-                                  return 'Include at least one number';
+                                  return context.l10n.includeAtLeastOneNumber;
                                 }
                                 if (!value.contains(RegExp(r'[A-Z]'))) {
-                                  return 'Include at least one uppercase letter';
+                                  return context.l10n.includeAtLeastOneUppercase;
                                 }
                                 return null;
                               },
                             ),
                             const SizedBox(height: 12),
 
-                            _buildLabel("Business type"),
+                            _buildLabel(context.l10n.businessType),
                             DropdownButtonFormField<String>(
                               initialValue: _selectedBusinessType,
                               decoration: const InputDecoration(
                                 prefixIcon: Icon(Icons.category_outlined),
                               ),
-                              hint: const Text("Select business type"),
+                              hint: Text(context.l10n.selectBusinessType),
                               items: businessTypeLabels.keys
                                   .map(
                                     (label) => DropdownMenuItem(
                                       value: label,
-                                      child: Text(label),
+                                      child: Text(context.businessTypeName(label)),
                                     ),
                                   )
                                   .toList(),
@@ -447,7 +448,7 @@ class _SignUpState extends State<SignUp> {
                                   setState(() => _selectedBusinessType = value),
                               validator: (value) {
                                 if (value == null) {
-                                  return 'Select a business type';
+                                  return context.l10n.selectABusinessType;
                                 }
                                 return null;
                               },
@@ -485,19 +486,19 @@ class _SignUpState extends State<SignUp> {
                                                   .withValues(alpha: 0.72),
                                             ),
                                         children: [
-                                          const TextSpan(
-                                            text: "I agree to the ",
+                                          TextSpan(
+                                            text: context.l10n.iAgreeToThe,
                                           ),
                                           TextSpan(
-                                            text: "Terms of Service",
+                                            text: context.l10n.termsOfService,
                                             style: TextStyle(
                                               color: colorScheme.primary,
                                               fontWeight: FontWeight.bold,
                                             ),
                                           ),
-                                          const TextSpan(text: " and "),
+                                          TextSpan(text: context.l10n.and),
                                           TextSpan(
-                                            text: "Privacy Policy",
+                                            text: context.l10n.privacyPolicy,
                                             style: TextStyle(
                                               color: colorScheme.primary,
                                               fontWeight: FontWeight.bold,
@@ -522,7 +523,7 @@ class _SignUpState extends State<SignUp> {
                                         strokeWidth: 2,
                                       ),
                                     )
-                                  : const Text("Create Account"),
+                                  : Text(context.l10n.createAccount),
                             ),
                             const SizedBox(height: 14),
 
@@ -531,7 +532,7 @@ class _SignUpState extends State<SignUp> {
                                 crossAxisAlignment: WrapCrossAlignment.center,
                                 children: [
                                   Text(
-                                    "Already have an account? ",
+                                    context.l10n.alreadyHaveAnAccount,
                                     style: TextStyle(
                                       color: colorScheme.onSurface.withValues(
                                         alpha: 0.64,
@@ -548,7 +549,7 @@ class _SignUpState extends State<SignUp> {
                                       );
                                     },
                                     child: Text(
-                                      "Log In",
+                                      context.l10n.logIn,
                                       style: TextStyle(
                                         color: colorScheme.primary,
                                         fontWeight: FontWeight.bold,

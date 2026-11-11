@@ -5,6 +5,7 @@ import 'package:tulapay/screens/more_actions_demos.dart';
 import 'package:tulapay/screens/statements_screen.dart';
 import 'package:tulapay/screens/transfer_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // Bank Transfer and Collect Payment moved to Homepage's own Quick Actions
 // row — removed from here rather than duplicated, matching how Payment
@@ -20,22 +21,22 @@ class MoreActionsScreen extends StatelessWidget {
     final actions = [
       {
         'icon': Icons.swap_horiz_rounded,
-        'label': 'Internal Transfer',
+        'label': context.l10n.internalTransfer,
         'route': 'internal_transfer',
       },
       {
         'icon': Icons.history_edu_rounded,
-        'label': 'Statements',
+        'label': context.l10n.statements,
         'route': 'statements',
       },
       {
         'icon': Icons.group_add_rounded,
-        'label': 'Add Customer',
+        'label': context.l10n.addCustomer,
         'route': 'add_customer',
       },
       {
         'icon': Icons.settings_applications_outlined,
-        'label': 'POS Settings',
+        'label': context.l10n.posSettings,
         'route': 'pos_settings',
       },
     ];
@@ -44,7 +45,7 @@ class MoreActionsScreen extends StatelessWidget {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(
-          "All Actions",
+          context.l10n.allActions,
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
         backgroundColor: Colors.transparent,

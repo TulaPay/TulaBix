@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // Bank Transfer, Internal Transfer, Statements, and Add Customer used to be
 // demo shells here with no-op actions. They're now real: TransferScreen
@@ -14,17 +15,16 @@ class PosSettingsDemoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassPageShell(
-      title: 'POS Settings',
-      subtitle: 'Checkout preferences, receipts, and payment behavior.',
+      title: context.l10n.posSettings,
+      subtitle: context.l10n.checkoutPreferencesReceiptsAndPayment,
       icon: Icons.settings_applications_outlined,
       actionLabel: null,
-      children: const [
+      children: [
         GlassInfoCard(
           icon: Icons.hourglass_empty_rounded,
-          title: 'Coming soon',
+          title: context.l10n.comingSoon,
           subtitle:
-              'Receipt format, checkout modes, and terminal controls aren\'t '
-              'built yet — nothing here is saved.',
+              context.l10n.receiptFormatCheckoutModesAnd2,
         ),
       ],
     );

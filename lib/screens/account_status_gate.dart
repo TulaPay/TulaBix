@@ -6,6 +6,7 @@ import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/themes/app_tokens.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class PendingReviewScreen extends StatelessWidget {
   final VoidCallback onRefresh;
@@ -45,7 +46,7 @@ class PendingReviewScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        'Verification in progress',
+                        context.l10n.verificationInProgress,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
@@ -55,7 +56,7 @@ class PendingReviewScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "We're reviewing your documents",
+                        context.l10n.weReReviewingYourDocuments,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
@@ -65,8 +66,7 @@ class PendingReviewScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        "You'll get full access to TulaBiz as soon as our team "
-                        "approves your submission. Pull down to check again.",
+                        context.l10n.youLlGetFullAccess2,
                         textAlign: TextAlign.center,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
@@ -81,7 +81,7 @@ class PendingReviewScreen extends StatelessWidget {
                 Center(
                   child: TextButton(
                     onPressed: () => AuthService.instance.signOut(),
-                    child: const Text('Sign out'),
+                    child: Text(context.l10n.signOut),
                   ),
                 ),
               ],
@@ -97,10 +97,10 @@ class AccountBlockedScreen extends StatelessWidget {
   final Merchant merchant;
   const AccountBlockedScreen({super.key, required this.merchant});
 
-  String get _title => switch (merchant.accountStatus) {
-    'rejected' => 'Verification rejected',
-    'suspended' => 'Account suspended',
-    _ => 'Account closed',
+  String _title(BuildContext context) => switch (merchant.accountStatus) {
+    'rejected' => context.l10n.verificationRejected,
+    'suspended' => context.l10n.accountSuspended,
+    _ => context.l10n.accountClosed,
   };
 
   @override
@@ -133,7 +133,7 @@ class AccountBlockedScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      _title,
+                      _title(context),
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
@@ -165,7 +165,7 @@ class AccountBlockedScreen extends StatelessWidget {
                     ],
                     const SizedBox(height: 16),
                     Text(
-                      'Contact support if you believe this is a mistake.',
+                      context.l10n.contactSupportIfYouBelieve,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
@@ -179,7 +179,7 @@ class AccountBlockedScreen extends StatelessWidget {
               Center(
                 child: TextButton(
                   onPressed: () => AuthService.instance.signOut(),
-                  child: const Text('Sign out'),
+                  child: Text(context.l10n.signOut),
                 ),
               ),
             ],

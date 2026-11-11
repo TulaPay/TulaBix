@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:tulapay/screens/onboarding.dart';
 import 'package:tulapay/themes/app_theme.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -38,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                "FINANCIAL ENGINE FOR MERCHANTS",
+                context.l10n.financialEngineForMerchants,
                 style: AppText.microLabel(
                   color: Colors.white.withValues(alpha: 0.72),
                 ),
@@ -56,7 +57,7 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      "Powered by TulaPay",
+                      context.l10n.poweredByTulapay,
                       style: AppText.caption(
                         color: Colors.white.withValues(alpha: 0.72),
                       ),

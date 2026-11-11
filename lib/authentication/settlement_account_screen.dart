@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/services/merchant_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Final onboarding step: where settlement payouts should land. Fulfils the
 /// third requirement KycOnboarding's copy already promises ("Settlement
@@ -83,7 +84,7 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          "Settlement Account",
+                          context.l10n.settlementAccount2,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 24,
                             fontWeight: FontWeight.w700,
@@ -93,7 +94,7 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          "Where should we send your payouts?",
+                          context.l10n.whereShouldWeSendYour,
                           style: theme.textTheme.bodyLarge?.copyWith(
                             color: cs.onSurface.withValues(alpha: 0.66),
                             height: 1.4,
@@ -123,7 +124,7 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8, left: 4),
                           child: Text(
-                            "Mobile money number",
+                            context.l10n.mobileMoneyNumber,
                             style: GoogleFonts.plusJakartaSans(
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
@@ -141,7 +142,7 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                             ),
                           ),
                           validator: (val) => (val == null || val.length < 8)
-                              ? "Enter a valid mobile money number"
+                              ? context.l10n.enterAValidMobileMoney
                               : null,
                         ),
                         const SizedBox(height: 24),
@@ -155,7 +156,7 @@ class _SettlementAccountScreenState extends State<SettlementAccountScreen> {
                                     strokeWidth: 2,
                                   ),
                                 )
-                              : const Text("Finish"),
+                              : Text(context.l10n.finish),
                         ),
                       ],
                     ),

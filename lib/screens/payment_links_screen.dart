@@ -10,6 +10,7 @@ import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/pin_prompt.dart';
 import 'package:tulapay/widgets/ui/list_row_card.dart' show StatusBadge;
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class PaymentLinksScreen extends StatefulWidget {
   const PaymentLinksScreen({super.key});
@@ -48,12 +49,12 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
   Future<void> _handleGenerate() async {
     final amount = num.tryParse(_amountController.text.trim());
     if (amount == null || amount <= 0) {
-      AppFeedback.toast(context, 'Enter a valid amount');
+      AppFeedback.toast(context, context.l10n.enterAValidAmount);
       return;
     }
     final description = _descriptionController.text.trim();
     if (description.isEmpty) {
-      AppFeedback.toast(context, 'Add a payment description');
+      AppFeedback.toast(context, context.l10n.addAPaymentDescription);
       return;
     }
 
@@ -74,14 +75,14 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
       _descriptionController.clear();
       _referenceController.clear();
       _refreshLinks();
-      AppFeedback.toast(context, 'Payment link generated');
+      AppFeedback.toast(context, context.l10n.paymentLinkGenerated);
       PushNotificationService.instance.showNotification(
-        title: 'Payment Link Generated',
-        body: 'Created payment link for ${money(amount)} — $description',
+        title: context.l10n.paymentLinkGenerated2,
+        body: context.l10n.createdPaymentLinkFor(money(amount), description),
       );
     } catch (e) {
       if (!mounted) return;
-      AppFeedback.toast(context, 'Could not generate link: $e');
+      AppFeedback.toast(context, context.l10n.couldNotGenerateLink('$e'));
     } finally {
       if (mounted) setState(() => _generating = false);
     }
@@ -90,26 +91,26 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
   Future<void> _handleCopy() async {
     final link = _lastGenerated;
     if (link == null) {
-      AppFeedback.toast(context, 'Generate a link first');
+      AppFeedback.toast(context, context.l10n.generateALinkFirst);
       return;
     }
-    await AppFeedback.copy(context, link.url, label: 'Payment link copied');
+    await AppFeedback.copy(context, link.url, label: context.l10n.paymentLinkCopied);
   }
 
   Future<void> _handleShare() async {
     final link = _lastGenerated;
     if (link == null) {
-      AppFeedback.toast(context, 'Generate a link first');
+      AppFeedback.toast(context, context.l10n.generateALinkFirst);
       return;
     }
-    await AppFeedback.share('Pay ${money(link.amount, currency: link.currency)}: ${link.url}');
+    await AppFeedback.share(context.l10n.sharePayAmount(money(link.amount, currency: link.currency), link.url));
   }
 
   String _statusLabel(String status) => switch (status) {
-        'active' => 'Active',
-        'paid' => 'Paid',
-        'expired' => 'Expired',
-        'disabled' => 'Disabled',
+        'active' => context.l10n.statusActive,
+        'paid' => context.l10n.paid,
+        'expired' => context.l10n.expired,
+        'disabled' => context.l10n.disabled,
         _ => status,
       };
 
@@ -146,14 +147,14 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          "Payment Links",
+          context.l10n.paymentLinks,
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.help_outline_rounded),
-            tooltip: 'Help',
+            tooltip: context.l10n.help,
           ),
           const SizedBox(width: 8),
         ],
@@ -167,26 +168,26 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _eyebrow(context, 'CREATE A LINK'),
+                  _eyebrow(context, context.l10n.createALink),
                   const SizedBox(height: 10),
                   Text(
-                    'Create secure payment links',
+                    context.l10n.createSecurePaymentLinks,
                     style: AppText.screenTitle(size: 20, color: cs.onSurface),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Set the amount, explain the charge, and generate a shareable link for fast checkout.',
+                    context.l10n.setTheAmountExplainThe,
                     style: AppText.body(size: 14, color: context.textSecondary),
                   ),
                   const SizedBox(height: 16),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: const [
-                      _TrustChip(label: 'Encrypted', icon: Icons.lock_outline),
-                      _TrustChip(label: 'Instant', icon: Icons.bolt_rounded),
+                    children: [
+                      _TrustChip(label: context.l10n.encrypted, icon: Icons.lock_outline),
+                      _TrustChip(label: context.l10n.instant, icon: Icons.bolt_rounded),
                       _TrustChip(
-                        label: 'Trackable',
+                        label: context.l10n.trackable,
                         icon: Icons.query_stats_rounded,
                       ),
                     ],
@@ -199,13 +200,13 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                _eyebrow(context, 'PAYMENT DETAILS'),
+                _eyebrow(context, context.l10n.paymentDetails),
                 const SizedBox(height: 12),
                 GlassSurface(
                   child: Column(
                     children: [
                       _FieldBlock(
-                        label: 'Amount to receive',
+                        label: context.l10n.amountToReceive,
                         hint: '0.00',
                         controller: _amountController,
                         prefix: 'XAF',
@@ -213,29 +214,29 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                       ),
                       const SizedBox(height: 16),
                       _FieldBlock(
-                        label: 'Payment description',
-                        hint: 'Invoice for graphic design',
+                        label: context.l10n.paymentDescription,
+                        hint: context.l10n.invoiceForGraphicDesign,
                         controller: _descriptionController,
                         maxLines: 3,
                       ),
                       const SizedBox(height: 16),
                       _FieldBlock(
-                        label: 'Reference',
-                        hint: 'Optional invoice or order reference',
+                        label: context.l10n.reference,
+                        hint: context.l10n.optionalInvoiceOrOrderReference,
                         controller: _referenceController,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 28),
-                _eyebrow(context, 'LINK ACTIONS'),
+                _eyebrow(context, context.l10n.linkActions),
                 const SizedBox(height: 12),
                 Row(
                   children: [
                     Expanded(
                       child: _ActionButton(
                         icon: Icons.link_rounded,
-                        label: _generating ? 'Generating…' : 'Generate',
+                        label: _generating ? context.l10n.generating : context.l10n.generate,
                         onTap: _generating ? () {} : _handleGenerate,
                         filled: true,
                       ),
@@ -244,7 +245,7 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                     Expanded(
                       child: _ActionButton(
                         icon: Icons.copy_rounded,
-                        label: 'Copy',
+                        label: context.l10n.copy,
                         onTap: _handleCopy,
                       ),
                     ),
@@ -252,14 +253,14 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                     Expanded(
                       child: _ActionButton(
                         icon: Icons.share_rounded,
-                        label: 'Share',
+                        label: context.l10n.share,
                         onTap: _handleShare,
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 28),
-                _eyebrow(context, 'RECENT LINKS'),
+                _eyebrow(context, context.l10n.recentLinks),
                 const SizedBox(height: 12),
                 FutureBuilder<List<PaymentLink>>(
                   future: _linksFuture,
@@ -275,7 +276,7 @@ class _PaymentLinksScreenState extends State<PaymentLinksScreen> {
                       return Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Text(
-                          'No payment links yet — generate one above.',
+                          context.l10n.noPaymentLinksYetGenerate,
                           style: GoogleFonts.plusJakartaSans(
                             fontSize: 13,
                             color: cs.onSurfaceVariant,

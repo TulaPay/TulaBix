@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/forgot_password_Screen.dart';
 import 'package:tulapay/services/auth_service.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Shared "confirm your transaction PIN" bottom sheet. Every sensitive
 /// action (payment links, cash receipts, transfers) should call
@@ -47,7 +48,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
   Future<void> _confirm() async {
     final pin = _controller.text.trim();
     if (pin.length != 6) {
-      setState(() => _error = 'Enter your 6-digit PIN');
+      setState(() => _error = context.l10n.enterYour6DigitPin);
       return;
     }
     setState(() {
@@ -62,7 +63,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
       } else {
         setState(() {
           _verifying = false;
-          _error = 'Incorrect PIN — try again';
+          _error = context.l10n.incorrectPinTryAgain;
           _controller.clear();
         });
       }
@@ -70,7 +71,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
       if (!mounted) return;
       setState(() {
         _verifying = false;
-        _error = 'Could not verify PIN — check your connection';
+        _error = context.l10n.couldNotVerifyPinCheck;
       });
     }
   }
@@ -105,7 +106,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
               Icon(Icons.lock_outline_rounded, color: cs.primary, size: 26),
               const SizedBox(width: 12),
               Text(
-                'Confirm your PIN',
+                context.l10n.confirmYourPin,
                 style: GoogleFonts.plusJakartaSans(
                   fontWeight: FontWeight.w700,
                   fontSize: 20,
@@ -116,7 +117,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
           ),
           const SizedBox(height: 8),
           Text(
-            'Enter your 6-digit transaction PIN to continue.',
+            context.l10n.enterYour6DigitTransaction,
             style: GoogleFonts.plusJakartaSans(
               color: cs.onSurfaceVariant,
               fontSize: 13,
@@ -169,7 +170,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
                         color: Colors.white,
                       ),
                     )
-                  : const Text('Confirm'),
+                  : Text(context.l10n.confirm),
             ),
           ),
           const SizedBox(height: 8),
@@ -178,7 +179,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
             children: [
               TextButton(
                 onPressed: () => Navigator.pop(context, false),
-                child: const Text('Cancel'),
+                child: Text(context.l10n.cancel),
               ),
               TextButton(
                 onPressed: () {
@@ -190,7 +191,7 @@ class _PinPromptSheetState extends State<_PinPromptSheet> {
                     ),
                   );
                 },
-                child: const Text('Forgot PIN?'),
+                child: Text(context.l10n.forgotPin),
               ),
             ],
           ),

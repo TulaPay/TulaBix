@@ -6,6 +6,7 @@ import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Backs the Settings → "Privacy & Security" row (was a "coming soon" snackbar).
 class SecurityScreen extends StatefulWidget {
@@ -33,7 +34,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
       });
     }).catchError((_) {
       if (mounted) {
-        AppFeedback.toast(context, 'Could not load your security settings');
+        AppFeedback.toast(context, context.l10n.couldNotLoadYourSecurity);
       }
     });
   }
@@ -48,11 +49,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
   Future<void> _changePassword() async {
     final pw = _password.text.trim();
     if (pw.length < 8) {
-      AppFeedback.toast(context, 'Use at least 8 characters');
+      AppFeedback.toast(context, context.l10n.useAtLeast8Characters);
       return;
     }
     if (pw != _confirm.text.trim()) {
-      AppFeedback.toast(context, 'Passwords do not match');
+      AppFeedback.toast(context, context.l10n.passwordsDoNotMatch);
       return;
     }
     setState(() => _busy = true);
@@ -61,9 +62,9 @@ class _SecurityScreenState extends State<SecurityScreen> {
       if (!mounted) return;
       _password.clear();
       _confirm.clear();
-      AppFeedback.toast(context, 'Password updated');
+      AppFeedback.toast(context, context.l10n.passwordUpdated);
     } catch (e) {
-      if (mounted) AppFeedback.toast(context, 'Could not update password');
+      if (mounted) AppFeedback.toast(context, context.l10n.couldNotUpdatePassword);
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -81,7 +82,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _appLock = !value);
-      AppFeedback.toast(context, 'Could not save this setting — try again');
+      AppFeedback.toast(context, context.l10n.couldNotSaveThisSetting);
     }
   }
 
@@ -89,14 +90,14 @@ class _SecurityScreenState extends State<SecurityScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return AppScaffold(
-      title: 'Privacy & Security',
+      title: context.l10n.privacySecurity,
       scrollable: true,
       bodyPadding: const EdgeInsets.fromLTRB(
           AppSpacing.xl, AppSpacing.md, AppSpacing.xl, AppSpacing.section),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const MicroLabel('Change password'),
+          MicroLabel(context.l10n.changePassword),
           const SizedBox(height: AppSpacing.md),
           GlassSurface(
             padding: const EdgeInsets.all(AppSpacing.lg),
@@ -105,14 +106,14 @@ class _SecurityScreenState extends State<SecurityScreen> {
                 TextField(
                   controller: _password,
                   obscureText: true,
-                  decoration: const InputDecoration(labelText: 'New password'),
+                  decoration: InputDecoration(labelText: context.l10n.newPassword),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 TextField(
                   controller: _confirm,
                   obscureText: true,
                   decoration:
-                      const InputDecoration(labelText: 'Confirm new password'),
+                      InputDecoration(labelText: context.l10n.confirmNewPassword),
                 ),
                 const SizedBox(height: AppSpacing.lg),
                 SizedBox(
@@ -125,28 +126,27 @@ class _SecurityScreenState extends State<SecurityScreen> {
                             width: 18,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Update password'),
+                        : Text(context.l10n.updatePassword),
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(height: AppSpacing.huge),
-          const MicroLabel('Device'),
+          MicroLabel(context.l10n.device),
           const SizedBox(height: AppSpacing.md),
           GlassSurface(
             padding: EdgeInsets.zero,
             child: ToggleTile(
-              title: 'Require unlock on open',
-              subtitle: 'Ask for device biometrics / passcode each launch',
+              title: context.l10n.requireUnlockOnOpen,
+              subtitle: context.l10n.askForDeviceBiometricsPasscode,
               value: _appLock,
               onChanged: _toggleAppLock,
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
           Text(
-            'Your 6-digit transaction PIN is managed separately and is required '
-            'for every payout regardless of this setting.',
+            context.l10n.your6DigitTransactionPin2,
             style: AppText.caption(color: cs.onSurfaceVariant),
           ),
         ],

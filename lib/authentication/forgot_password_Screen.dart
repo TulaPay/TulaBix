@@ -5,6 +5,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tulapay/authentication/sign_in.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Account-recovery flow — verify phone ownership via OTP, then choose to
 /// reset either the Auth password (real "forgot password", previously
@@ -105,7 +106,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      _showError('Something went wrong — please try again.');
+      _showError(context.l10n.somethingWentWrongPleaseTry);
     }
   }
 
@@ -131,7 +132,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      _showError('Something went wrong — please try again.');
+      _showError(context.l10n.somethingWentWrongPleaseTry);
     }
   }
 
@@ -158,7 +159,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     } catch (_) {
       if (!mounted) return;
       setState(() => _isSubmitting = false);
-      _showError('Something went wrong — please try again.');
+      _showError(context.l10n.somethingWentWrongPleaseTry);
       return;
     }
     if (!mounted) return;
@@ -187,8 +188,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 16),
                 Text(
                   isPassword
-                      ? "Password Reset Successful"
-                      : "PIN Reset Successful",
+                      ? context.l10n.passwordResetSuccessful
+                      : context.l10n.pinResetSuccessful,
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w700,
                     fontSize: 18,
@@ -198,8 +199,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 8),
                 Text(
                   isPassword
-                      ? "Your password has been reset. Sign in with your new password."
-                      : "Your PIN has been reset. Sign in with your password as usual.",
+                      ? context.l10n.yourPasswordHasBeenReset
+                      : context.l10n.yourPinHasBeenReset,
                   textAlign: TextAlign.center,
                   style: TextStyle(color: cs.onSurface.withValues(alpha: 0.7)),
                 ),
@@ -211,7 +212,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       (route) => false,
                     );
                   },
-                  child: const Text("Go to Login"),
+                  child: Text(context.l10n.goToLogin),
                 ),
               ],
             ),
@@ -282,7 +283,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Account Recovery",
+          context.l10n.accountRecovery,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 26,
             fontWeight: FontWeight.w700,
@@ -292,14 +293,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          "Verify your phone to reset your password or PIN.",
+          context.l10n.verifyYourPhoneToReset,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: cs.onSurface.withValues(alpha: 0.66),
             height: 1.4,
           ),
         ),
         const SizedBox(height: 24),
-        _buildLabel("Phone number"),
+        _buildLabel(context.l10n.phoneNumber),
         TextFormField(
           controller: _phoneController,
           keyboardType: TextInputType.phone,
@@ -337,7 +338,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
           ),
           validator: (value) =>
-              (value == null || value.isEmpty) ? 'Required' : null,
+              (value == null || value.isEmpty) ? context.l10n.requiredLabel : null,
         ),
         const SizedBox(height: 24),
         ElevatedButton(
@@ -348,7 +349,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text("Send Code"),
+              : Text(context.l10n.sendCode),
         ),
       ],
     );
@@ -362,7 +363,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         Icon(Icons.mark_email_read_outlined, size: 80, color: cs.primary),
         const SizedBox(height: 24),
         Text(
-          "Verify Your Phone",
+          context.l10n.verifyYourPhone,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 24,
             fontWeight: FontWeight.w700,
@@ -371,7 +372,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 12),
         Text(
-          "We've sent a 6-digit code to ${_selectedCountry.code} ${_phoneController.text}",
+          context.l10n.codeSentTo("${_selectedCountry.code} ${_phoneController.text}"),
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: cs.onSurface.withValues(alpha: 0.66),
@@ -391,7 +392,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text("Verify Code"),
+              : Text(context.l10n.verifyCode),
         ),
       ],
     );
@@ -403,7 +404,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "What would you like to reset?",
+          context.l10n.whatWouldYouLikeTo,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 26,
             fontWeight: FontWeight.w700,
@@ -413,7 +414,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          "Your phone is verified — choose one to continue.",
+          context.l10n.yourPhoneIsVerifiedChoose,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: cs.onSurface.withValues(alpha: 0.66),
           ),
@@ -421,8 +422,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const SizedBox(height: 24),
         _ChoiceTile(
           icon: Icons.password_rounded,
-          title: 'Reset password',
-          subtitle: 'Change the password you use to sign in.',
+          title: context.l10n.resetPassword,
+          subtitle: context.l10n.changeThePasswordYouUse,
           onTap: () => setState(() {
             _choice = _ResetChoice.password;
             _currentStep = 3;
@@ -431,8 +432,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         const SizedBox(height: 12),
         _ChoiceTile(
           icon: Icons.lock_outline_rounded,
-          title: 'Reset PIN',
-          subtitle: 'Change your 6-digit transaction PIN.',
+          title: context.l10n.resetPin,
+          subtitle: context.l10n.changeYour6DigitTransaction,
           onTap: () => setState(() {
             _choice = _ResetChoice.pin;
             _currentStep = 3;
@@ -454,7 +455,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Reset Password",
+          context.l10n.resetPassword2,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 26,
             fontWeight: FontWeight.w700,
@@ -464,19 +465,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          "Create a new password for your TulaBiz account.",
+          context.l10n.createANewPasswordFor,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: cs.onSurface.withValues(alpha: 0.66),
             height: 1.4,
           ),
         ),
         const SizedBox(height: 24),
-        _buildLabel("New password"),
+        _buildLabel(context.l10n.newPassword),
         TextFormField(
           controller: _newPasswordController,
           obscureText: _obscureNewPassword,
           decoration: InputDecoration(
-            hintText: "Minimum 8 characters",
+            hintText: context.l10n.minimum8Characters,
             prefixIcon: const Icon(Icons.lock_outline),
             suffixIcon: IconButton(
               icon: Icon(
@@ -487,16 +488,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
           ),
           validator: (value) => (value == null || value.length < 8)
-              ? 'Must be at least 8 characters'
+              ? context.l10n.mustBeAtLeast8
               : null,
         ),
         const SizedBox(height: 16),
-        _buildLabel("Confirm new password"),
+        _buildLabel(context.l10n.confirmNewPassword),
         TextFormField(
           controller: _confirmPasswordController,
           obscureText: _obscureConfirmPassword,
           decoration: InputDecoration(
-            hintText: "Re-enter your new password",
+            hintText: context.l10n.reEnterYourNewPassword,
             prefixIcon: const Icon(Icons.lock_reset),
             suffixIcon: IconButton(
               icon: Icon(
@@ -511,7 +512,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
           validator: (value) {
             if (value != _newPasswordController.text)
-              return 'Passwords do not match';
+              return context.l10n.passwordsDoNotMatch;
             return null;
           },
         ),
@@ -524,7 +525,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text("Reset Password"),
+              : Text(context.l10n.resetPassword2),
         ),
       ],
     );
@@ -536,7 +537,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "Reset PIN",
+          context.l10n.resetPin,
           style: GoogleFonts.plusJakartaSans(
             fontSize: 26,
             fontWeight: FontWeight.w700,
@@ -546,21 +547,21 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
         const SizedBox(height: 8),
         Text(
-          "Create a new 6-digit PIN for your TulaBiz account.",
+          context.l10n.createANew6Digit,
           style: theme.textTheme.bodyLarge?.copyWith(
             color: cs.onSurface.withValues(alpha: 0.66),
             height: 1.4,
           ),
         ),
         const SizedBox(height: 24),
-        _buildLabel("New PIN"),
+        _buildLabel(context.l10n.newPin),
         TextFormField(
           controller: _pinController,
           obscureText: _obscurePin,
           keyboardType: TextInputType.number,
           maxLength: 6,
           decoration: InputDecoration(
-            hintText: "Enter 6-digit PIN",
+            hintText: context.l10n.enter6DigitPin,
             counterText: "",
             prefixIcon: const Icon(Icons.lock_outline),
             suffixIcon: IconButton(
@@ -569,17 +570,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
           ),
           validator: (value) =>
-              (value == null || value.length < 6) ? 'Must be 6 digits' : null,
+              (value == null || value.length < 6) ? context.l10n.mustBe6Digits : null,
         ),
         const SizedBox(height: 16),
-        _buildLabel("Confirm new PIN"),
+        _buildLabel(context.l10n.confirmNewPin),
         TextFormField(
           controller: _confirmPinController,
           obscureText: _obscureConfirmPin,
           keyboardType: TextInputType.number,
           maxLength: 6,
           decoration: InputDecoration(
-            hintText: "Confirm 6-digit PIN",
+            hintText: context.l10n.confirm6DigitPin,
             counterText: "",
             prefixIcon: const Icon(Icons.lock_reset),
             suffixIcon: IconButton(
@@ -591,7 +592,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             ),
           ),
           validator: (value) {
-            if (value != _pinController.text) return 'PINs do not match';
+            if (value != _pinController.text) return context.l10n.pinsDoNotMatch;
             return null;
           },
         ),
@@ -604,7 +605,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   height: 20,
                   child: CircularProgressIndicator(strokeWidth: 2),
                 )
-              : const Text("Reset PIN"),
+              : Text(context.l10n.resetPin),
         ),
       ],
     );
@@ -682,7 +683,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "Select Country",
+                  context.l10n.selectCountry,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,

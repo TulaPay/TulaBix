@@ -7,6 +7,7 @@ import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class PaymentPageScreen extends StatefulWidget {
   const PaymentPageScreen({super.key});
@@ -35,10 +36,10 @@ class _PaymentPageScreenState extends State<PaymentPageScreen> {
         final base = dotenv.env['PAYMENT_LINK_BASE_URL'] ?? 'https://pay.tulabix.com';
         final pageUrl = m == null ? null : '$base/pay/m/${m.id.toLowerCase()}';
         return GlassPageShell(
-          title: 'Payment Page',
-          subtitle: 'Your always-on link customers can pay you from.',
+          title: context.l10n.paymentPage,
+          subtitle: context.l10n.yourAlwaysOnLinkCustomers,
           icon: Icons.payment_rounded,
-          actionLabel: 'Preview page',
+          actionLabel: context.l10n.previewPage,
           onAction: pageUrl == null
               ? null
               : () => AppFeedback.launch(context, pageUrl),
@@ -75,18 +76,18 @@ class _PaymentPageScreenState extends State<PaymentPageScreen> {
                         Expanded(
                           child: OutlinedButton.icon(
                             onPressed: () => AppFeedback.copy(context, pageUrl,
-                                label: 'Page link copied'),
+                                label: context.l10n.pageLinkCopied),
                             icon: const Icon(Icons.copy_rounded, size: 18),
-                            label: const Text('Copy'),
+                            label: Text(context.l10n.copy),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.md),
                         Expanded(
                           child: FilledButton.icon(
                             onPressed: () => AppFeedback.share(
-                                'Pay ${m!.businessName} securely: $pageUrl'),
+                                context.l10n.sharePaySecurely(m!.businessName, pageUrl)),
                             icon: const Icon(Icons.ios_share_rounded, size: 18),
-                            label: const Text('Share'),
+                            label: Text(context.l10n.share),
                           ),
                         ),
                       ],
@@ -97,8 +98,8 @@ class _PaymentPageScreenState extends State<PaymentPageScreen> {
               const SizedBox(height: AppSpacing.xxl),
               GlassInfoCard(
                 icon: Icons.link_rounded,
-                title: 'One-off payment links',
-                subtitle: 'Create a link for a specific amount or invoice.',
+                title: context.l10n.oneOffPaymentLinks,
+                subtitle: context.l10n.createALinkForA,
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const PaymentLinksScreen()),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class DocsScreen extends StatelessWidget {
   const DocsScreen({super.key});
@@ -10,28 +11,28 @@ class DocsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassPageShell(
-      title: 'Documentation',
-      subtitle: 'Guides, product notes, and implementation references.',
+      title: context.l10n.documentation,
+      subtitle: context.l10n.guidesProductNotesAndImplementation,
       icon: Icons.menu_book_rounded,
-      actionLabel: 'Open docs',
+      actionLabel: context.l10n.openDocs,
       onAction: () => AppFeedback.launch(context, _base),
       children: [
         GlassInfoCard(
           icon: Icons.play_circle_outline_rounded,
-          title: 'Getting started',
-          subtitle: 'Product setup and your first sale.',
+          title: context.l10n.gettingStarted,
+          subtitle: context.l10n.productSetupAndYourFirst,
           onTap: () => AppFeedback.launch(context, '$_base/getting-started'),
         ),
         GlassInfoCard(
           icon: Icons.api_rounded,
-          title: 'Feature guides',
-          subtitle: 'Payments, drawer, and settings flows explained.',
+          title: context.l10n.featureGuides,
+          subtitle: context.l10n.paymentsDrawerAndSettingsFlows,
           onTap: () => AppFeedback.launch(context, '$_base/guides'),
         ),
         GlassInfoCard(
           icon: Icons.bug_report_outlined,
-          title: 'Troubleshooting',
-          subtitle: 'Common issues and what to check first.',
+          title: context.l10n.troubleshooting,
+          subtitle: context.l10n.commonIssuesAndWhatTo,
           onTap: () => AppFeedback.launch(context, '$_base/troubleshooting'),
         ),
       ],

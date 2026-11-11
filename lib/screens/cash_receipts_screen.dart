@@ -9,6 +9,7 @@ import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/pin_prompt.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class CashReceiptsScreen extends StatefulWidget {
   const CashReceiptsScreen({super.key});
@@ -25,6 +26,8 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
   String _selectedCategory = 'General';
   bool _submitting = false;
 
+  // 'name' is the value stored with the receipt (English, shared contract);
+  // only the label shown on screen is localized — see _catLabel.
   final List<Map<String, dynamic>> _categories = [
     {'name': 'General', 'icon': Icons.grid_view_rounded},
     {'name': 'Food', 'icon': Icons.restaurant_rounded},
@@ -45,7 +48,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
   Future<void> _handleGenerate() async {
     final amount = num.tryParse(_amountController.text.trim());
     if (amount == null || amount <= 0) {
-      AppFeedback.toast(context, 'Enter a valid amount');
+      AppFeedback.toast(context, context.l10n.enterAValidAmount);
       return;
     }
 
@@ -68,18 +71,28 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
       _itemController.clear();
       _customerController.clear();
       _noteController.clear();
-      AppFeedback.toast(context, 'Receipt recorded');
+      AppFeedback.toast(context, context.l10n.receiptRecorded);
       PushNotificationService.instance.showNotification(
-        title: 'Cash Payment Received',
-        body: 'Recorded ${money(amount)}${customer.isNotEmpty ? ' from $customer' : ''}',
+        title: context.l10n.cashPaymentReceived,
+        body: customer.isNotEmpty
+            ? context.l10n.recordedAmountFrom(money(amount), customer)
+            : context.l10n.recordedAmount(money(amount)),
       );
     } catch (e) {
       if (!mounted) return;
-      AppFeedback.toast(context, 'Could not record receipt: $e');
+      AppFeedback.toast(context, context.l10n.couldNotRecordReceipt('$e'));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
   }
+
+  String _catLabel(String name) => switch (name) {
+        'General' => context.l10n.catGeneral,
+        'Food' => context.l10n.catFood,
+        'Fashion' => context.l10n.catFashion,
+        'Services' => context.l10n.catServices,
+        _ => context.l10n.otherLabel,
+      };
 
   void _showHistory() {
     showModalBottomSheet(
@@ -105,14 +118,14 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          "Cash Receipt",
+          context.l10n.cashReceipt,
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
         actions: [
           IconButton(
             onPressed: _showHistory,
             icon: const Icon(Icons.history_rounded),
-            tooltip: "History",
+            tooltip: context.l10n.history,
           ),
           const SizedBox(width: 8),
         ],
@@ -127,12 +140,12 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Record a cash sale',
+                    context.l10n.recordACashSale,
                     style: AppText.screenTitle(size: 20, color: cs.onSurface),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'Create a clean receipt with a clear amount and item description.',
+                    context.l10n.createACleanReceiptWith,
                     style: AppText.body(size: 14, color: context.textSecondary),
                   ),
                 ],
@@ -151,7 +164,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'TOTAL SALE AMOUNT',
+                        context.l10n.totalSaleAmount,
                         style: AppText.microLabel(color: cs.primary)
                             .copyWith(letterSpacing: 1.6),
                       ),
@@ -199,7 +212,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                 ),
                 const SizedBox(height: 28),
                 Text(
-                  'CATEGORY',
+                  context.l10n.category2,
                   style: AppText.microLabel(color: context.textTertiary)
                       .copyWith(letterSpacing: 1.6),
                 ),
@@ -254,7 +267,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                                   ),
                                   const SizedBox(height: 8),
                                   Text(
-                                    cat['name'],
+                                    _catLabel(cat['name']),
                                     textAlign: TextAlign.center,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
@@ -277,7 +290,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                 ),
                 const SizedBox(height: 28),
                 Text(
-                  'RECEIPT DETAILS',
+                  context.l10n.receiptDetails,
                   style: AppText.microLabel(color: context.textTertiary)
                       .copyWith(letterSpacing: 1.6),
                 ),
@@ -286,22 +299,22 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                   child: Column(
                     children: [
                       _FieldRow(
-                        label: 'Item or service',
-                        hint: 'e.g. Graphic design',
+                        label: context.l10n.itemOrService,
+                        hint: context.l10n.eGGraphicDesign,
                         controller: _itemController,
                         icon: Icons.shopping_bag_outlined,
                       ),
                       const SizedBox(height: 16),
                       _FieldRow(
-                        label: 'Customer name',
-                        hint: 'Optional',
+                        label: context.l10n.customerName,
+                        hint: context.l10n.optional,
                         controller: _customerController,
                         icon: Icons.person_outline_rounded,
                       ),
                       const SizedBox(height: 16),
                       _FieldRow(
-                        label: 'Note',
-                        hint: 'Add a short receipt note',
+                        label: context.l10n.note,
+                        hint: context.l10n.addAShortReceiptNote,
                         controller: _noteController,
                         icon: Icons.sticky_note_2_outlined,
                         maxLines: 2,
@@ -315,16 +328,16 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'SUMMARY',
+                        context.l10n.summary,
                         style: AppText.microLabel(color: context.textTertiary)
                             .copyWith(letterSpacing: 1.6),
                       ),
                       const SizedBox(height: 12),
-                      _SummaryRow(label: 'Category', value: _selectedCategory),
-                      _SummaryRow(label: 'Payment mode', value: 'Cash'),
+                      _SummaryRow(label: context.l10n.category, value: _catLabel(_selectedCategory)),
+                      _SummaryRow(label: context.l10n.paymentMode, value: context.l10n.channelCash),
                       _SummaryRow(
-                        label: 'Status',
-                        value: _submitting ? 'Recording…' : 'Ready to generate',
+                        label: context.l10n.status,
+                        value: _submitting ? context.l10n.recording : context.l10n.readyToGenerate,
                         valueColor: cs.primary,
                       ),
                     ],
@@ -347,7 +360,7 @@ class _CashReceiptsScreenState extends State<CashReceiptsScreen> {
                           )
                         : const Icon(Icons.receipt_long_rounded),
                     label: Text(
-                      _submitting ? 'Recording…' : 'Generate receipt',
+                      _submitting ? context.l10n.recording : context.l10n.generateReceipt,
                       style: GoogleFonts.plusJakartaSans(
                         fontWeight: FontWeight.w700,
                         fontSize: 15,
@@ -453,7 +466,7 @@ class _CashReceiptHistorySheetState extends State<_CashReceiptHistorySheet> {
           ),
           const SizedBox(height: 24),
           Text(
-            'Recent cash receipts',
+            context.l10n.recentCashReceipts,
             style: GoogleFonts.plusJakartaSans(
               fontWeight: FontWeight.w700,
               fontSize: 18,
@@ -479,7 +492,7 @@ class _CashReceiptHistorySheetState extends State<_CashReceiptHistorySheet> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
-                      'No cash receipts recorded yet.',
+                      context.l10n.noCashReceiptsRecordedYet,
                       style: GoogleFonts.plusJakartaSans(
                         fontSize: 13,
                         color: cs.onSurfaceVariant,

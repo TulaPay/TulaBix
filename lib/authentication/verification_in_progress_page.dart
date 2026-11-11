@@ -3,6 +3,7 @@ import 'package:tulapay/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tulapay/authentication/settlement_account_screen.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // Brief reassurance screen shown right after KybDocumentsScreen uploads
 // everything — was between ID capture and Business Details in the old flow
@@ -65,7 +66,7 @@ class _VerificationInProgressPageState
                                       ),
                                       const SizedBox(height: 24),
                                       Text(
-                                        "Verification in progress",
+                                        context.l10n.verificationInProgress,
                                         style: GoogleFonts.plusJakartaSans(
                                           fontSize: 22,
                                           fontWeight: FontWeight.w700,
@@ -75,7 +76,7 @@ class _VerificationInProgressPageState
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        "We're reviewing your documents",
+                                        context.l10n.weReReviewingYourDocuments,
                                         style: GoogleFonts.plusJakartaSans(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w700,
@@ -85,7 +86,7 @@ class _VerificationInProgressPageState
                                       ),
                                       const SizedBox(height: 12),
                                       Text(
-                                        "Your business is currently in our queue. Our security team verifies all new merchants to ensure network safety and compliance.",
+                                        context.l10n.yourBusinessIsCurrentlyIn,
                                         textAlign: TextAlign.center,
                                         style: theme.textTheme.bodyMedium
                                             ?.copyWith(
@@ -109,14 +110,14 @@ class _VerificationInProgressPageState
                                           ),
                                           const SizedBox(width: 8),
                                           Text(
-                                            "Estimated time: ",
+                                            context.l10n.estimatedTime,
                                             style: GoogleFonts.plusJakartaSans(
                                               fontWeight: FontWeight.w600,
                                               color: cs.onSurface,
                                             ),
                                           ),
                                           Text(
-                                            "24 hours",
+                                            context.l10n.n24Hours,
                                             style: GoogleFonts.plusJakartaSans(
                                               fontWeight: FontWeight.w700,
                                               color: cs.primary,
@@ -131,16 +132,16 @@ class _VerificationInProgressPageState
                                 _buildInfoCard(
                                   context,
                                   icon: Icons.notifications_active_outlined,
-                                  title: "Get notified",
+                                  title: context.l10n.getNotified,
                                   description:
-                                      "We'll send an SMS and push notifications once your account is active.",
+                                      context.l10n.weLlSendAnSms,
                                 ),
                                 _buildInfoCard(
                                   context,
                                   icon: Icons.verified_user_outlined,
-                                  title: "Bank-grade security",
+                                  title: context.l10n.bankGradeSecurity,
                                   description:
-                                      "Your data is encrypted and handled according to CEMAC regulations.",
+                                      context.l10n.yourDataIsEncryptedAnd,
                                 ),
                               ],
                             ),
@@ -169,13 +170,13 @@ class _VerificationInProgressPageState
                           );
                         },
                         icon: const Icon(Icons.account_balance_outlined),
-                        label: const Text("Continue"),
+                        label: Text(context.l10n.continueLabel),
                       ),
                       const SizedBox(height: 12),
                       OutlinedButton.icon(
                         onPressed: () {},
                         icon: const Icon(Icons.support_agent_rounded),
-                        label: const Text("Contact support"),
+                        label: Text(context.l10n.contactSupport),
                       ),
                     ],
                   ),

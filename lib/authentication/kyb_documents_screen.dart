@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:tulapay/authentication/verification_in_progress_page.dart';
 import 'package:tulapay/services/merchant_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class _BeneficialOwnerDraft {
   final TextEditingController nameController = TextEditingController();
@@ -80,7 +81,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
               children: [
                 ListTile(
                   leading: Icon(Icons.photo_camera_outlined, color: cs.primary),
-                  title: const Text("Take a photo"),
+                  title: Text(context.l10n.takeAPhoto),
                   onTap: () async {
                     final picked = await ImagePicker().pickImage(
                       source: ImageSource.camera,
@@ -98,7 +99,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       Icons.photo_library_outlined,
                       color: cs.primary,
                     ),
-                    title: const Text("Choose from gallery"),
+                    title: Text(context.l10n.chooseFromGallery),
                     onTap: () async {
                       final picked = await ImagePicker().pickImage(
                         source: ImageSource.gallery,
@@ -113,7 +114,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                         Icons.upload_file_outlined,
                         color: cs.primary,
                       ),
-                      title: const Text("Upload a file (PDF or image)"),
+                      title: Text(context.l10n.uploadAFilePdfOr),
                       onTap: () async {
                         final result = await FilePicker.pickFiles(
                           type: FileType.custom,
@@ -245,7 +246,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "KYB verification — Level 1",
+                        context.l10n.kybVerificationLevel1,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -255,7 +256,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        "Upload the documents below — take a photo or upload a file directly.",
+                        context.l10n.uploadTheDocumentsBelowTake,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: cs.onSurface.withValues(alpha: 0.66),
                           height: 1.5,
@@ -263,30 +264,30 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       ),
                       const SizedBox(height: 24),
 
-                      _buildSectionTitle("Identity document"),
+                      _buildSectionTitle(context.l10n.identityDocument),
                       _buildDocTypeOption(
                         'national_id',
-                        "National ID Card (CNI)",
+                        context.l10n.nationalIdCardCni,
                         Icons.badge_outlined,
                       ),
                       const SizedBox(height: 10),
                       _buildDocTypeOption(
                         'drivers_license',
-                        "Driver's License",
+                        context.l10n.driverSLicense,
                         Icons.drive_eta_outlined,
                       ),
                       const SizedBox(height: 10),
                       _buildDocTypeOption(
                         'passport',
-                        "International Passport",
+                        context.l10n.internationalPassport,
                         Icons.public_outlined,
                       ),
                       if (_idDocType != null) ...[
                         const SizedBox(height: 12),
                         _buildUploadTile(
                           label: _idFile != null
-                              ? "ID document captured — tap to retake"
-                              : "Take a photo or upload your ID",
+                              ? context.l10n.idDocumentCapturedTapTo
+                              : context.l10n.takeAPhotoOrUpload,
                           done: _idFile != null,
                           onTap: () async {
                             final file = await _pickDocument();
@@ -297,11 +298,11 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       const SizedBox(height: 20),
 
                       if (_requiresRegistrationDocs) ...[
-                        _buildSectionTitle("RCCM / Business Registration"),
+                        _buildSectionTitle(context.l10n.rccmBusinessRegistration),
                         _buildUploadTile(
                           label: _rccmFile != null
-                              ? "RCCM document uploaded — tap to replace"
-                              : "Upload your RCCM document",
+                              ? context.l10n.rccmDocumentUploadedTapTo
+                              : context.l10n.uploadYourRccmDocument,
                           done: _rccmFile != null,
                           onTap: () async {
                             final file = await _pickDocument();
@@ -310,11 +311,11 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                         ),
                         const SizedBox(height: 20),
 
-                        _buildSectionTitle("Tax Identification (NIU)"),
+                        _buildSectionTitle(context.l10n.taxIdentificationNiu),
                         _buildUploadTile(
                           label: _taxFile != null
-                              ? "Tax document uploaded — tap to replace"
-                              : "Upload your tax document",
+                              ? context.l10n.taxDocumentUploadedTapTo
+                              : context.l10n.uploadYourTaxDocument,
                           done: _taxFile != null,
                           onTap: () async {
                             final file = await _pickDocument();
@@ -337,7 +338,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Text(
-                                  "RCCM and tax documents aren't required for your business type.",
+                                  context.l10n.rccmAndTaxDocumentsAren,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: cs.onSurfaceVariant,
@@ -351,9 +352,9 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                         const SizedBox(height: 20),
                       ],
 
-                      _buildSectionTitle("Selfie"),
+                      _buildSectionTitle(context.l10n.selfie),
                       Text(
-                        "A clear photo of the representative's face, matched against the ID above.",
+                        context.l10n.aClearPhotoOfThe,
                         style: TextStyle(
                           fontSize: 13,
                           color: cs.onSurfaceVariant,
@@ -362,8 +363,8 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       const SizedBox(height: 10),
                       _buildUploadTile(
                         label: _selfieFile != null
-                            ? "Selfie captured — tap to retake"
-                            : "Take a selfie",
+                            ? context.l10n.selfieCapturedTapToRetake
+                            : context.l10n.takeASelfie,
                         done: _selfieFile != null,
                         onTap: () async {
                           final file = await _pickDocument(
@@ -377,9 +378,9 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                       const Divider(),
                       const SizedBox(height: 20),
 
-                      _buildSectionTitle("Beneficial owners"),
+                      _buildSectionTitle(context.l10n.beneficialOwners),
                       Text(
-                        "Anyone who owns or controls 25% or more of the business. Leave empty for a sole proprietorship — that collapses into the representative above.",
+                        context.l10n.anyoneWhoOwnsOrControls,
                         style: TextStyle(
                           fontSize: 13,
                           color: cs.onSurfaceVariant,
@@ -396,7 +397,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                           () => _owners.add(_BeneficialOwnerDraft()),
                         ),
                         icon: const Icon(Icons.person_add_alt_1_rounded),
-                        label: const Text("Add beneficial owner"),
+                        label: Text(context.l10n.addBeneficialOwner),
                       ),
                       const SizedBox(height: 24),
 
@@ -412,7 +413,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
                                   strokeWidth: 2,
                                 ),
                               )
-                            : const Text("Submit for review"),
+                            : Text(context.l10n.submitForReview),
                       ),
                     ],
                   ),
@@ -440,7 +441,7 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
             children: [
               Expanded(
                 child: Text(
-                  "Owner ${index + 1}",
+                  context.l10n.ownerNumber(index + 1),
                   style: GoogleFonts.plusJakartaSans(
                     fontWeight: FontWeight.w700,
                     color: cs.onSurface,
@@ -463,8 +464,8 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
           TextFormField(
             controller: owner.nameController,
             textCapitalization: TextCapitalization.words,
-            decoration: const InputDecoration(
-              labelText: "Full name",
+            decoration: InputDecoration(
+              labelText: context.l10n.fullName,
               prefixIcon: Icon(Icons.person_outline),
             ),
             onChanged: (_) => setState(() {}),
@@ -473,8 +474,8 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
           TextFormField(
             controller: owner.percentController,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-              labelText: "Ownership %",
+            decoration: InputDecoration(
+              labelText: context.l10n.ownership,
               prefixIcon: Icon(Icons.pie_chart_outline_rounded),
             ),
             onChanged: (_) => setState(() {}),
@@ -482,8 +483,8 @@ class _KybDocumentsScreenState extends State<KybDocumentsScreen> {
           const SizedBox(height: 10),
           _buildUploadTile(
             label: owner.file != null
-                ? "ID document added — tap to replace"
-                : "Upload their ID document (optional)",
+                ? context.l10n.idDocumentAddedTapTo
+                : context.l10n.uploadTheirIdDocumentOptional,
             done: owner.file != null,
             onTap: () async {
               final file = await _pickDocument();

@@ -4,6 +4,7 @@ import 'package:tulapay/models/engagement.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -52,12 +53,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return AppScaffold(
-      title: 'Notifications',
+      title: context.l10n.notifications,
       actions: [
         TextButton(
           onPressed: _markAll,
           style: TextButton.styleFrom(foregroundColor: cs.secondary),
-          child: const Text('Mark all read'),
+          child: Text(context.l10n.markAllRead),
         ),
       ],
       body: RefreshIndicator(
@@ -76,7 +77,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     size: 56, color: cs.outlineVariant),
                 const SizedBox(height: 12),
                 Center(
-                  child: Text('You\'re all caught up',
+                  child: Text(context.l10n.youReAllCaughtUp,
                       style: AppText.body(color: cs.onSurfaceVariant)),
                 ),
               ]);

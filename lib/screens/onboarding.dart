@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/screens/select_language.dart';
 import 'package:tulapay/themes/app_theme.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class OnBoardingPage extends StatefulWidget {
   const OnBoardingPage({super.key});
@@ -13,29 +14,29 @@ class OnBoardingPageState extends State<OnBoardingPage> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
-  final List<Map<String, String>> _onboardingData = [
+  List<Map<String, String>> get _onboardingData => [
     {
-      'title': 'Track Your Growth',
+      'title': context.l10n.trackYourGrowth,
       'subtitle':
-          'Analyze your business performance with real-time analytics and detailed revenue reports.',
+          context.l10n.analyzeYourBusinessPerformanceWith,
       'image': 'Browser stats-rafiki.png',
     },
     {
-      'title': 'Smart Cash Management',
+      'title': context.l10n.smartCashManagement,
       'subtitle':
-          'Handle physical and digital payments seamlessly in one unified platform designed for speed.',
+          context.l10n.handlePhysicalAndDigitalPayments,
       'image': 'Cash Payment-bro.png',
     },
     {
-      'title': 'Global Card Payments',
+      'title': context.l10n.globalCardPayments,
       'subtitle':
-          'Accept all major credit and debit cards from customers around the world with bank-grade security.',
+          context.l10n.acceptAllMajorCreditAnd,
       'image': 'Credit Card Payment-cuate.png',
     },
     {
-      'title': 'Digital Wallet Power',
+      'title': context.l10n.digitalWalletPower,
       'subtitle':
-          'Store, send, and receive money instantly with our secure multi-currency e-wallet.',
+          context.l10n.storeSendAndReceiveMoney,
       'image': 'E-Wallet-rafiki.png',
     },
   ];
@@ -87,7 +88,7 @@ class OnBoardingPageState extends State<OnBoardingPage> {
                     TextButton(
                       onPressed: _onFinish,
                       child: Text(
-                        "Skip",
+                        context.l10n.skip,
                         style: AppText.pillLabel(
                             color: colorScheme.onSurfaceVariant),
                       ),

@@ -6,6 +6,7 @@ import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class BillingScreen extends StatefulWidget {
   const BillingScreen({super.key});
@@ -45,10 +46,10 @@ class _BillingScreenState extends State<BillingScreen> {
       builder: (context, snap) {
         final data = snap.data;
         return GlassPageShell(
-          title: 'Billing',
-          subtitle: 'Payout destination, published fees, and history.',
+          title: context.l10n.billing,
+          subtitle: context.l10n.payoutDestinationPublishedFeesAnd,
           icon: Icons.credit_card_rounded,
-          actionLabel: 'Transaction history',
+          actionLabel: context.l10n.transactionHistory,
           onAction: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const ActivityScreen()),
@@ -73,13 +74,13 @@ class _BillingScreenState extends State<BillingScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Payout account',
+                          Text(context.l10n.payoutAccount,
                               style: AppText.cardTitle(
                                   color:
                                       Theme.of(context).colorScheme.onSurface)),
                           Text(
                             data?.account == null
-                                ? 'Not set up yet'
+                                ? context.l10n.notSetUpYet
                                 : '${_providerLabel(data!.account!['provider'] as String?)} '
                                     '•${data.account!['account_last4'] ?? ''}',
                             style: AppText.caption(
@@ -94,7 +95,7 @@ class _BillingScreenState extends State<BillingScreen> {
                 ),
               ),
               const SizedBox(height: 28),
-              const MicroLabel('Published fees'),
+              MicroLabel(context.l10n.publishedFees),
               const SizedBox(height: 8),
               GlassSurface(
                 child: Column(

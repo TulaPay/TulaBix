@@ -5,6 +5,7 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class PromoCodesScreen extends StatefulWidget {
   const PromoCodesScreen({super.key});
@@ -48,26 +49,26 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('New promo code',
+              Text(context.l10n.newPromoCode,
                   style: GoogleFonts.plusJakartaSans(
                       fontSize: 18, fontWeight: FontWeight.w700)),
               const SizedBox(height: 14),
               TextField(
                 controller: codeCtrl,
                 textCapitalization: TextCapitalization.characters,
-                decoration: const InputDecoration(labelText: 'Code'),
+                decoration: InputDecoration(labelText: context.l10n.code),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: titleCtrl,
-                decoration: const InputDecoration(labelText: 'Title'),
+                decoration: InputDecoration(labelText: context.l10n.title),
               ),
               const SizedBox(height: 12),
               TextField(
                 controller: pctCtrl,
                 keyboardType: TextInputType.number,
                 decoration:
-                    const InputDecoration(labelText: 'Discount %'),
+                    InputDecoration(labelText: context.l10n.discount),
               ),
               const SizedBox(height: 18),
               SizedBox(
@@ -76,7 +77,7 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
                   onPressed: () async {
                     if (codeCtrl.text.trim().isEmpty ||
                         titleCtrl.text.trim().isEmpty) {
-                      AppFeedback.toast(context, 'Code and title are required');
+                      AppFeedback.toast(context, context.l10n.codeAndTitleAreRequired);
                       return;
                     }
                     try {
@@ -90,11 +91,11 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
                     } catch (e) {
                       if (context.mounted) {
                         AppFeedback.toast(
-                            context, 'Could not save — code may already exist');
+                            context, context.l10n.couldNotSaveCodeMay);
                       }
                     }
                   },
-                  child: const Text('Create'),
+                  child: Text(context.l10n.create),
                 ),
               ),
             ],
@@ -109,7 +110,7 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return AppScaffold(
-      title: 'Promo Codes',
+      title: context.l10n.promoCodes,
       body: FutureBuilder<List<PromoCode>>(
         future: _future,
         builder: (context, snap) {
@@ -127,7 +128,7 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
                   Padding(
                     padding: const EdgeInsets.only(top: 80),
                     child: Center(
-                      child: Text('No promo codes yet',
+                      child: Text(context.l10n.noPromoCodesYet,
                           style: AppText.body(color: cs.onSurfaceVariant)),
                     ),
                   ),
@@ -162,15 +163,15 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
                         Row(
                           children: [
                             if (p.discountPercent != null)
-                              _chip('${p.discountPercent}% off', cs),
+                              _chip(context.l10n.percentOff(p.discountPercent!), cs),
                             const SizedBox(width: 8),
-                            _chip('${p.redemptionCount} used', cs),
+                            _chip(context.l10n.timesUsed(p.redemptionCount), cs),
                             const Spacer(),
                             IconButton(
                               icon: const Icon(Icons.copy_rounded, size: 18),
                               onPressed: () => AppFeedback.copy(
                                   context, p.code,
-                                  label: 'Code copied'),
+                                  label: context.l10n.codeCopied),
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete_outline_rounded,
@@ -195,7 +196,7 @@ class _PromoCodesScreenState extends State<PromoCodesScreen> {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _create,
         icon: const Icon(Icons.add_rounded),
-        label: const Text('New code'),
+        label: Text(context.l10n.newCode),
       ),
     );
   }

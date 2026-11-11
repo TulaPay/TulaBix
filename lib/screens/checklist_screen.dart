@@ -7,6 +7,7 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class ChecklistScreen extends StatefulWidget {
   const ChecklistScreen({super.key});
@@ -40,20 +41,20 @@ class _ChecklistScreenState extends State<ChecklistScreen> {
       builder: (context, snap) {
         final c = snap.data ?? const SetupChecklist();
         final items = <_Item>[
-          _Item('verify_profile', c.verifyProfile, 'Verify profile',
-              'Business identity, contact, and verification.',
+          _Item('verify_profile', c.verifyProfile, context.l10n.verifyProfile,
+              context.l10n.businessIdentityContactAndVerification,
               Icons.person_outline_rounded, (_) => const AccountScreen()),
-          _Item('connect_payments', c.connectPayments, 'Connect payments',
-              'Confirm your settlement account and fees.',
+          _Item('connect_payments', c.connectPayments, context.l10n.connectPayments,
+              context.l10n.confirmYourSettlementAccountAnd,
               Icons.payments_outlined, (_) => const BillingScreen()),
-          _Item('enable_qr', c.enableQr, 'Enable QR',
-              'Show your QR so customers can scan and pay.',
+          _Item('enable_qr', c.enableQr, context.l10n.enableQr,
+              context.l10n.showYourQrSoCustomers,
               Icons.qr_code_2_rounded, (_) => const PaymentPageScreen()),
         ];
         return GlassPageShell(
-          title: 'Setup Checklist',
+          title: context.l10n.setupChecklist,
           subtitle:
-              '${c.doneCount} of ${c.total} done — finish these to go live.',
+              context.l10n.checklistProgress(c.doneCount, c.total),
           icon: Icons.check_circle_outline_rounded,
           children: [
             if (snap.connectionState == ConnectionState.waiting)

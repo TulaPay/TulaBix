@@ -10,6 +10,7 @@ import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/utils/csv_export.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Real statement screen — backs the "Statements" tile in More Actions.
 /// Calls the already-existing [MerchantRepository.statement].
@@ -105,28 +106,28 @@ class _StatementsViewState extends State<_StatementsView> {
   Future<void> _export(StatementPeriod s) async {
     final fmt = DateFormat('MMM d, yyyy');
     final rangeLabel =
-        '${fmt.format(_range.start)} to ${fmt.format(_range.end)}';
+        context.l10n.dateRangeTo(fmt.format(_range.start), fmt.format(_range.end));
 
     final rows = <List<Object?>>[
-      ['TulaBiz statement', rangeLabel],
+      [context.l10n.tulabizStatement, rangeLabel],
       [],
-      ['Gross revenue', s.grossRevenue],
-      ['Refunds', s.refunds],
-      ['Net revenue', s.netRevenue],
-      ['Fees charged', s.feesCharged],
-      ['Payouts received', s.payoutsReceived],
-      ['Transaction count', s.transactionCount],
+      [context.l10n.grossRevenue, s.grossRevenue],
+      [context.l10n.refunds, s.refunds],
+      [context.l10n.netRevenue, s.netRevenue],
+      [context.l10n.feesCharged, s.feesCharged],
+      [context.l10n.payoutsReceived, s.payoutsReceived],
+      [context.l10n.transactionCount, s.transactionCount],
       [],
       [
-        'Date',
-        'Type',
-        'Channel',
-        'Status',
-        'Counterparty',
-        'Amount',
-        'Currency',
-        'Fee',
-        'Reference',
+        context.l10n.date,
+        context.l10n.type,
+        context.l10n.channel,
+        context.l10n.status,
+        context.l10n.counterparty,
+        context.l10n.amount,
+        context.l10n.currency,
+        context.l10n.fee,
+        context.l10n.reference,
       ],
     ];
 
@@ -159,10 +160,10 @@ class _StatementsViewState extends State<_StatementsView> {
       await shareAsCsv(
         'tulabiz-statement-${DateFormat('yyyyMMdd').format(s.periodStart)}.csv',
         rows,
-        subject: 'TulaBiz statement',
+        subject: context.l10n.tulabizStatement,
       );
     } catch (_) {
-      if (mounted) AppFeedback.toast(context, 'Could not export the statement');
+      if (mounted) AppFeedback.toast(context, context.l10n.couldNotExportTheStatement);
     }
   }
 
@@ -178,7 +179,7 @@ class _StatementsViewState extends State<_StatementsView> {
         elevation: 0,
         centerTitle: false,
         title: Text(
-          'Statements',
+          context.l10n.statements,
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
       ),
@@ -220,7 +221,7 @@ class _StatementsViewState extends State<_StatementsView> {
                             style: TextButton.styleFrom(
                               foregroundColor: cs.secondary,
                             ),
-                            child: const Text('Change'),
+                            child: Text(context.l10n.change),
                           ),
                         ],
                       ),
@@ -240,7 +241,7 @@ class _StatementsViewState extends State<_StatementsView> {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Text(
-                            'Could not load this statement.',
+                            context.l10n.couldNotLoadThisStatement,
                             style: GoogleFonts.plusJakartaSans(
                               color: cs.onSurfaceVariant,
                             ),
@@ -256,34 +257,34 @@ class _StatementsViewState extends State<_StatementsView> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'SUMMARY',
+                                  context.l10n.summary,
                                   style: AppText.microLabel(
                                     color: context.textTertiary,
                                   ).copyWith(letterSpacing: 1.6),
                                 ),
                                 const SizedBox(height: 14),
                                 _Row(
-                                  'Gross revenue',
+                                  context.l10n.grossRevenue,
                                   money(s.grossRevenue),
                                   cs,
                                 ),
-                                _Row('Refunds', '- ${money(s.refunds)}', cs),
+                                _Row(context.l10n.refunds, '- ${money(s.refunds)}', cs),
                                 const Divider(height: 24),
                                 _Row(
-                                  'Net revenue',
+                                  context.l10n.netRevenue,
                                   money(s.netRevenue),
                                   cs,
                                   emphasize: true,
                                 ),
                                 const SizedBox(height: 12),
-                                _Row('Fees charged', money(s.feesCharged), cs),
+                                _Row(context.l10n.feesCharged, money(s.feesCharged), cs),
                                 _Row(
-                                  'Payouts received',
+                                  context.l10n.payoutsReceived,
                                   money(s.payoutsReceived),
                                   cs,
                                 ),
                                 _Row(
-                                  'Transactions',
+                                  context.l10n.transactions,
                                   '${s.transactionCount}',
                                   cs,
                                 ),
@@ -297,7 +298,7 @@ class _StatementsViewState extends State<_StatementsView> {
                             child: FilledButton.icon(
                               onPressed: () => _export(s),
                               icon: const Icon(Icons.ios_share_rounded),
-                              label: const Text('Share summary'),
+                              label: Text(context.l10n.shareSummary),
                             ),
                           ),
                         ],

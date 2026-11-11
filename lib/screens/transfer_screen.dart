@@ -9,6 +9,7 @@ import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/pin_prompt.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Real bank/internal transfer screen — backs both the "Bank Transfer" and
 /// "Internal Transfer" tiles in More Actions. Calls the already-existing
@@ -31,10 +32,10 @@ class _TransferScreenState extends State<TransferScreen> {
   bool _submitting = false;
 
   bool get _isBank => widget.kind == 'bank';
-  String get _title => _isBank ? 'Bank Transfer' : 'Internal Transfer';
-  String get _sourceLabel => _isBank ? 'Bank account' : 'Source wallet';
+  String get _title => _isBank ? context.l10n.bankTransfer2 : context.l10n.internalTransfer;
+  String get _sourceLabel => _isBank ? context.l10n.bankAccount : context.l10n.sourceWallet;
   String get _destinationLabel =>
-      _isBank ? 'Beneficiary account' : 'Destination wallet';
+      _isBank ? context.l10n.beneficiaryAccount : context.l10n.destinationWallet;
 
   @override
   void initState() {
@@ -63,15 +64,15 @@ class _TransferScreenState extends State<TransferScreen> {
     final amount = num.tryParse(_amountController.text.trim());
 
     if (source.isEmpty) {
-      AppFeedback.toast(context, 'Enter the $_sourceLabel');
+      AppFeedback.toast(context, context.l10n.enterThe(_sourceLabel));
       return;
     }
     if (destination.isEmpty) {
-      AppFeedback.toast(context, 'Enter the $_destinationLabel');
+      AppFeedback.toast(context, context.l10n.enterThe(_destinationLabel));
       return;
     }
     if (amount == null || amount <= 0) {
-      AppFeedback.toast(context, 'Enter a valid amount');
+      AppFeedback.toast(context, context.l10n.enterAValidAmount);
       return;
     }
 
@@ -95,8 +96,8 @@ class _TransferScreenState extends State<TransferScreen> {
       _noteController.clear();
       setState(_refresh);
       PushNotificationService.instance.showNotification(
-        title: _isBank ? 'Bank Transfer Submitted' : 'Internal Transfer Completed',
-        body: '${money(amount)} transfer to $destination',
+        title: _isBank ? context.l10n.bankTransferSubmitted : context.l10n.internalTransferCompleted,
+        body: context.l10n.transferToDestination(money(amount), destination),
       );
       if (widget.kind == 'bank') {
         try {
@@ -104,32 +105,32 @@ class _TransferScreenState extends State<TransferScreen> {
           if (!mounted) return;
           AppFeedback.toast(
             context,
-            'Transfer submitted and payout initiated successfully',
+            context.l10n.transferSubmittedAndPayoutInitiated,
             duration: const Duration(seconds: 5),
           );
         } catch (payoutError) {
           if (!mounted) return;
           AppFeedback.toast(
             context,
-            'Transfer recorded, but payout failed: $payoutError',
+            context.l10n.transferRecordedPayoutFailed('$payoutError'),
             duration: const Duration(seconds: 8),
           );
         }
       } else {
-        AppFeedback.toast(context, 'Transfer submitted');
+        AppFeedback.toast(context, context.l10n.transferSubmitted);
       }
     } catch (e) {
       if (!mounted) return;
-      AppFeedback.toast(context, 'Could not submit transfer: $e');
+      AppFeedback.toast(context, context.l10n.couldNotSubmitTransfer('$e'));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
   }
 
   String _statusLabel(String status) => switch (status) {
-        'pending' => 'Pending',
-        'completed' => 'Completed',
-        'failed' => 'Failed',
+        'pending' => context.l10n.pending,
+        'completed' => context.l10n.completed,
+        'failed' => context.l10n.failed,
         _ => status,
       };
 
@@ -161,7 +162,7 @@ class _TransferScreenState extends State<TransferScreen> {
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 Text(
-                  'TRANSFER DETAILS',
+                  context.l10n.transferDetails,
                   style: AppText.microLabel(color: context.textTertiary)
                       .copyWith(letterSpacing: 1.6),
                 ),
@@ -171,18 +172,18 @@ class _TransferScreenState extends State<TransferScreen> {
                     children: [
                       _Field(
                         label: _sourceLabel,
-                        hint: _isBank ? 'Merchant payout account' : 'e.g. Main wallet',
+                        hint: _isBank ? context.l10n.merchantPayoutAccount : context.l10n.eGMainWallet,
                         controller: _sourceController,
                       ),
                       const SizedBox(height: 16),
                       _Field(
                         label: _destinationLabel,
-                        hint: _isBank ? 'IBAN / account number' : 'e.g. Savings wallet',
+                        hint: _isBank ? context.l10n.ibanAccountNumber : context.l10n.eGSavingsWallet,
                         controller: _destinationController,
                       ),
                       const SizedBox(height: 16),
                       _Field(
-                        label: 'Amount',
+                        label: context.l10n.amount,
                         hint: '0.00',
                         controller: _amountController,
                         prefix: 'XAF',
@@ -190,8 +191,8 @@ class _TransferScreenState extends State<TransferScreen> {
                       ),
                       const SizedBox(height: 16),
                       _Field(
-                        label: 'Note',
-                        hint: 'Optional memo',
+                        label: context.l10n.note,
+                        hint: context.l10n.optionalMemo,
                         controller: _noteController,
                         maxLines: 2,
                       ),
@@ -213,13 +214,13 @@ class _TransferScreenState extends State<TransferScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Submit transfer'),
+                        : Text(context.l10n.submitTransfer),
                   ),
                 ),
                 const SizedBox(height: 24),
                 const SizedBox(height: 8),
                 Text(
-                  'RECENT TRANSFERS',
+                  context.l10n.recentTransfers,
                   style: AppText.microLabel(color: context.textTertiary)
                       .copyWith(letterSpacing: 1.6),
                 ),
@@ -236,7 +237,7 @@ class _TransferScreenState extends State<TransferScreen> {
                     final list = snap.data ?? const [];
                     if (list.isEmpty) {
                       return Text(
-                        'No transfers yet.',
+                        context.l10n.noTransfersYet,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 13,
                           color: context.textSecondary,

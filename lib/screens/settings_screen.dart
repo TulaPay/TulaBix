@@ -18,6 +18,7 @@ import 'settings/help_center_screen.dart';
 import 'settings/privacy_policy_screen.dart';
 import 'settings/security_screen.dart';
 import 'settings/edit_profile_screen.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -42,7 +43,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       if (mounted) setState(() => _merchant = m);
     } catch (_) {
       if (mounted) {
-        AppFeedback.toast(context, 'Could not load your profile');
+        AppFeedback.toast(context, context.l10n.couldNotLoadYourProfile);
       }
     }
   }
@@ -66,7 +67,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _signingOut = false);
-        AppFeedback.toast(context, 'Could not sign out — try again');
+        AppFeedback.toast(context, context.l10n.couldNotSignOutTry);
       }
     }
   }
@@ -88,7 +89,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               AppSpacing.sm,
             ),
             sliver: SliverToBoxAdapter(
-              child: Text('Settings', style: AppText.screenTitle(size: 30)),
+              child: Text(context.l10n.settings, style: AppText.screenTitle(size: 30)),
             ),
           ),
           SliverPadding(
@@ -101,49 +102,49 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     .fadeIn(duration: 400.ms)
                     .slideY(begin: 0.08, curve: Curves.easeOutQuart),
                 const SizedBox(height: AppSpacing.section),
-                const MicroLabel('Account & Security'),
+                MicroLabel(context.l10n.accountSecurity),
                 const SizedBox(height: AppSpacing.md),
                 _group([
                   _row(
                     icon: Icons.person_rounded,
                     color: cs.primary,
-                    title: 'Account Information',
-                    subtitle: 'Business identity and verification',
-                    badge: _merchant?.isVerified == true ? 'Verified' : null,
+                    title: context.l10n.accountInformation,
+                    subtitle: context.l10n.businessIdentityAndVerification,
+                    badge: _merchant?.isVerified == true ? context.l10n.verified : null,
                     badgeColor: AppColors.positive,
                     onTap: () => _push(const AccountScreen()),
                   ),
                   _row(
                     icon: Icons.shield_rounded,
                     color: cs.primary,
-                    title: 'Privacy & Security',
-                    subtitle: 'Password, app lock, and PIN',
+                    title: context.l10n.privacySecurity,
+                    subtitle: context.l10n.passwordAppLockAndPin,
                     onTap: () => _push(const SecurityScreen()),
                   ),
                   _row(
                     icon: Icons.account_balance_wallet_rounded,
                     color: cs.primary,
-                    title: 'Payment Methods',
-                    subtitle: 'Settlement account and fees',
+                    title: context.l10n.paymentMethods,
+                    subtitle: context.l10n.settlementAccountAndFees,
                     onTap: () => _push(const BillingScreen()),
                     last: true,
                   ),
                 ]),
                 const SizedBox(height: AppSpacing.huge),
-                const MicroLabel('Preferences'),
+                MicroLabel(context.l10n.preferences),
                 const SizedBox(height: AppSpacing.md),
                 _group([
                   _row(
                     icon: Icons.notifications_active_rounded,
                     color: cs.primary,
-                    title: 'Notifications',
-                    subtitle: 'Alerts and notification channels',
+                    title: context.l10n.notifications,
+                    subtitle: context.l10n.alertsAndNotificationChannels,
                     onTap: () => _push(const NotificationsSettingsScreen()),
                   ),
                   _row(
                     icon: Icons.language_rounded,
                     color: cs.primary,
-                    title: 'Language',
+                    title: context.l10n.language,
                     subtitle:
                         AppPreferences.instance.locale.value.languageCode
                                 .toLowerCase() ==
@@ -162,11 +163,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                             ? Icons.dark_mode_rounded
                             : Icons.light_mode_rounded,
                         color: cs.primary,
-                        title: 'Appearance',
+                        title: context.l10n.appearance,
                         subtitle: switch (mode) {
-                          ThemeMode.dark => 'Dark theme',
-                          ThemeMode.light => 'Light theme',
-                          ThemeMode.system => 'Follows system',
+                          ThemeMode.dark => context.l10n.darkTheme,
+                          ThemeMode.light => context.l10n.lightTheme,
+                          ThemeMode.system => context.l10n.followsSystem,
                         },
                         value: isDark,
                         onChanged: (v) => AppPreferences.instance.setThemeMode(
@@ -178,41 +179,41 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                 ]),
                 const SizedBox(height: AppSpacing.huge),
-                const MicroLabel('Growth'),
+                MicroLabel(context.l10n.growth),
                 const SizedBox(height: AppSpacing.md),
                 _group([
                   _row(
                     icon: Icons.flag_rounded,
                     color: cs.primary,
-                    title: 'Growth Goals',
-                    subtitle: 'Revenue, customers, and repeat orders',
+                    title: context.l10n.growthGoals,
+                    subtitle: context.l10n.revenueCustomersAndRepeatOrders,
                     onTap: () => _push(const GrowthGoalsScreen()),
                   ),
                   _row(
                     icon: Icons.star_rounded,
                     color: cs.primary,
-                    title: 'Favorites',
-                    subtitle: 'Pin the screens you use most',
+                    title: context.l10n.favorites,
+                    subtitle: context.l10n.pinTheScreensYouUse2,
                     onTap: () => _push(const FavoritesScreen()),
                     last: true,
                   ),
                 ]),
                 const SizedBox(height: AppSpacing.huge),
-                const MicroLabel('Support & Legal'),
+                MicroLabel(context.l10n.supportLegal),
                 const SizedBox(height: AppSpacing.md),
                 _group([
                   _row(
                     icon: Icons.help_center_rounded,
                     color: cs.primary,
-                    title: 'Help Center',
-                    subtitle: 'FAQs and support contact',
+                    title: context.l10n.helpCenter,
+                    subtitle: context.l10n.faqsAndSupportContact,
                     onTap: () => _push(const HelpCenterScreen()),
                   ),
                   _row(
                     icon: Icons.description_rounded,
                     color: cs.primary,
-                    title: 'Legal Agreements',
-                    subtitle: 'Privacy policy and terms of use',
+                    title: context.l10n.legalAgreements,
+                    subtitle: context.l10n.privacyPolicyAndTermsOf,
                     onTap: () => _push(const PrivacyPolicyScreen()),
                     last: true,
                   ),
@@ -222,7 +223,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   child: OutlinedButton.icon(
                     onPressed: _signingOut ? null : _signOut,
                     icon: const Icon(Icons.logout_rounded, size: 16),
-                    label: Text(_signingOut ? 'Signing out…' : 'Sign Out'),
+                    label: Text(_signingOut ? context.l10n.signingOut : context.l10n.signOut2),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: cs.onSurface,
                       side: BorderSide(color: context.hairlineColor),
@@ -273,7 +274,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      m?.businessName ?? 'Your business',
+                      m?.businessName ?? context.l10n.yourBusiness,
                       style: AppText.screenTitle(size: 18, color: cs.onPrimary),
                     ),
                     const SizedBox(height: 2),
@@ -295,7 +296,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 child: FilledButton.icon(
                   onPressed: () => _push(const EditProfileScreen()),
                   icon: const Icon(Icons.edit_rounded, size: 16),
-                  label: const Text('Edit Profile'),
+                  label: Text(context.l10n.editProfile),
                   style: FilledButton.styleFrom(
                     backgroundColor: cs.onPrimary,
                     foregroundColor: cs.primary,

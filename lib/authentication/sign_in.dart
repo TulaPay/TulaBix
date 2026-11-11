@@ -8,6 +8,7 @@ import 'package:tulapay/screens/Navigation_bar.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/themes/app_theme.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class Country {
   final String name;
@@ -87,7 +88,7 @@ class _SignInState extends State<SignIn> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  "Select Country",
+                  context.l10n.selectCountry,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
@@ -161,8 +162,8 @@ class _SignInState extends State<SignIn> {
     } catch (_) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Something went wrong — please try again.'),
+        SnackBar(
+          content: Text(context.l10n.somethingWentWrongPleaseTry),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -224,7 +225,7 @@ class _SignInState extends State<SignIn> {
                               ),
                               const SizedBox(height: 20),
                               Text(
-                                "Welcome back",
+                                context.l10n.welcomeBack,
                                 style: GoogleFonts.plusJakartaSans(
                                   fontSize: 26,
                                   fontWeight: FontWeight.w700,
@@ -234,7 +235,7 @@ class _SignInState extends State<SignIn> {
                               ),
                               const SizedBox(height: 6),
                               Text(
-                                "Log in securely to your TulaPay account.",
+                                context.l10n.logInSecurelyToYour,
                                 style: theme.textTheme.bodyLarge?.copyWith(
                                   color: colorScheme.onSurface.withValues(
                                     alpha: 0.66,
@@ -244,7 +245,7 @@ class _SignInState extends State<SignIn> {
                               ),
                               const SizedBox(height: 24),
 
-                              _buildLabel("Phone number"),
+                              _buildLabel(context.l10n.phoneNumber),
                               TextFormField(
                                 controller: _phoneController,
                                 keyboardType: TextInputType.phone,
@@ -292,19 +293,19 @@ class _SignInState extends State<SignIn> {
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Phone number is required';
+                                    return context.l10n.phoneNumberIsRequired;
                                   }
                                   return null;
                                 },
                               ),
                               const SizedBox(height: 12),
 
-                              _buildLabel("Password"),
+                              _buildLabel(context.l10n.password),
                               TextFormField(
                                 controller: _passwordController,
                                 obscureText: !_isPasswordVisible,
                                 decoration: InputDecoration(
-                                  hintText: "Enter your password",
+                                  hintText: context.l10n.enterYourPassword,
                                   prefixIcon: const Icon(Icons.lock_outline),
                                   suffixIcon: IconButton(
                                     icon: Icon(
@@ -321,7 +322,7 @@ class _SignInState extends State<SignIn> {
                                 ),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'Password is required';
+                                    return context.l10n.passwordIsRequired;
                                   }
                                   return null;
                                 },
@@ -339,7 +340,7 @@ class _SignInState extends State<SignIn> {
                                     );
                                   },
                                   child: Text(
-                                    "Forgot password?",
+                                    context.l10n.forgotPassword,
                                     style: TextStyle(
                                       color: colorScheme.primary,
                                       fontWeight: FontWeight.w600,
@@ -359,7 +360,7 @@ class _SignInState extends State<SignIn> {
                                           strokeWidth: 2,
                                         ),
                                       )
-                                    : const Text("Sign In"),
+                                    : Text(context.l10n.signIn),
                               ),
                               const SizedBox(height: 10),
                               Center(
@@ -376,7 +377,7 @@ class _SignInState extends State<SignIn> {
                                     Icons.sms_outlined,
                                     size: 18,
                                   ),
-                                  label: const Text("Sign in with OTP instead"),
+                                  label: Text(context.l10n.signInWithOtpInstead),
                                 ),
                               ),
                             ],
@@ -394,7 +395,7 @@ class _SignInState extends State<SignIn> {
                     crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text(
-                        "Don't have an account? ",
+                        context.l10n.donTHaveAnAccount,
                         style: AppText.caption(
                           color: context.textSecondary,
                         ).copyWith(fontSize: 13),
@@ -405,7 +406,7 @@ class _SignInState extends State<SignIn> {
                           MaterialPageRoute(builder: (_) => const SignUp()),
                         ),
                         child: Text(
-                          "Sign Up",
+                          context.l10n.signUp,
                           style: AppText.pillLabel(color: colorScheme.primary),
                         ),
                       ),

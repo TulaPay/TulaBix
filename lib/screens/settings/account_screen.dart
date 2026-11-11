@@ -6,6 +6,7 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -35,10 +36,10 @@ class _AccountScreenState extends State<AccountScreen> {
       builder: (context, snap) {
         final m = snap.data;
         return GlassPageShell(
-          title: 'Account Information',
-          subtitle: 'Business identity and merchant verification.',
+          title: context.l10n.accountInformation,
+          subtitle: context.l10n.businessIdentityAndMerchantVerification,
           icon: Icons.person_rounded,
-          actionLabel: 'Update details',
+          actionLabel: context.l10n.updateDetails,
           onAction: () => Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => const EditProfileScreen()),
@@ -50,18 +51,18 @@ class _AccountScreenState extends State<AccountScreen> {
                 child: Center(child: CircularProgressIndicator()),
               )
             else if (m == null)
-              const GlassInfoCard(
+              GlassInfoCard(
                 icon: Icons.error_outline_rounded,
-                title: 'Could not load your account',
-                subtitle: 'Pull to refresh or try again in a moment.',
+                title: context.l10n.couldNotLoadYourAccount,
+                subtitle: context.l10n.pullToRefreshOrTry,
               )
             else ...[
-              _kv('Business name', m.businessName),
-              _kv('Category', m.businessCategory),
-              _kv('Owner', m.ownerName),
-              _kv('Phone', m.ownerPhone),
-              _kv('Email', m.ownerEmail ?? '—'),
-              _kv('Address', m.addressLine),
+              _kv(context.l10n.businessName, m.businessName),
+              _kv(context.l10n.category, m.businessCategory),
+              _kv(context.l10n.owner, m.ownerName),
+              _kv(context.l10n.phone, m.ownerPhone),
+              _kv(context.l10n.email, m.ownerEmail ?? '—'),
+              _kv(context.l10n.address, m.addressLine),
               const SizedBox(height: 24),
               GlassSurface(
                 borderRadius: AppRadius.smAll,
@@ -82,11 +83,10 @@ class _AccountScreenState extends State<AccountScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Verification',
+                          Text(context.l10n.verification,
                               style: AppText.cardTitle(color: cs.onSurface)),
                           Text(
-                            'KYC ${m.kycStatus} · Tier ${m.kybTier} · '
-                            'Account ${m.accountStatus}',
+                            context.l10n.verificationLine(m.kycStatus, '${m.kybTier}', m.accountStatus),
                             style: AppText.caption(color: cs.onSurfaceVariant),
                           ),
                         ],
@@ -99,8 +99,8 @@ class _AccountScreenState extends State<AccountScreen> {
                 const SizedBox(height: 12),
                 GlassInfoCard(
                   icon: Icons.trending_up_rounded,
-                  title: 'Upgrade to Tier 2',
-                  subtitle: 'Higher limits and lower fees. Requires review.',
+                  title: context.l10n.upgradeToTier2,
+                  subtitle: context.l10n.higherLimitsAndLowerFees,
                   onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(

@@ -6,6 +6,7 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class GrowthGoalsScreen extends StatefulWidget {
   const GrowthGoalsScreen({super.key});
@@ -55,24 +56,24 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(goal == null ? 'New goal' : 'Edit goal',
+                Text(goal == null ? context.l10n.newGoal : context.l10n.editGoal,
                     style: GoogleFonts.plusJakartaSans(
                         fontSize: 18, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 14),
                 TextField(
                   controller: titleCtrl,
-                  decoration: const InputDecoration(labelText: 'Title'),
+                  decoration: InputDecoration(labelText: context.l10n.title),
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: kind,
-                  decoration: const InputDecoration(labelText: 'Type'),
-                  items: const [
-                    DropdownMenuItem(value: 'revenue', child: Text('Revenue')),
+                  decoration: InputDecoration(labelText: context.l10n.type),
+                  items: [
+                    DropdownMenuItem(value: 'revenue', child: Text(context.l10n.revenue)),
                     DropdownMenuItem(
-                        value: 'customers', child: Text('Customers')),
-                    DropdownMenuItem(value: 'orders', child: Text('Orders')),
-                    DropdownMenuItem(value: 'custom', child: Text('Custom')),
+                        value: 'customers', child: Text(context.l10n.customers)),
+                    DropdownMenuItem(value: 'orders', child: Text(context.l10n.orders)),
+                    DropdownMenuItem(value: 'custom', child: Text(context.l10n.custom)),
                   ],
                   onChanged: (v) => setSheet(() => kind = v ?? 'revenue'),
                 ),
@@ -84,7 +85,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                         controller: currentCtrl,
                         keyboardType: TextInputType.number,
                         decoration:
-                            const InputDecoration(labelText: 'Current'),
+                            InputDecoration(labelText: context.l10n.current),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -93,7 +94,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                         controller: targetCtrl,
                         keyboardType: TextInputType.number,
                         decoration:
-                            const InputDecoration(labelText: 'Target'),
+                            InputDecoration(labelText: context.l10n.target),
                       ),
                     ),
                   ],
@@ -108,7 +109,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                               .deleteGoal(goal.id);
                           if (context.mounted) Navigator.pop(context, true);
                         },
-                        child: const Text('Delete'),
+                        child: Text(context.l10n.delete),
                       ),
                     const Spacer(),
                     FilledButton(
@@ -116,7 +117,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                         final target = num.tryParse(targetCtrl.text.trim());
                         if (titleCtrl.text.trim().isEmpty || target == null) {
                           AppFeedback.toast(
-                              context, 'Add a title and numeric target');
+                              context, context.l10n.addATitleAndNumeric);
                           return;
                         }
                         await MerchantRepository.instance.saveGoal(
@@ -129,7 +130,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                         );
                         if (context.mounted) Navigator.pop(context, true);
                       },
-                      child: const Text('Save'),
+                      child: Text(context.l10n.save),
                     ),
                   ],
                 ),
@@ -150,7 +151,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text("Growth Goals",
+        title: Text(context.l10n.growthGoals,
             style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
       ),
       floatingActionButton: FloatingActionButton(
@@ -171,13 +172,12 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Track merchant growth',
+                    Text(context.l10n.trackMerchantGrowth,
                         style: GoogleFonts.plusJakartaSans(
                             fontSize: 20, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 6),
                     Text(
-                      'Set targets for revenue, customers, and repeat orders '
-                      'and watch progress against them.',
+                      context.l10n.setTargetsForRevenueCustomers2,
                       style: GoogleFonts.plusJakartaSans(
                           fontSize: 14, color: context.textSecondary),
                     ),
@@ -189,7 +189,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
                 Padding(
                   padding: const EdgeInsets.only(top: 40),
                   child: Center(
-                    child: Text('No goals yet — tap + to add one',
+                    child: Text(context.l10n.noGoalsYetTapTo,
                         style: GoogleFonts.plusJakartaSans(
                             color: cs.onSurfaceVariant)),
                   ),
@@ -238,7 +238,7 @@ class _GrowthGoalsScreenState extends State<GrowthGoalsScreen> {
               ),
             ),
             const SizedBox(height: 6),
-            Text('${fmt(g.currentAmount)} of ${fmt(g.targetAmount)}',
+            Text(context.l10n.currentOfTarget(fmt(g.currentAmount), fmt(g.targetAmount)),
                 style: GoogleFonts.plusJakartaSans(
                     fontSize: 12, color: context.textSecondary)),
           ],

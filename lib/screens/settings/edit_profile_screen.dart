@@ -5,6 +5,7 @@ import 'package:tulapay/models/merchant.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -50,7 +51,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _save() async {
     if (_name.text.trim().isEmpty) {
-      AppFeedback.toast(context, 'Name cannot be blank');
+      AppFeedback.toast(context, context.l10n.nameCannotBeBlank);
       return;
     }
     setState(() => _saving = true);
@@ -62,12 +63,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         addressCity: _city.text.trim(),
       );
       if (!mounted) return;
-      AppFeedback.toast(context, 'Profile updated');
+      AppFeedback.toast(context, context.l10n.profileUpdated);
       Navigator.pop(context);
     } catch (e) {
       if (mounted) {
         setState(() => _saving = false);
-        AppFeedback.toast(context, 'Could not save — try again');
+        AppFeedback.toast(context, context.l10n.couldNotSaveTryAgain);
       }
     }
   }
@@ -80,7 +81,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         title: Text(
-          "Edit Profile",
+          context.l10n.editProfile,
           style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700),
         ),
       ),
@@ -92,14 +93,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 GlassSurface(
                   child: Column(
                     children: [
-                      _field('Owner name', _name),
+                      _field(context.l10n.ownerName, _name),
                       const SizedBox(height: 16),
-                      _field('Email', _email,
+                      _field(context.l10n.email, _email,
                           keyboardType: TextInputType.emailAddress),
                       const SizedBox(height: 16),
-                      _field('Street', _street),
+                      _field(context.l10n.street, _street),
                       const SizedBox(height: 16),
-                      _field('City', _city),
+                      _field(context.l10n.city, _city),
                     ],
                   ),
                 ),
@@ -116,7 +117,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 CircularProgressIndicator(strokeWidth: 2),
                           )
                         : Text(
-                            "Save changes",
+                            context.l10n.saveChanges,
                             style: GoogleFonts.plusJakartaSans(
                                 fontWeight: FontWeight.w700),
                           ),

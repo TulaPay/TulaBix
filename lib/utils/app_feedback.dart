@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Small cross-screen helpers for the "wire the dead buttons with local
 /// behaviour" pass — toasts, clipboard, native share, and link/email launches.
@@ -27,10 +28,10 @@ class AppFeedback {
   static Future<void> copy(
     BuildContext context,
     String text, {
-    String label = 'Copied to clipboard',
+    String? label,
   }) async {
     await Clipboard.setData(ClipboardData(text: text));
-    if (context.mounted) toast(context, label);
+    if (context.mounted) toast(context, label ?? context.l10n.copiedToClipboard);
   }
 
   static Future<void> share(String text, {String? subject}) async {
@@ -44,7 +45,7 @@ class AppFeedback {
     final ok = await canLaunchUrl(uri) &&
         await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!ok && context.mounted) {
-      toast(context, 'Nothing on this device can open that link');
+      toast(context, context.l10n.nothingCanOpenLink);
     }
     return ok;
   }
@@ -62,7 +63,7 @@ class AppFeedback {
     );
     final ok = await canLaunchUrl(uri) && await launchUrl(uri);
     if (!ok && context.mounted) {
-      await copy(context, to, label: 'Support email copied');
+      await copy(context, to, label: context.l10n.supportEmailCopied);
     }
   }
 

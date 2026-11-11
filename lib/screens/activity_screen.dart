@@ -6,6 +6,7 @@ import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Full transaction feed. Opened from Homepage's "Recent Activity → All" and
 /// from Billing's "Transaction history".
@@ -17,7 +18,8 @@ class ActivityScreen extends StatefulWidget {
 }
 
 class _ActivityScreenState extends State<ActivityScreen> {
-  static const _filters = ['All', 'Payments', 'Payouts', 'Refunds'];
+  List<String> get _filters =>
+      [context.l10n.all, context.l10n.payments, context.l10n.payouts, context.l10n.refunds];
   int _filterIndex = 0;
   late Future<List<LedgerTransaction>> _future;
 
@@ -50,7 +52,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: 'Activity',
+      title: context.l10n.activity,
       body: Column(
         children: [
           Padding(
@@ -81,7 +83,7 @@ class _ActivityScreenState extends State<ActivityScreen> {
                             color: Theme.of(context).colorScheme.outlineVariant),
                         const SizedBox(height: 12),
                         Center(
-                          child: Text('No activity yet',
+                          child: Text(context.l10n.noActivityYet,
                               style: AppText.body(
                                   color: Theme.of(context)
                                       .colorScheme
@@ -122,17 +124,14 @@ class _TxnTile extends StatelessWidget {
           ? Icons.south_west_rounded
           : Icons.north_east_rounded,
       iconColor: txn.isInflow ? green : cs.secondary,
-      title: txn.counterpartyName ?? txn.typeLabel,
+      title: txn.counterpartyName ?? context.typeLabel(txn),
       subtitle:
-          '${txn.channelLabel} · ${DateFormat.MMMd().add_jm().format(txn.createdAt)}',
+          '${context.channelLabel(txn)} · ${DateFormat.MMMd().add_jm().format(txn.createdAt)}',
       value: signedMoney(txn.signedAmount),
-      secondaryValue: _statusLabel(txn.status),
+      secondaryValue: context.statusName(txn.status),
       onTap: onTap,
     );
   }
-
-  String _statusLabel(String s) =>
-      s.isEmpty ? '' : s[0].toUpperCase() + s.substring(1);
 }
 
 Future<void> showTransactionDetail(
@@ -181,25 +180,25 @@ Future<void> showTransactionDetail(
               Text(signedMoney(txn.signedAmount),
                   style: AppText.hero(size: 30, color: cs.onSurface)),
               const SizedBox(height: 2),
-              Text('${txn.typeLabel} · ${txn.channelLabel}',
+              Text('${context.typeLabel(txn)} · ${context.channelLabel(txn)}',
                   style: AppText.body(color: cs.onSurfaceVariant)),
               const SizedBox(height: AppSpacing.lg),
               GlassSurface(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Column(
                   children: [
-                    kv('Reference', txn.id),
+                    kv(context.l10n.reference, txn.id),
                     if (txn.counterpartyName != null)
-                      kv('Counterparty', txn.counterpartyName!),
-                    kv('Status', txn.status),
-                    if (txn.provider != null) kv('Provider', txn.provider!),
-                    kv('Fee', money(txn.feeAmount)),
-                    kv('Created',
+                      kv(context.l10n.counterparty, txn.counterpartyName!),
+                    kv(context.l10n.status, context.statusName(txn.status)),
+                    if (txn.provider != null) kv(context.l10n.provider, txn.provider!),
+                    kv(context.l10n.fee, money(txn.feeAmount)),
+                    kv(context.l10n.created,
                         DateFormat.yMMMd().add_jm().format(txn.createdAt)),
                     if (txn.settledAt != null)
-                      kv('Settled',
+                      kv(context.l10n.settled,
                           DateFormat.yMMMd().add_jm().format(txn.settledAt!)),
-                    if (txn.reference != null) kv('Note', txn.reference!),
+                    if (txn.reference != null) kv(context.l10n.note, txn.reference!),
                   ],
                 ),
               ),
@@ -209,21 +208,21 @@ Future<void> showTransactionDetail(
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: () => AppFeedback.copy(context, txn.id,
-                          label: 'Reference copied'),
+                          label: context.l10n.referenceCopied),
                       icon: const Icon(Icons.copy_rounded, size: 18),
-                      label: const Text('Copy ref'),
+                      label: Text(context.l10n.copyRef),
                     ),
                   ),
                   const SizedBox(width: AppSpacing.md),
                   Expanded(
                     child: FilledButton.icon(
                       onPressed: () => AppFeedback.share(
-                        'TulaBix transaction ${txn.id}\n'
-                        '${txn.typeLabel} ${signedMoney(txn.signedAmount)}\n'
+                        context.l10n.tulabixTransaction(txn.id) + '\n'
+                        '${context.typeLabel(txn)} ${signedMoney(txn.signedAmount)}\n'
                         '${DateFormat.yMMMd().add_jm().format(txn.createdAt)}',
                       ),
                       icon: const Icon(Icons.ios_share_rounded, size: 18),
-                      label: const Text('Share'),
+                      label: Text(context.l10n.share),
                     ),
                   ),
                 ],

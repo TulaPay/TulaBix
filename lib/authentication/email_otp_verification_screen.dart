@@ -7,6 +7,7 @@ import 'package:tulapay/authentication/create_pin_Screen.dart';
 import 'package:tulapay/services/auth_service.dart';
 import 'package:tulapay/services/supabase_client.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // Confirms the email entered at signup, right after phone verification
 // succeeds (see OTP_Verification_Screen.dart). Originally a 6-digit-box
@@ -77,7 +78,7 @@ class _EmailOtpVerificationScreenState
       if (!mounted) return;
       setState(
         () => _sendError =
-            'Could not send the confirmation email — please try again.',
+            context.l10n.couldNotSendTheConfirmation,
       );
     } finally {
       if (mounted) setState(() => _isSending = false);
@@ -169,7 +170,7 @@ class _EmailOtpVerificationScreenState
                       ),
                       const SizedBox(height: 24),
                       Text(
-                        "Check Your Email",
+                        context.l10n.checkYourEmail,
                         style: GoogleFonts.plusJakartaSans(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
@@ -181,8 +182,8 @@ class _EmailOtpVerificationScreenState
                       const SizedBox(height: 12),
                       Text(
                         _isSending
-                            ? "Sending a confirmation link to"
-                            : "We've sent a confirmation link to",
+                            ? context.l10n.sendingAConfirmationLinkTo
+                            : context.l10n.weVeSentAConfirmation,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyLarge?.copyWith(
                           color: cs.onSurface.withValues(alpha: 0.66),
@@ -199,7 +200,7 @@ class _EmailOtpVerificationScreenState
                       ),
                       const SizedBox(height: 12),
                       Text(
-                        "Open it on this device to continue — it'll bring you right back here.",
+                        context.l10n.openItOnThisDevice,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: cs.onSurface.withValues(alpha: 0.66),
@@ -224,7 +225,7 @@ class _EmailOtpVerificationScreenState
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            _canResend ? "Didn't get it? " : "Resend link in ",
+                            _canResend ? context.l10n.didnTGetIt : context.l10n.resendLinkIn,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: cs.onSurface.withValues(alpha: 0.66),
                             ),
@@ -233,7 +234,7 @@ class _EmailOtpVerificationScreenState
                               ? GestureDetector(
                                   onTap: _isSending ? null : _sendLink,
                                   child: Text(
-                                    "Resend",
+                                    context.l10n.resend,
                                     style: TextStyle(
                                       color: cs.primary,
                                       fontWeight: FontWeight.bold,
@@ -256,7 +257,7 @@ class _EmailOtpVerificationScreenState
                       // just move on rather than leave them stuck here.
                       OutlinedButton(
                         onPressed: _continue,
-                        child: const Text("I've confirmed — Continue"),
+                        child: Text(context.l10n.iVeConfirmedContinue),
                       ),
                     ],
                   ),

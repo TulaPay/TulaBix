@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 // Previously a fully fake, zero-backend feature: hardcoded "pre-approved"
 // terms, an always-succeeds fake 3-second "vetting" delay, and even a debug
@@ -17,17 +18,16 @@ class Loanscreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassPageShell(
-      title: 'Loans',
-      subtitle: 'Business financing through TulaBiz.',
+      title: context.l10n.loans,
+      subtitle: context.l10n.businessFinancingThroughTulabiz,
       icon: Icons.account_balance_outlined,
       actionLabel: null,
-      children: const [
+      children: [
         GlassInfoCard(
           icon: Icons.hourglass_empty_rounded,
-          title: 'Not yet available',
+          title: context.l10n.notYetAvailable,
           subtitle:
-              "You're not yet eligible for a loan — lending isn't live on "
-              "your account yet. We'll let you know as soon as it is.",
+              context.l10n.youReNotYetEligible2,
         ),
       ],
     );

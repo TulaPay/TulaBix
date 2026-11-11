@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tulapay/themes/app_theme.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Reference switch row: label + description on the left, an iOS-style switch
 /// on the right (accent when on). Meant to be grouped inside one card,
@@ -55,7 +56,7 @@ class ToggleTile extends StatelessWidget {
               ),
               if (showStateLabel) ...[
                 Text(
-                  value ? 'ON' : 'OFF',
+                  value ? context.l10n.stateOn : context.l10n.stateOff,
                   style: AppText.pillLabel(
                     color: value ? cs.primary : cs.onSurfaceVariant,
                   ),

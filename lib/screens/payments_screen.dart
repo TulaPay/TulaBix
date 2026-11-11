@@ -6,6 +6,7 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/utils/money.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class PaymentsScreen extends StatefulWidget {
   const PaymentsScreen({super.key});
@@ -47,14 +48,14 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return AppScaffold(
-      title: 'Payments',
+      title: context.l10n.payments,
       body: Column(
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(
                 AppSpacing.xxl, AppSpacing.sm, AppSpacing.xxl, AppSpacing.md),
             child: SegmentedControl(
-              segments: const ['Settlements', 'Recent'],
+              segments: [context.l10n.settlements, context.l10n.recentLabel],
               selectedIndex: _tab,
               onChanged: (i) => setState(() => _tab = i),
             ),
@@ -85,7 +86,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   }
 
   Widget _settlements(List<SettlementBatch> rows, ColorScheme cs) {
-    if (rows.isEmpty) return _empty('No settlements yet');
+    if (rows.isEmpty) return _empty(context.l10n.noSettlementsYet);
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(
           AppSpacing.xxl, 0, AppSpacing.xxl, AppSpacing.section),
@@ -116,8 +117,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                   style: AppText.hero(size: 24, color: cs.onSurface).copyWith(
                       fontFeatures: const [FontFeature.tabularFigures()])),
               Text(
-                'Gross ${money(s.grossAmount)} · Fees ${money(s.feeAmount)} · '
-                '${s.payoutAccount}',
+                context.l10n.grossFeesLine(money(s.grossAmount), money(s.feeAmount), s.payoutAccount),
                 style: AppText.caption(color: cs.onSurfaceVariant),
               ),
             ],
@@ -128,7 +128,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
   }
 
   Widget _recent(List<LedgerTransaction> rows) {
-    if (rows.isEmpty) return _empty('No transactions yet');
+    if (rows.isEmpty) return _empty(context.l10n.noTransactionsYet);
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(
           AppSpacing.xxl, 0, AppSpacing.xxl, AppSpacing.section),
@@ -143,9 +143,9 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
           iconColor: t.isInflow
               ? AppColors.positive
               : Theme.of(context).colorScheme.secondary,
-          title: t.counterpartyName ?? t.typeLabel,
+          title: t.counterpartyName ?? context.typeLabel(t),
           subtitle:
-              '${t.channelLabel} · ${DateFormat.MMMd().format(t.createdAt)}',
+              '${context.channelLabel(t)} · ${DateFormat.MMMd().format(t.createdAt)}',
           value: signedMoney(t.signedAmount),
           secondaryValue: t.status,
           onTap: () => showTransactionDetail(context, t),

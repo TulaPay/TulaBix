@@ -12,6 +12,7 @@ import 'package:tulapay/screens/help_screen.dart';
 import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/ui/section_header.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 class CustomDrawer extends StatelessWidget {
   const CustomDrawer({super.key});
@@ -64,54 +65,54 @@ class CustomDrawer extends StatelessWidget {
                   vertical: AppSpacing.md,
                 ),
                 children: [
-                  const MicroLabel('Main'),
+                  MicroLabel(context.l10n.main),
                   const SizedBox(height: AppSpacing.sm),
                   _item(
                     context,
                     icon: Icons.home_rounded,
-                    label: 'Home',
+                    label: context.l10n.home,
                     isActive: true,
                     onTap: () => Navigator.pop(context),
                   ),
                   _item(
                     context,
                     icon: Icons.check_circle_outline_rounded,
-                    label: 'Checklist',
-                    badge: '5 Steps',
+                    label: context.l10n.checklist,
+                    badge: context.l10n.n5Steps,
                     onTap: () => _go(context, const ChecklistScreen()),
                   ),
                   _item(
                     context,
                     icon: Icons.payment_rounded,
-                    label: 'Payment Page',
+                    label: context.l10n.paymentPage,
                     onTap: () => _go(context, const PaymentPageScreen()),
                   ),
                   _item(
                     context,
                     icon: Icons.monetization_on_outlined,
-                    label: 'Loan',
+                    label: context.l10n.loan,
                     onTap: () => _go(context, const Loanscreen()),
                   ),
                   _item(
                     context,
                     icon: Icons.local_offer_rounded,
-                    label: 'Promo Codes',
+                    label: context.l10n.promoCodes,
                     onTap: () => _go(context, const PromoCodesScreen()),
                   ),
                   _item(
                     context,
                     icon: Icons.people_rounded,
-                    label: 'Customers',
+                    label: context.l10n.customers,
                     onTap: () => _go(context, const CustomerScreen()),
                   ),
                   _item(
                     context,
                     icon: Icons.sync_alt_rounded,
-                    label: 'Payments',
+                    label: context.l10n.payments,
                     onTap: () => _go(context, const PaymentsScreen()),
                   ),
                   const SizedBox(height: AppSpacing.xl),
-                  const MicroLabel('Support'),
+                  MicroLabel(context.l10n.support),
                   const SizedBox(height: AppSpacing.sm),
                   FutureBuilder<int>(
                     future: MerchantRepository.instance
@@ -122,7 +123,7 @@ class CustomDrawer extends StatelessWidget {
                       return _item(
                         context,
                         icon: Icons.notifications_active_rounded,
-                        label: 'Notifications',
+                        label: context.l10n.notifications,
                         badge: n > 0 ? '$n' : null,
                         badgeSolid: true,
                         onTap: () => _go(context, const NotificationScreen()),
@@ -132,19 +133,19 @@ class CustomDrawer extends StatelessWidget {
                   _item(
                     context,
                     icon: Icons.settings_rounded,
-                    label: 'Settings',
+                    label: context.l10n.settings,
                     onTap: () => _go(context, const SettingsScreen()),
                   ),
                   _item(
                     context,
                     icon: Icons.menu_book_rounded,
-                    label: 'Docs',
+                    label: context.l10n.docs,
                     onTap: () => _go(context, const DocsScreen()),
                   ),
                   _item(
                     context,
                     icon: Icons.help_rounded,
-                    label: 'Help',
+                    label: context.l10n.help,
                     onTap: () => _go(context, const HelpScreen()),
                   ),
                 ],
@@ -174,14 +175,14 @@ class CustomDrawer extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'TulaBiz Corporate',
+                          context.l10n.tulabizCorporate,
                           style: AppText.cardTitle(
                             color: cs.onSurface,
                             size: 13,
                           ),
                         ),
                         Text(
-                          'Financial Operations Engine',
+                          context.l10n.financialOperationsEngine,
                           style: AppText.caption(color: cs.onSurfaceVariant),
                         ),
                       ],

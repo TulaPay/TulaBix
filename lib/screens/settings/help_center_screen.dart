@@ -3,48 +3,46 @@ import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 const _supportEmail = 'support@tulabix.com';
 
 class HelpCenterScreen extends StatelessWidget {
   const HelpCenterScreen({super.key});
 
-  static const _faqs = <(String, String)>[
+  List<(String, String)> _faqs(BuildContext context) => <(String, String)>[
     (
-      'How long do settlements take?',
-      'Completed payments are batched and paid to your settlement account on '
-          'the next business day. You can see each batch under Payments.'
+      context.l10n.howLongDoSettlementsTake,
+      context.l10n.completedPaymentsAreBatchedAnd2
     ),
     (
-      'Why is a payment still pending?',
-      'Mobile money confirmations can take a few minutes. If it stays pending '
-          'for more than an hour, contact support with the reference.'
+      context.l10n.whyIsAPaymentStill,
+      context.l10n.mobileMoneyConfirmationsCanTake2
     ),
     (
-      'How do I change my payout number?',
-      'Payout account changes are handled by support for security — email us '
-          'from the button below and we\'ll verify and update it.'
+      context.l10n.howDoIChangeMy,
+      context.l10n.payoutAccountChangesAreHandled2
     ),
     (
-      'What are the fees?',
-      'Per-channel rates are listed under Settings → Payment Methods → Billing.'
+      context.l10n.whatAreTheFees,
+      context.l10n.perChannelRatesAreListed
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
     return GlassPageShell(
-      title: 'Help Center',
-      subtitle: 'Answers to common questions, plus a direct line to support.',
+      title: context.l10n.helpCenter,
+      subtitle: context.l10n.answersToCommonQuestionsPlus,
       icon: Icons.support_agent_rounded,
-      actionLabel: 'Email support',
+      actionLabel: context.l10n.emailSupport,
       onAction: () => AppFeedback.email(
         context,
         to: _supportEmail,
-        subject: 'TulaBix merchant support',
+        subject: context.l10n.tulabixMerchantSupport,
       ),
       children: [
-        for (final faq in _faqs)
+        for (final faq in _faqs(context))
           Padding(
             padding: EdgeInsets.zero,
             child: GlassSurface(
@@ -77,14 +75,14 @@ class HelpCenterScreen extends StatelessWidget {
         const SizedBox(height: AppSpacing.xl),
         GlassInfoCard(
           icon: Icons.chat_bubble_outline_rounded,
-          title: 'Live chat',
-          subtitle: 'Available Mon–Fri, 8am–6pm WAT.',
+          title: context.l10n.liveChat,
+          subtitle: context.l10n.availableMonFri8am6pm,
           onTap: () => AppFeedback.toast(
-              context, 'Live chat opens during business hours'),
+              context, context.l10n.liveChatOpensDuringBusiness),
         ),
         GlassInfoCard(
           icon: Icons.mail_outline_rounded,
-          title: 'Email support',
+          title: context.l10n.emailSupport,
           subtitle: _supportEmail,
           onTap: () => AppFeedback.email(context, to: _supportEmail),
         ),

@@ -10,6 +10,7 @@ import 'package:tulapay/services/merchant_repository.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/glass_page_shell.dart';
 import 'package:tulapay/widgets/ui/ui.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// A curated catalogue of destinations a merchant can pin. Previously this
 /// screen had no route in at all.
@@ -21,23 +22,23 @@ class _FavItem {
   const _FavItem(this.key, this.label, this.icon, this.builder);
 }
 
-final _catalogue = <_FavItem>[
+List<_FavItem> _catalogue(BuildContext context) => <_FavItem>[
   // key stays 'scan_qr' even though this now opens the real Payment Page —
   // a merchant may already have this pinned as a favorite in
   // merchant_favorites, and changing the key would silently orphan it.
-  _FavItem('scan_qr', 'My QR Code', Icons.qr_code_scanner_rounded,
+  _FavItem('scan_qr', context.l10n.myQrCode, Icons.qr_code_scanner_rounded,
       (_) => const PaymentPageScreen()),
-  _FavItem('payment_links', 'Payment Links', Icons.link_rounded,
+  _FavItem('payment_links', context.l10n.paymentLinks, Icons.link_rounded,
       (_) => const PaymentLinksScreen()),
-  _FavItem('cash_receipts', 'Cash Receipts', Icons.receipt_long_rounded,
+  _FavItem('cash_receipts', context.l10n.cashReceipts, Icons.receipt_long_rounded,
       (_) => const CashReceiptsScreen()),
-  _FavItem('promo_codes', 'Promo Codes', Icons.local_offer_rounded,
+  _FavItem('promo_codes', context.l10n.promoCodes, Icons.local_offer_rounded,
       (_) => const PromoCodesScreen()),
-  _FavItem('activity', 'Activity', Icons.timeline_rounded,
+  _FavItem('activity', context.l10n.activity, Icons.timeline_rounded,
       (_) => const ActivityScreen()),
-  _FavItem('growth_goals', 'Growth Goals', Icons.flag_rounded,
+  _FavItem('growth_goals', context.l10n.growthGoals, Icons.flag_rounded,
       (_) => const GrowthGoalsScreen()),
-  _FavItem('billing', 'Billing', Icons.credit_card_rounded,
+  _FavItem('billing', context.l10n.billing, Icons.credit_card_rounded,
       (_) => const BillingScreen()),
 ];
 
@@ -92,8 +93,8 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   Widget build(BuildContext context) {
     final cs = Theme.of(context).colorScheme;
     return GlassPageShell(
-      title: 'Favorites',
-      subtitle: 'Pin the screens you use most for one-tap access.',
+      title: context.l10n.favorites,
+      subtitle: context.l10n.pinTheScreensYouUse,
       icon: Icons.star_rounded,
       children: [
         if (_loading)
@@ -102,7 +103,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             child: Center(child: CircularProgressIndicator()),
           )
         else
-          for (final item in _catalogue)
+          for (final item in _catalogue(context))
             Padding(
               padding: EdgeInsets.zero,
               child: GlassSurface(

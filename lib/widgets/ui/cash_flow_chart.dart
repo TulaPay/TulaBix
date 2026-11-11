@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tulapay/format.dart';
 import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/widgets/ui/chart_style.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// One column of the cash-flow chart: money in vs money out for a sub-period.
 class CashFlowPoint {
@@ -66,7 +67,7 @@ class CashFlowChart extends StatelessWidget {
                   vertical: 6,
                 ),
                 getTooltipItem: (group, _, rod, rodIndex) => BarTooltipItem(
-                  '${rodIndex == 0 ? 'In  ' : 'Out '}${money(rod.toY, compact: true)}',
+                  '${rodIndex == 0 ? context.l10n.tooltipIn : context.l10n.tooltipOut}  ${money(rod.toY, compact: true)}',
                   AppText.pillLabel(
                     color: cs.onInverseSurface,
                   ).copyWith(fontSize: 12),

@@ -7,6 +7,7 @@ import 'package:tulapay/themes/app_theme.dart';
 import 'package:tulapay/utils/app_feedback.dart';
 import 'package:tulapay/widgets/glass_effects.dart';
 import 'package:tulapay/widgets/pin_prompt.dart';
+import 'package:tulapay/l10n/l10n_extension.dart';
 
 /// Direct mobile-money collection — the merchant enters the CUSTOMER's own
 /// MTN MoMo number and PayDunya pushes a payment prompt straight to that
@@ -39,11 +40,11 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
     final amount = num.tryParse(_amountController.text.trim());
 
     if (phone.isEmpty) {
-      AppFeedback.toast(context, "Enter the customer's MTN MoMo number");
+      AppFeedback.toast(context, context.l10n.enterTheCustomerSMtn);
       return;
     }
     if (amount == null || amount < 200) {
-      AppFeedback.toast(context, 'Enter an amount of at least 200 XAF');
+      AppFeedback.toast(context, context.l10n.enterAnAmountOfAt);
       return;
     }
 
@@ -62,14 +63,14 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
       _phoneController.clear();
       _amountController.clear();
       _descriptionController.clear();
-      AppFeedback.toast(context, "Payment prompt sent to the customer's phone");
+      AppFeedback.toast(context, context.l10n.paymentPromptSentToThe);
       PushNotificationService.instance.showNotification(
-        title: 'Payment Prompt Sent',
-        body: 'MoMo prompt for ${money(amount)} sent to $phone',
+        title: context.l10n.paymentPromptSent,
+        body: context.l10n.momoPromptSent(money(amount), phone),
       );
     } catch (e) {
       if (!mounted) return;
-      AppFeedback.toast(context, 'Could not send payment prompt: $e');
+      AppFeedback.toast(context, context.l10n.couldNotSendPrompt('$e'));
     } finally {
       if (mounted) setState(() => _submitting = false);
     }
@@ -84,7 +85,7 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: false,
-        title: Text('Collect Payment',
+        title: Text(context.l10n.collectPayment,
             style: GoogleFonts.plusJakartaSans(fontWeight: FontWeight.w700)),
       ),
       body: CustomScrollView(
@@ -94,15 +95,13 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
             padding: const EdgeInsets.fromLTRB(24, 12, 24, 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
-                const InfoNote(
-                  title: 'MTN MoMo only',
-                  message: 'This sends a payment prompt straight to an MTN '
-                      'MoMo number. For Orange Money or other methods, use '
-                      'a Payment Link or your QR Payment Page instead.',
+                InfoNote(
+                  title: context.l10n.mtnMomoOnly,
+                  message: context.l10n.thisSendsAPaymentPrompt2,
                 ),
                 const SizedBox(height: 24),
                 Text(
-                  'PAYMENT DETAILS',
+                  context.l10n.paymentDetails,
                   style: AppText.microLabel(color: context.textTertiary)
                       .copyWith(letterSpacing: 1.6),
                 ),
@@ -111,14 +110,14 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
                   child: Column(
                     children: [
                       _Field(
-                        label: "Customer's MTN number",
-                        hint: 'e.g. 6XXXXXXXX',
+                        label: context.l10n.customerSMtnNumber,
+                        hint: context.l10n.eG6xxxxxxxx,
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
                       ),
                       const SizedBox(height: 16),
                       _Field(
-                        label: 'Amount',
+                        label: context.l10n.amount,
                         hint: '0.00',
                         controller: _amountController,
                         prefix: 'XAF',
@@ -126,8 +125,8 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
                       ),
                       const SizedBox(height: 16),
                       _Field(
-                        label: 'Description',
-                        hint: 'Optional — what is this for?',
+                        label: context.l10n.description,
+                        hint: context.l10n.optionalWhatIsThisFor,
                         controller: _descriptionController,
                         maxLines: 2,
                       ),
@@ -149,13 +148,12 @@ class _CollectPaymentScreenState extends State<CollectPaymentScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text('Send payment prompt'),
+                        : Text(context.l10n.sendPaymentPrompt),
                   ),
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'The customer approves or declines on their own phone. '
-                  "You'll see the transaction update in Activity once they respond.",
+                  context.l10n.theCustomerApprovesOrDeclines2,
                   style: GoogleFonts.plusJakartaSans(
                     fontSize: 12,
                     color: context.textSecondary,
